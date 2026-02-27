@@ -35,46 +35,43 @@ $autoRedirect = ($order !== null);
 
 <body>
   <main class="section">
-    <div class="container" style="max-width:640px">
-      <div class="card" style="padding:2rem">
+    <div class="container ty-container">
+      <div class="card ty-card">
         <div style="margin-bottom:1.25rem">
           <span class="badge badge--red" style="font-size:1rem;padding:.4rem .8rem">✓ Pesanan Tercatat</span>
         </div>
 
-        <h1 style="font-size:clamp(1.5rem,5vw,2.2rem);margin-bottom:.75rem">
+        <h1 class="ty-title">
           Satu langkah lagi — konfirmasi via WhatsApp
         </h1>
-        <p class="lead" style="font-size:1rem">
+        <p class="ty-lead">
           Data pesanan Anda sudah kami terima. Klik tombol WhatsApp di bawah untuk konfirmasi dan proses pembayaran DP.
         </p>
 
         <?php if ($order): ?>
-          <div class="proof-bar"
-            style="margin-top:1rem;padding-top:1rem;justify-content:flex-start;gap:.5rem;flex-direction:column;border:1px solid var(--border);border-radius:6px;padding:1rem;background:var(--bg-alt)">
-            <div
-              style="display:flex;justify-content:space-between;border-bottom:1px dashed var(--border);padding-bottom:.35rem">
-              <span
-                style="color:var(--muted);font-size:.85rem">Nama</span><strong><?= h($order['name'] ?? '-') ?></strong>
+          <div class="ty-order-box">
+            <div class="ty-order-row">
+              <span class="ty-order-lbl">Nama</span>
+              <strong class="ty-order-val"><?= h($order['name'] ?? '-') ?></strong>
             </div>
-            <div
-              style="display:flex;justify-content:space-between;border-bottom:1px dashed var(--border);padding-bottom:.35rem">
-              <span
-                style="color:var(--muted);font-size:.85rem">Desain</span><strong><?= h($order['design'] ?? '-') ?></strong>
+            <div class="ty-order-row">
+              <span class="ty-order-lbl">Desain</span>
+              <strong class="ty-order-val"><?= h($order['design'] ?? '-') ?></strong>
             </div>
-            <div
-              style="display:flex;justify-content:space-between;border-bottom:1px dashed var(--border);padding-bottom:.35rem">
-              <span
-                style="color:var(--muted);font-size:.85rem">Ukuran</span><strong><?= h($order['size'] ?? '-') ?></strong>
+            <div class="ty-order-row">
+              <span class="ty-order-lbl">Ukuran</span>
+              <strong class="ty-order-val"><?= h($order['size'] ?? '-') ?></strong>
             </div>
-            <div style="display:flex;justify-content:space-between"><span
-                style="color:var(--muted);font-size:.85rem">Jumlah</span><strong><?= (int) ($order['qty'] ?? 1) ?>
-                pcs</strong></div>
+            <div class="ty-order-row">
+              <span class="ty-order-lbl">Jumlah</span>
+              <strong class="ty-order-val"><?= (int) ($order['qty'] ?? 1) ?> pcs</strong>
+            </div>
           </div>
         <?php endif; ?>
 
-        <div style="margin-top:1.5rem;display:flex;flex-direction:column;gap:.75rem">
-          <a class="btn" href="<?= h($waUrl) ?>" target="_blank" rel="noopener noreferrer" data-track="wa_contact"
-            style="background:#25d366; border-color:#25d366; text-shadow:none;">
+        <div class="ty-actions">
+          <a class="btn btn--wa" href="<?= h($waUrl) ?>" target="_blank" rel="noopener noreferrer"
+            data-track="wa_contact">
             <span>💬 Konfirmasi via WhatsApp</span>
           </a>
           <a class="btn btn--ghost" href="<?= h(BASE_PATH) ?>/" data-track="back_home">
@@ -83,7 +80,7 @@ $autoRedirect = ($order !== null);
         </div>
 
         <?php if ($autoRedirect): ?>
-          <p style="text-align:center;margin-top:1rem;font-size:.82rem;color:var(--muted)">
+          <p class="ty-redirect">
             Anda akan diarahkan otomatis ke WhatsApp dalam 8 detik…
           </p>
         <?php endif; ?>

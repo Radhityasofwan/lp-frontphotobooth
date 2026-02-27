@@ -120,11 +120,12 @@ h1 {
 }
 
 h2 {
-  font-size: clamp(2rem, 5vw, 3rem);
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
   display: inline-block;
   margin-bottom: 1.5rem;
   position: relative;
   padding-bottom: 0.5rem;
+  line-height: 1.2;
 }
 
 h2::after {
@@ -132,14 +133,14 @@ h2::after {
   position: absolute;
   left: 0;
   bottom: 0;
-  width: 40px;
-  height: 3px;
+  width: 50px;
+  height: 4px;
   background: var(--red);
   box-shadow: 0 0 10px var(--red-glow);
 }
 
 h3 {
-  font-size: 1.3rem;
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
   margin-bottom: .5rem;
   letter-spacing: 0.5px;
 }
@@ -780,19 +781,21 @@ nav {
 .price-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  padding: 2rem 1.5rem;
+  border-radius: var(--radius);
+  padding: 2.5rem 1.5rem;
   text-align: center;
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: .5rem;
-  transition: transform .3s;
+  gap: .75rem;
+  transition: transform .3s, border-color .3s;
 }
 
 .price-card:hover {
   transform: translateY(-5px);
   border-color: #333;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
 }
 
 .price-card--featured {
@@ -1105,6 +1108,78 @@ select option {
   border-left: 3px solid var(--red);
 }
 
+/* ─── Payment Box ─── */
+.payment-box {
+  max-width: 100%;
+  border-color: var(--border);
+  margin-top: 2rem;
+  padding: 1.5rem;
+}
+
+.payment-title {
+  color: var(--text);
+  font-size: 1.1rem;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-family: var(--ff-head);
+  letter-spacing: 1px;
+}
+
+.payment-acc {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--green);
+  letter-spacing: 2px;
+  margin-bottom: 0.25rem;
+}
+
+.payment-name {
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+  font-size: 1rem;
+}
+
+.payment-req {
+  font-size: 0.85rem;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-top: 1px dashed #333;
+  padding-top: 1.25rem;
+  font-weight: 600;
+}
+
+.payment-proof-wrapper {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px dashed #333;
+}
+
+.payment-wa {
+  font-size: 0.95rem;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+}
+
+.payment-upload-label {
+  color: var(--red);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.payment-upload-input {
+  padding: 0.75rem;
+  background: #000;
+  border: 1px solid var(--border);
+  width: 100%;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.form-actions {
+  margin-top: 2rem;
+}
+
 /* ─── FAQ ─── */
 .faq-list {
   max-width: 800px;
@@ -1246,6 +1321,86 @@ select option {
   margin: 0;
   font-size: 1rem;
   padding: .75rem .5rem
+}
+
+/* ─── Thank You Page ─── */
+.ty-container {
+  max-width: 640px;
+}
+
+.ty-card {
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.ty-title {
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.ty-lead {
+  font-size: 1.05rem;
+  color: var(--muted);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.ty-order-box {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+.ty-order-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px dashed #222;
+}
+
+.ty-order-row:last-child {
+  border-bottom: none;
+}
+
+.ty-order-lbl {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.ty-order-val {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.ty-actions {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.btn--wa {
+  background: #25d366;
+  border-color: #25d366;
+  color: #000;
+  text-shadow: none;
+}
+
+.btn--wa:hover {
+  background: transparent;
+  color: #25d366;
+  text-shadow: 0 0 10px rgba(37, 211, 102, 0.5);
+  box-shadow: inset 0 0 10px rgba(37, 211, 102, 0.2), 0 0 15px rgba(37, 211, 102, 0.2);
+}
+
+.ty-redirect {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 
 @media(min-width:900px) {

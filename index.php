@@ -78,7 +78,7 @@ $schemaJson = json_encode([
 ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 
 $criticalCSS = <<<'CSS'
-:root{--bg:#060608;--red:#f0131e;--text:#f4f4f5;--muted:#9ca3af;--border:#22222a;--ff-head:'Rajdhani',system-ui,sans-serif;--ff-body:'Inter',system-ui,-apple-system,sans-serif;--skew:-8deg}
+:root{--bg:#060608;--bg-card:#0e0e12;--red:#f0131e;--red-glow:rgba(240, 19, 30, 0.4);--green:#00ff66;--text:#f4f4f5;--muted:#9ca3af;--border:#22222a;--ff-head:'Rajdhani',system-ui,sans-serif;--ff-body:'Inter',system-ui,-apple-system,sans-serif;--radius:0px;--skew:-8deg}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:var(--ff-body);background-color:var(--bg);background-image:linear-gradient(rgba(255,255,255,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.015) 1px,transparent 1px);background-size:40px 40px;color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
@@ -88,7 +88,9 @@ body{font-family:var(--ff-body);background-color:var(--bg);background-image:line
 .brand{display:flex;align-items:center;gap:.75rem}
 .brand__title{font-family:var(--ff-head);font-weight:700;font-size:1.1rem;text-transform:uppercase;letter-spacing:2px;line-height:1;color:var(--text)}
 .hero{padding:4rem 0 5rem}
-h1{font-family:var(--ff-head);font-weight:700;text-transform:uppercase;line-height:1.1;letter-spacing:1px;font-size:clamp(2.5rem,8vw,4.5rem);text-shadow:0 0 20px rgba(255,255,255,0.1);margin-bottom:0.5rem}
+h1,h2,h3{font-family:var(--ff-head);font-weight:700;text-transform:uppercase;line-height:1.1;letter-spacing:1px}
+h1{font-size:clamp(2.5rem,8vw,4.5rem);color:var(--text);text-shadow:0 0 20px rgba(255,255,255,0.1);margin-bottom:0.5rem}
+h2{font-size:clamp(1.8rem,5vw,2.8rem);display:inline-block;margin-bottom:1.5rem;position:relative;padding-bottom:0.5rem;line-height:1.2}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;background:var(--red);color:#fff;padding:.85rem 2rem;font-family:var(--ff-head);font-size:1.1rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--red);cursor:pointer;transform:skewX(var(--skew));text-decoration:none}
 .btn>span{transform:skewX(calc(var(--skew)*-1));display:inline-block}
 CSS;
@@ -323,7 +325,7 @@ CSS;
     <section class="section" id="harga">
       <div class="container">
         <h2>Harga &amp; DP</h2>
-        <p class="sublead" style="text-align:center">Promo terbatas selama periode pre-order.</p>
+        <p class="sublead text-center">Promo terbatas selama periode pre-order.</p>
 
         <div class="price-grid">
           <!-- 1 pcs -->
@@ -476,25 +478,18 @@ CSS;
               </div>
             </div>
 
-            <div class="callout" style="max-width:100%; border-color:var(--border); margin-top:2rem;">
-              <strong
-                style="color:var(--text); font-size:1.1rem; display:block; margin-bottom:0.5rem; font-family:var(--ff-head); letter-spacing:1px;">PEMBAYARAN
-                MELALUI REKENING:</strong>
-              <div
-                style="font-size:1.2rem; font-weight:700; color:var(--green); letter-spacing:1px; margin-bottom:0.25rem;">
-                BCA 6930242827</div>
-              <div style="color:var(--muted); margin-bottom:1rem;">a/n Bambang Kurniawan</div>
-              <div
-                style="font-size:0.85rem; color:var(--text); text-transform:uppercase; letter-spacing:0.5px; border-top:1px dashed #333; padding-top:1rem;">
-                (SERTAKAN BUKTI TRANSFER PEMBAYARAN)</div>
+            <div class="callout payment-box">
+              <strong class="payment-title">PEMBAYARAN MELALUI REKENING:</strong>
+              <div class="payment-acc">BCA 6930242827</div>
+              <div class="payment-name">a/n Bambang Kurniawan</div>
+              <div class="payment-req">(SERTAKAN BUKTI TRANSFER PEMBAYARAN)</div>
 
-              <div style="margin-top:1rem; padding-top:1rem; border-top:1px dashed #333;">
-                <div style="font-size:0.9rem; color:var(--text); margin-bottom:0.5rem;"><strong>Nomor WA
-                    Konfirmasi:</strong> 0816-1726-0666</div>
+              <div class="payment-proof-wrapper">
+                <div class="payment-wa"><strong>Nomor WA Konfirmasi:</strong> 0816-1726-0666</div>
                 <div class="form-field">
-                  <label for="inp_proof" style="color:var(--red);">Upload Bukti Pembayaran</label>
+                  <label for="inp_proof" class="payment-upload-label">Upload Bukti Pembayaran</label>
                   <input id="inp_proof" type="file" name="payment_proof" accept="image/*" required
-                    style="padding:0.5rem; background:#000;">
+                    class="payment-upload-input">
                 </div>
               </div>
             </div>
@@ -505,7 +500,7 @@ CSS;
                 produksi.</label>
             </div>
 
-            <div style="margin-top:1.5rem">
+            <div class="form-actions">
               <button class="btn btn--block" type="submit" id="btnSubmit"><span>Kirim Pesanan & Bukti
                   Transfer</span></button>
             </div>
@@ -553,9 +548,9 @@ CSS;
 
     <!-- ── SEO Content ── -->
     <section class="section section--alt" id="seo-content">
-      <div class="container">
+      <div class="container container--sm">
         <h2>Jersey Kamen Rider untuk Penggemar Tokusatsu Indonesia</h2>
-        <div class="seo-text" style="max-width:700px">
+        <div class="seo-text">
           <p>Jersey Kamen Rider merupakan apparel yang diminati komunitas tokusatsu Indonesia. <strong>Jersey Series
               Fantasy Kamen Rider Ichigo &amp; Black (Edisi 1)</strong> terinspirasi era 90an dan film <strong>Satria
               Baja Hitam</strong>, diwujudkan menjadi jersey sporty premium bergaya jagoan masa kecil.</p>
