@@ -37,8 +37,17 @@ $redirectDelay = 8; // Waktu tunggu dalam detik
     <meta http-equiv="refresh" content="<?= $redirectDelay ?>;url=<?= h($waUrl) ?>">
   <?php endif; ?>
 
+  <!-- DNS Prefetch / Preconnect -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
   <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    onerror="this.onerror=null;this.href='<?= h(rtrim(BASE_URL, '/')) ?>/assets/vendor/bootstrap/bootstrap.min.css';">
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Bootstrap JS Local Fallback -->
+  <script>window.bootstrap || document.write('<script src="<?= h(rtrim(BASE_URL, '/')) ?>/assets/vendor/bootstrap/bootstrap.bundle.min.js"><\/script>');</script>
 
   <style>
     /*

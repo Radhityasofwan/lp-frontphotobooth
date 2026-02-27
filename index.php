@@ -121,8 +121,12 @@ CSS;
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
 
+  <!-- DNS Prefetch / Preconnect -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
   <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    onerror="this.onerror=null;this.href='<?= h(rtrim(BASE_URL, '/')) ?>/assets/vendor/bootstrap/bootstrap.min.css';">
 
   <style>
     /* 
@@ -274,8 +278,9 @@ CSS;
   </style>
 
   <!-- Preload hero image -->
-  <link rel="preload" href="<?= h(rtrim(BASE_URL, '/')) ?>/assets/img/hero.webp?v=<?= time() ?>" as="image"
-    type="image/webp">
+  <link rel="preload"
+    href="<?= h(rtrim(BASE_URL, '/')) ?>/assets/img/hero.webp?v=<?= filemtime(__DIR__ . '/assets/img/hero.webp') ?>"
+    as="image" type="image/webp">
 
   <!-- Structured Data -->
   <script type="application/ld+json"><?= $schemaJson ?></script>
@@ -299,7 +304,8 @@ CSS;
     style="background: rgba(6,6,8,0.95) !important; backdrop-filter: blur(10px);">
     <div class="container d-flex justify-content-between align-items-center">
       <div class="d-flex align-items-center gap-2">
-        <img src="<?= h(rtrim(BASE_URL, '/')) ?>/assets/img/logo-ozverlig.webp?v=<?= time() ?>"
+        <img
+          src="<?= h(rtrim(BASE_URL, '/')) ?>/assets/img/logo-ozverlig.webp?v=<?= filemtime(__DIR__ . '/assets/img/logo-ozverlig.webp') ?>"
           alt="Logo Ozverligsportwear" width="36" height="36" loading="eager">
         <div class="lh-1">
           <div class="font-rajdhani text-white fs-6">Ozverligsportwear</div>
@@ -361,7 +367,8 @@ CSS;
           </div>
 
           <div class="col-lg-6 order-1 order-lg-2 text-center">
-            <img class="img-fluid drop-shadow" src="<?= h(rtrim(BASE_URL, '/')) ?>/assets/img/hero.webp?v=<?= time() ?>"
+            <img class="img-fluid drop-shadow"
+              src="<?= h(rtrim(BASE_URL, '/')) ?>/assets/img/hero.webp?v=<?= filemtime(__DIR__ . '/assets/img/hero.webp') ?>"
               alt="Jersey Series Fantasy Kamen Rider Ichigo dan Black Edisi 1" loading="eager" fetchpriority="high"
               style="filter: drop-shadow(0 0 30px rgba(240,19,30,0.3)); max-width:90%">
           </div>
@@ -409,7 +416,8 @@ CSS;
         <div class="row g-4 mb-5">
           <div class="col-md-6">
             <article class="card card-dark h-100 rounded-0">
-              <img src="<?= h(rtrim(BASE_URL, '/')) ?>/assets/img/ichigo.webp?v=<?= time() ?>"
+              <img
+                src="<?= h(rtrim(BASE_URL, '/')) ?>/assets/img/ichigo.webp?v=<?= filemtime(__DIR__ . '/assets/img/ichigo.webp') ?>"
                 class="card-img-top rounded-0" alt="Fantasy Kamen Rider Ichigo v.01" loading="lazy" decoding="async">
               <div class="card-body p-4">
                 <h3 class="card-title font-rajdhani text-white fs-4">Fantasy Kamen Rider Ichigo v.01</h3>
@@ -421,7 +429,8 @@ CSS;
 
           <div class="col-md-6">
             <article class="card card-dark h-100 rounded-0">
-              <img src="<?= h(rtrim(BASE_URL, '/')) ?>/assets/img/black.webp?v=<?= time() ?>"
+              <img
+                src="<?= h(rtrim(BASE_URL, '/')) ?>/assets/img/black.webp?v=<?= filemtime(__DIR__ . '/assets/img/black.webp') ?>"
                 class="card-img-top rounded-0" alt="Fantasy Kamen Rider Black v.01" loading="lazy" decoding="async">
               <div class="card-body p-4">
                 <h3 class="card-title font-rajdhani text-white fs-4">Fantasy Kamen Rider Black v.01</h3>
@@ -857,6 +866,8 @@ CSS;
 
   <!-- Bootstrap JS (bundle includes Popper) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Bootstrap JS Local Fallback -->
+  <script>window.bootstrap || document.write('<script src="<?= h(rtrim(BASE_URL, '/')) ?>/assets/vendor/bootstrap/bootstrap.bundle.min.js"><\/script>');</script>
 
   <!-- Custom logic -->
   <script>
