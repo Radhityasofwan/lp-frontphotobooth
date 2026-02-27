@@ -493,10 +493,10 @@ CSS;
 <body>
 
   <!-- ── TOPBAR ── -->
-  <header class="sticky-top bg-dark border-bottom border-dark py-3"
+  <header class="sticky-top bg-dark border-bottom border-dark py-3 py-md-4"
     style="background: rgba(6,6,8,0.95) !important; backdrop-filter: blur(10px);">
-    <div class="container d-flex justify-content-between align-items-center">
-      <a href="<?= h(BASE_URL) ?>/" class="d-flex align-items-center gap-3 text-decoration-none">
+    <div class="container d-flex justify-content-between align-items-center gap-2 gap-md-4">
+      <a href="<?= h(BASE_URL) ?>/" class="d-flex align-items-center gap-2 gap-md-3 text-decoration-none">
         <img src="<?= h(asset('assets/img/logo-ozverlig.webp')) ?>" alt="Logo Ozverligsportwear" width="48" height="48"
           loading="eager" class="rounded-circle border border-secondary shadow-sm">
         <div class="lh-sm">
@@ -589,14 +589,14 @@ CSS;
         <div class="d-flex flex-column text-md-start lh-1">
           <span class="text-white small mb-1" style="font-size: 0.8rem;">Sisa waktu:</span>
           <div id="promo-cd" class="d-flex gap-1 fs-6">
-            <div class="bg-white text-dark rounded px-2 py-1"><span id="cd-h">--</span><span
-                class="small text-secondary ms-1">J</span></div>
-            <div class="bg-white text-dark rounded px-2 py-1"><span id="cd-m">--</span><span
-                class="small text-secondary ms-1">M</span></div>
-            <div class="bg-white text-dark rounded px-2 py-1"><span id="cd-s">--</span><span
-                class="small text-secondary ms-1">D</span></div>
+            <div class="bg-white text-black fw-bold rounded px-2 py-1"><span id="cd-h">--</span><span
+                class="small text-secondary fw-normal ms-1">J</span></div>
+            <div class="bg-white text-black fw-bold rounded px-2 py-1"><span id="cd-m">--</span><span
+                class="small text-secondary fw-normal ms-1">M</span></div>
+            <div class="bg-white text-black fw-bold rounded px-2 py-1"><span id="cd-s">--</span><span
+                class="small text-secondary fw-normal ms-1">D</span></div>
           </div>
-          <div id="promo-ended" class="text-dark bg-warning px-2 py-1 rounded d-none" style="font-size:0.85rem">Promo
+          <div id="promo-ended" class="text-black fw-bold bg-warning px-2 py-1 rounded d-none" style="font-size:0.85rem">Promo
             Berakhir</div>
         </div>
       </div>
@@ -614,10 +614,9 @@ CSS;
           <div class="col-md-6 col-lg-5">
             <div class="card card-dark h-100 rounded text-center p-3 glow-green border border-dark">
               <h5 class="font-rajdhani fw-bold text-brand-green mb-3">#Ichigo Edition</h5>
-              <div class="ratio ratio-1x1 w-100 overflow-hidden rounded bg-black d-flex justify-content-center">
-                <blockquote class="instagram-media w-100 border-0 m-0 bg-transparent"
-                  data-instgrm-permalink="https://www.instagram.com/p/DVRdmS_E9Kq/?utm_source=ig_web_button_share_sheet&igsh=MzRlODBiNWFlZA=="
-                  data-instgrm-version="14"></blockquote>
+              <!-- Using 4:5 aspect ratio padding for IG portraits (125% = 5/4) -->
+              <div class="w-100 overflow-hidden rounded bg-black d-flex justify-content-center" style="position: relative; padding-top: 125%;">
+                <blockquote class="instagram-media h-100 w-100 border-0 m-0 bg-transparent position-absolute top-0 start-0" data-instgrm-permalink="https://www.instagram.com/p/DVRdmS_E9Kq/?utm_source=ig_web_button_share_sheet&igsh=MzRlODBiNWFlZA==" data-instgrm-version="14"></blockquote>
               </div>
             </div>
           </div>
@@ -626,10 +625,9 @@ CSS;
           <div class="col-md-6 col-lg-5">
             <div class="card card-dark h-100 rounded text-center p-3 glow-red border border-dark">
               <h5 class="font-rajdhani fw-bold text-brand-red mb-3">#Black Edition</h5>
-              <div class="ratio ratio-1x1 w-100 overflow-hidden rounded bg-black d-flex justify-content-center">
-                <blockquote class="instagram-media w-100 border-0 m-0 bg-transparent"
-                  data-instgrm-permalink="https://www.instagram.com/p/DVRd5kNE0B4/?utm_source=ig_web_button_share_sheet&igsh=MzRlODBiNWFlZA=="
-                  data-instgrm-version="14"></blockquote>
+              <!-- Using 4:5 aspect ratio padding for IG portraits (125% = 5/4) -->
+              <div class="w-100 overflow-hidden rounded bg-black d-flex justify-content-center" style="position: relative; padding-top: 125%;">
+                <blockquote class="instagram-media h-100 w-100 border-0 m-0 bg-transparent position-absolute top-0 start-0" data-instgrm-permalink="https://www.instagram.com/p/DVRd5kNE0B4/?utm_source=ig_web_button_share_sheet&igsh=MzRlODBiNWFlZA==" data-instgrm-version="14"></blockquote>
               </div>
             </div>
           </div>
