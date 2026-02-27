@@ -1,0 +1,43 @@
+# =========================
+# Ozverlig Kamen Riders - .htaccess
+# Fast, stable, SEO-friendly for shared hosting
+# =========================
+
+Options -Indexes
+ServerSignature Off
+
+# Force HTTPS (Hostinger usually behind proxy; this works for most cases)
+RewriteEngine On
+RewriteCond %{HTTPS} !=on [OR]
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Canonical: remove trailing slash for files (optional safe)
+RewriteCond %{THE_REQUEST} \s/+(.+?)//+\s [NC]
+RewriteRule ^ %1 [R=301,L]
+
+# Compression (if allowed)
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/javascript application/javascript application/json image/svg+xml
+</IfModule>
+
+# Cache static assets
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 30 days"
+  ExpiresByType application/javascript "access plus 30 days"
+  ExpiresByType image/webp "access plus 30 days"
+  ExpiresByType image/png "access plus 30 days"
+  ExpiresByType image/jpeg "access plus 30 days"
+  ExpiresByType image/svg+xml "access plus 30 days"
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set Permissions-Policy "geolocation=(), camera=(), microphone=()"
+</IfModule>
+
+# Protect storage
+RewriteRule ^storage/ - [F,L]
