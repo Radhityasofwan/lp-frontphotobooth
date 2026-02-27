@@ -125,11 +125,103 @@ CSS;
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
+  <style>
+    /* 
+    * Minimal Overrides (Bootstrap 5 controls the rest)
+    * Ozverligsportwear x Kemalikart
+    */
+
+    :root {
+      --bg-dark: #060608;
+      --bg-card: #0e0e12;
+      --brand-red: #f0131e;
+      --brand-green: #00ff66;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: #f8f9fa;
+      /* BS light */
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .font-rajdhani {
+      font-family: 'Rajdhani', system-ui, sans-serif;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    /* Red accents */
+    .text-brand-red {
+      color: var(--brand-red) !important;
+    }
+
+    .bg-brand-red {
+      background-color: var(--brand-red) !important;
+      color: #fff;
+    }
+
+    .border-brand-red {
+      border-color: var(--brand-red) !important;
+    }
+
+    /* Dark cards */
+    .card-dark {
+      background-color: var(--bg-card);
+      border: 1px solid #222;
+    }
+
+    /* Custom Btn */
+    .btn-red {
+      background-color: var(--brand-red);
+      color: #fff;
+      border: 1px solid var(--brand-red);
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .btn-red:hover {
+      background-color: #d00f18;
+      color: #fff;
+    }
+
+    /* Skew util */
+    .skew-btn {
+      transform: skewX(-8deg);
+    }
+
+    .skew-btn>span {
+      display: inline-block;
+      transform: skewX(8deg);
+    }
+
+    /* Strikethrough price */
+    .price-strike {
+      text-decoration: line-through;
+      color: #6c757d;
+      font-size: 0.9em;
+    }
+
+    /* Payment box */
+    .payment-box {
+      background-color: #000;
+      border: 1px solid #333;
+      padding: 1.5rem;
+      border-radius: 0.25rem;
+    }
+  </style>
+
   <!-- Preload hero image -->
   <link rel="preload" href="<?= h(BASE_PATH) ?>/assets/img/hero.webp" as="image" type="image/webp">
-
-  <!-- Main stylesheet (minimal overrides) -->
-  <link rel="stylesheet" href="<?= h(BASE_PATH) ?>/assets/css/style.css">
 
   <!-- Structured Data -->
   <script type="application/ld+json"><?= $schemaJson ?></script>
@@ -292,15 +384,20 @@ CSS;
         <h2 class="display-6 font-rajdhani fw-bold text-white mb-4">Spesifikasi Jersey</h2>
         <ul class="list-group list-group-flush border-top border-dark mb-4" style="max-width: 600px;">
           <li class="list-group-item bg-transparent text-white border-dark d-flex justify-content-between px-0 py-3">
-            <strong>Material Fabric</strong> <span class="text-secondary">Andromax Sublimation</span></li>
+            <strong>Material Fabric</strong> <span class="text-secondary">Andromax Sublimation</span>
+          </li>
           <li class="list-group-item bg-transparent text-white border-dark d-flex justify-content-between px-0 py-3">
-            <strong>Crest</strong> <span class="text-secondary">3D Tatami / Polyflock</span></li>
+            <strong>Crest</strong> <span class="text-secondary">3D Tatami / Polyflock</span>
+          </li>
           <li class="list-group-item bg-transparent text-white border-dark d-flex justify-content-between px-0 py-3">
-            <strong>Apparel Crest</strong> <span class="text-secondary">3D HD</span></li>
+            <strong>Apparel Crest</strong> <span class="text-secondary">3D HD</span>
+          </li>
           <li class="list-group-item bg-transparent text-white border-dark d-flex justify-content-between px-0 py-3">
-            <strong>Collar / Cuff</strong> <span class="text-secondary">Rib Knit</span></li>
+            <strong>Collar / Cuff</strong> <span class="text-secondary">Rib Knit</span>
+          </li>
           <li class="list-group-item bg-transparent text-white border-dark d-flex justify-content-between px-0 py-3">
-            <strong>Size Tag</strong> <span class="text-secondary">DTF</span></li>
+            <strong>Size Tag</strong> <span class="text-secondary">DTF</span>
+          </li>
         </ul>
         <div class="alert alert-dark bg-transparent border-secondary text-secondary" style="max-width: 600px;"
           role="alert">
@@ -404,19 +501,22 @@ CSS;
     </section>
 
     <!-- ── ORDER FORM ── -->
-    <section class="py-5 border-top border-dark" id="order" style="background: linear-gradient(180deg, #0a0a0e 0%, #060608 100%);">
+    <section class="py-5 border-top border-dark" id="order"
+      style="background: linear-gradient(180deg, #0a0a0e 0%, #060608 100%);">
       <div class="container">
         <div class="text-center mb-5">
           <h2 class="display-6 font-rajdhani fw-bold text-white mb-2">Form Pemesanan</h2>
-          <p class="lead text-secondary">Isi form di bawah. Setelah submit, Anda diarahkan ke WhatsApp untuk konfirmasi.</p>
+          <p class="lead text-secondary">Isi form di bawah. Setelah submit, Anda diarahkan ke WhatsApp untuk konfirmasi.
+          </p>
         </div>
 
         <div class="row justify-content-center">
           <div class="col-lg-8">
             <div class="card card-dark p-4 p-md-5 rounded-0 shadow-lg">
               <div id="formError" class="text-danger mb-3 d-none fw-bold"></div>
-              
-              <form id="orderForm" method="post" action="<?= h(BASE_PATH) ?>/order.php" enctype="multipart/form-data" novalidate>
+
+              <form id="orderForm" method="post" action="<?= h(BASE_PATH) ?>/order.php" enctype="multipart/form-data"
+                novalidate>
                 <!-- Hidden tracking fields -->
                 <input type="hidden" name="utm_source" id="f_utm_source">
                 <input type="hidden" name="utm_medium" id="f_utm_medium">
@@ -431,23 +531,30 @@ CSS;
 
                 <div class="mb-4">
                   <label for="inp_name" class="form-label text-white fw-bold">1. Nama Lengkap Pemesan</label>
-                  <input id="inp_name" type="text" name="name" class="form-control bg-dark text-white border-secondary rounded-0" required maxlength="80" placeholder="Budi Santoso" autocomplete="name">
+                  <input id="inp_name" type="text" name="name"
+                    class="form-control bg-dark text-white border-secondary rounded-0" required maxlength="80"
+                    placeholder="Budi Santoso" autocomplete="name">
                 </div>
 
                 <div class="mb-4">
                   <label for="inp_address" class="form-label text-white fw-bold">2. Alamat Lengkap Pemesan</label>
-                  <textarea id="inp_address" name="address" class="form-control bg-dark text-white border-secondary rounded-0" rows="3" required maxlength="300" placeholder="Jalan, Kelurahan, Kecamatan, Kota, Provinsi, Kodepos"></textarea>
+                  <textarea id="inp_address" name="address"
+                    class="form-control bg-dark text-white border-secondary rounded-0" rows="3" required maxlength="300"
+                    placeholder="Jalan, Kelurahan, Kecamatan, Kota, Provinsi, Kodepos"></textarea>
                 </div>
 
                 <div class="mb-4">
                   <label for="inp_phone" class="form-label text-white fw-bold">3. Nomor Telepon (Whatsapp)</label>
-                  <input id="inp_phone" type="tel" name="phone" class="form-control bg-dark text-white border-secondary rounded-0 mb-1" required maxlength="20" placeholder="0812xxxxxxx" autocomplete="tel">
+                  <input id="inp_phone" type="tel" name="phone"
+                    class="form-control bg-dark text-white border-secondary rounded-0 mb-1" required maxlength="20"
+                    placeholder="0812xxxxxxx" autocomplete="tel">
                   <div class="form-text text-secondary">(Untuk konfirmasi & pengiriman invoice)</div>
                 </div>
 
                 <div class="mb-4">
                   <label for="inp_design" class="form-label text-white fw-bold">Pilih Desain (Edisi 1)</label>
-                  <select id="inp_design" name="design" class="form-select bg-dark text-white border-secondary rounded-0" required>
+                  <select id="inp_design" name="design"
+                    class="form-select bg-dark text-white border-secondary rounded-0" required>
                     <option value="">— Pilih desain —</option>
                     <option value="Ichigo">Kamen Rider Ichigo</option>
                     <option value="Black">Kamen Rider Black</option>
@@ -458,7 +565,8 @@ CSS;
                 <div class="row g-3 mb-4">
                   <div class="col-md-8">
                     <label for="inp_size" class="form-label text-white fw-bold">4. Ukuran Jersey</label>
-                    <select id="inp_size" name="size" class="form-select bg-dark text-white border-secondary rounded-0" required>
+                    <select id="inp_size" name="size" class="form-select bg-dark text-white border-secondary rounded-0"
+                      required>
                       <option value="">— Pilih ukuran —</option>
                       <option value="S">S (49x70CM)</option>
                       <option value="M">M (51x72CM)</option>
@@ -472,13 +580,16 @@ CSS;
                   </div>
                   <div class="col-md-4">
                     <label for="inp_qty" class="form-label text-white fw-bold">Jumlah</label>
-                    <input id="inp_qty" type="number" name="qty" class="form-control bg-dark text-white border-secondary rounded-0" min="1" max="20" value="1" required>
+                    <input id="inp_qty" type="number" name="qty"
+                      class="form-control bg-dark text-white border-secondary rounded-0" min="1" max="20" value="1"
+                      required>
                   </div>
                 </div>
 
                 <div class="mb-4">
                   <label for="inp_note" class="form-label text-white fw-bold">5. Note (Catatan Tambahan)</label>
-                  <textarea id="inp_note" name="note" class="form-control bg-dark text-white border-secondary rounded-0" rows="2" maxlength="300" placeholder="Misal: packing aman, request warna, dll."></textarea>
+                  <textarea id="inp_note" name="note" class="form-control bg-dark text-white border-secondary rounded-0"
+                    rows="2" maxlength="300" placeholder="Misal: packing aman, request warna, dll."></textarea>
                 </div>
 
                 <!-- Payment Info Box -->
@@ -489,14 +600,17 @@ CSS;
                   <div class="text-secondary small mb-3">(SERTAKAN BUKTI TRANSFER PEMBAYARAN)</div>
 
                   <div class="border-top border-secondary pt-3 mt-3">
-                    <div class="text-white mb-2"><strong>Nomor WA Konfirmasi:</strong> <span class="text-brand-green">0816-1726-0666</span></div>
+                    <div class="text-white mb-2"><strong>Nomor WA Konfirmasi:</strong> <span
+                        class="text-brand-green">0816-1726-0666</span></div>
                     <label for="inp_proof" class="form-label fw-bold text-white">Upload Bukti Pembayaran</label>
-                    <input id="inp_proof" type="file" name="payment_proof" accept="image/*" class="form-control bg-dark text-white border-secondary rounded-0" required>
+                    <input id="inp_proof" type="file" name="payment_proof" accept="image/*"
+                      class="form-control bg-dark text-white border-secondary rounded-0" required>
                   </div>
                 </div>
 
                 <div class="form-check mb-4">
-                  <input class="form-check-input bg-dark border-secondary" type="checkbox" id="agree_dp" name="agree_dp" value="1" required>
+                  <input class="form-check-input bg-dark border-secondary" type="checkbox" id="agree_dp" name="agree_dp"
+                    value="1" required>
                   <label class="form-check-label text-secondary small" for="agree_dp">
                     Saya setuju DP minimal <?= idr(PRICE_DP) ?> / jersey dan memahami timeline produksi.
                   </label>
@@ -507,7 +621,9 @@ CSS;
                 </button>
 
                 <div class="text-center text-secondary small">
-                  Butuh panduan? <a href="https://wa.me/<?= h(WA_NUMBER) ?>" class="text-brand-green text-decoration-none fw-bold" target="_blank" rel="noopener noreferrer" data-wa data-track="wa_contact">WhatsApp Admin</a>
+                  Butuh panduan? <a href="https://wa.me/<?= h(WA_NUMBER) ?>"
+                    class="text-brand-green text-decoration-none fw-bold" target="_blank" rel="noopener noreferrer"
+                    data-wa data-track="wa_contact">WhatsApp Admin</a>
                 </div>
               </form>
             </div>
@@ -520,21 +636,25 @@ CSS;
     <section class="py-5 bg-dark border-top border-dark" id="faq">
       <div class="container">
         <h2 class="display-6 font-rajdhani fw-bold text-white text-center mb-5">FAQ</h2>
-        
+
         <div class="row justify-content-center">
           <div class="col-lg-8">
             <div class="accordion accordion-dark" id="faqAccordion">
-              
+
               <!-- FAQ 1 -->
               <div class="accordion-item bg-transparent border-secondary mb-3 rounded-0">
                 <h2 class="accordion-header" id="headingOne">
-                  <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                  <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false"
+                    aria-controls="collapseOne">
                     Berapa harga jersey?
                   </button>
                 </h2>
-                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                  data-bs-parent="#faqAccordion">
                   <div class="accordion-body text-secondary border-top border-secondary">
-                    Harga promo 1 jersey IDR 225.000, paket doble 2 jersey IDR 400.000. DP minimal IDR 100.000 per jersey. Ongkir ditanggung pemesan.
+                    Harga promo 1 jersey IDR 225.000, paket doble 2 jersey IDR 400.000. DP minimal IDR 100.000 per
+                    jersey. Ongkir ditanggung pemesan.
                   </div>
                 </div>
               </div>
@@ -542,13 +662,17 @@ CSS;
               <!-- FAQ 2 -->
               <div class="accordion-item bg-transparent border-secondary mb-3 rounded-0">
                 <h2 class="accordion-header" id="headingTwo">
-                  <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false"
+                    aria-controls="collapseTwo">
                     Kapan periode pemesanan dan produksi?
                   </button>
                 </h2>
-                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                  data-bs-parent="#faqAccordion">
                   <div class="accordion-body text-secondary border-top border-secondary">
-                    Pre-order: 27 Februari – 08 Maret 2026. Produksi: 09 – 21 Maret 2026. Pengiriman dilakukan setelah produksi selesai.
+                    Pre-order: 27 Februari – 08 Maret 2026. Produksi: 09 – 21 Maret 2026. Pengiriman dilakukan setelah
+                    produksi selesai.
                   </div>
                 </div>
               </div>
@@ -556,13 +680,17 @@ CSS;
               <!-- FAQ 3 -->
               <div class="accordion-item bg-transparent border-secondary mb-3 rounded-0">
                 <h2 class="accordion-header" id="headingThree">
-                  <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                  <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false"
+                    aria-controls="collapseThree">
                     Apa saja spesifikasi jersey?
                   </button>
                 </h2>
-                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
+                  data-bs-parent="#faqAccordion">
                   <div class="accordion-body text-secondary border-top border-secondary">
-                    Material Andromax Sublimation; Crest 3D Tatami/Polyflock; Apparel Crest 3D HD; Collar/Cuff Rib Knit; Size Tag DTF.
+                    Material Andromax Sublimation; Crest 3D Tatami/Polyflock; Apparel Crest 3D HD; Collar/Cuff Rib Knit;
+                    Size Tag DTF.
                   </div>
                 </div>
               </div>
@@ -570,11 +698,14 @@ CSS;
               <!-- FAQ 4 -->
               <div class="accordion-item bg-transparent border-secondary mb-3 rounded-0">
                 <h2 class="accordion-header" id="headingFour">
-                  <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                  <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false"
+                    aria-controls="collapseFour">
                     Bagaimana cara pemesanan?
                   </button>
                 </h2>
-                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
+                  data-bs-parent="#faqAccordion">
                   <div class="accordion-body text-secondary border-top border-secondary">
                     Isi form pemesanan di halaman ini, lalu lanjutkan konfirmasi dan pembayaran DP via WhatsApp.
                   </div>
@@ -584,13 +715,17 @@ CSS;
               <!-- FAQ 5 -->
               <div class="accordion-item bg-transparent border-secondary mb-3 rounded-0">
                 <h2 class="accordion-header" id="headingFive">
-                  <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                  <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false"
+                    aria-controls="collapseFive">
                     Apakah bisa request ukuran custom?
                   </button>
                 </h2>
-                <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
+                <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive"
+                  data-bs-parent="#faqAccordion">
                   <div class="accordion-body text-secondary border-top border-secondary">
-                    Ukuran yang tersedia S, M, L, XL, XXL, 3XL, 4XL, 5XL. Untuk request khusus, lengkapi catatan (note) saat mengisi form.
+                    Ukuran yang tersedia S, M, L, XL, XXL, 3XL, 4XL, 5XL. Untuk request khusus, lengkapi catatan (note)
+                    saat mengisi form.
                   </div>
                 </div>
               </div>
@@ -603,12 +738,19 @@ CSS;
     </section>
 
     <!-- ── SEO Content ── -->
-    <section class="py-5 border-top border-dark" id="seo-content" style="background: linear-gradient(180deg, #0a0a0e 0%, #060608 100%);">
+    <section class="py-5 border-top border-dark" id="seo-content"
+      style="background: linear-gradient(180deg, #0a0a0e 0%, #060608 100%);">
       <div class="container" style="max-width: 800px;">
-        <h2 class="h5 font-rajdhani fw-bold text-secondary mb-3">Jersey Kamen Rider untuk Penggemar Tokusatsu Indonesia</h2>
+        <h2 class="h5 font-rajdhani fw-bold text-secondary mb-3">Jersey Kamen Rider untuk Penggemar Tokusatsu Indonesia
+        </h2>
         <div class="text-secondary small" style="line-height: 1.8;">
-          <p class="mb-3">Jersey Kamen Rider merupakan apparel yang diminati komunitas tokusatsu Indonesia. <strong>Jersey Series Fantasy Kamen Rider Ichigo &amp; Black (Edisi 1)</strong> terinspirasi era 90an dan film <strong>Satria Baja Hitam</strong>, diwujudkan menjadi jersey sporty premium bergaya jagoan masa kecil.</p>
-          <p class="mb-0">Diproduksi oleh <strong>Ozverligsportwear</strong> berkolaborasi dengan <strong>Kemalikart</strong> — mengutamakan tampilan modern, cocok harian, komunitas, maupun riding. Sistem <strong>pre-order</strong> memastikan produksi terjadwal dan kualitas terjaga.</p>
+          <p class="mb-3">Jersey Kamen Rider merupakan apparel yang diminati komunitas tokusatsu Indonesia.
+            <strong>Jersey Series Fantasy Kamen Rider Ichigo &amp; Black (Edisi 1)</strong> terinspirasi era 90an dan
+            film <strong>Satria Baja Hitam</strong>, diwujudkan menjadi jersey sporty premium bergaya jagoan masa kecil.
+          </p>
+          <p class="mb-0">Diproduksi oleh <strong>Ozverligsportwear</strong> berkolaborasi dengan
+            <strong>Kemalikart</strong> — mengutamakan tampilan modern, cocok harian, komunitas, maupun riding. Sistem
+            <strong>pre-order</strong> memastikan produksi terjadwal dan kualitas terjaga.</p>
         </div>
       </div>
     </section>
@@ -633,22 +775,93 @@ CSS;
   <!-- ── Sticky CTA (mobile) ── -->
   <div class="fixed-bottom d-md-none bg-dark border-top border-dark p-2" style="z-index: 1040;">
     <div class="container d-flex gap-2">
-      <a class="btn btn-outline-light flex-grow-1 py-2 font-rajdhani fw-bold text-uppercase" href="https://wa.me/<?= h(WA_NUMBER) ?>" target="_blank" rel="noopener noreferrer" data-wa data-track="wa_contact">WhatsApp</a>
-      <a class="btn btn-red flex-grow-1 py-2 font-rajdhani fw-bold text-uppercase" href="#order" data-track="initiate_checkout">Pesan</a>
+      <a class="btn btn-outline-light flex-grow-1 py-2 font-rajdhani fw-bold text-uppercase"
+        href="https://wa.me/<?= h(WA_NUMBER) ?>" target="_blank" rel="noopener noreferrer" data-wa
+        data-track="wa_contact">WhatsApp</a>
+      <a class="btn btn-red flex-grow-1 py-2 font-rajdhani fw-bold text-uppercase" href="#order"
+        data-track="initiate_checkout">Pesan</a>
     </div>
   </div>
 
   <!-- Bootstrap JS (bundle includes Popper) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmxc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmxc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
 
   <!-- Custom logic -->
-  <script src="<?= h(BASE_PATH) ?>/assets/js/app.js" defer></script>
+  <script>
+    /**
+     * Minimal JS (UTM & Countdown)
+     */
+    (function () {
+      // Capture UTMs
+      const params = new URLSearchParams(location.search);
+      const fields = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'gclid', 'wbraid', 'gbraid'];
+
+      fields.forEach(f => {
+        if (params.has(f)) sessionStorage.setItem(f, params.get(f));
+      });
+      if (document.referrer && !sessionStorage.getItem('referrer')) {
+        sessionStorage.setItem('referrer', document.referrer);
+      }
+
+      // Populate hidden form on dom load
+      document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('orderForm');
+        if (form) {
+          fields.forEach(f => {
+            let val = sessionStorage.getItem(f);
+            let inp = document.getElementById('f_' + f);
+            if (inp && val) inp.value = val;
+          });
+          let ref = sessionStorage.getItem('referrer');
+          if (ref && document.getElementById('f_referrer')) {
+            document.getElementById('f_referrer').value = ref;
+          }
+        }
+
+        // Countdown Timer logic
+        const cdWrap = document.getElementById('promo-cd');
+        const endedWrap = document.getElementById('promo-ended');
+        if (!cdWrap || typeof PROMO_DEADLINE === 'undefined') return;
+
+        const end = new Date(PROMO_DEADLINE).getTime();
+
+        function tick() {
+          const now = new Date().getTime();
+          const diff = end - now;
+
+          if (diff <= 0) {
+            cdWrap.style.display = 'none';
+            if (endedWrap) endedWrap.style.display = 'block';
+            return;
+          }
+
+          const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+          const eh = document.getElementById('cd-h');
+          const em = document.getElementById('cd-m');
+          const es = document.getElementById('cd-s');
+
+          if (eh) eh.innerText = h.toString().padStart(2, '0');
+          if (em) em.innerText = m.toString().padStart(2, '0');
+          if (es) es.innerText = s.toString().padStart(2, '0');
+
+          setTimeout(tick, 1000);
+        }
+        tick();
+      });
+    })();
+  </script>
 
   <style>
     /* Utility class for BS5 Accordion custom styling */
     .accordion-button::after {
       filter: invert(1) grayscale(100%) brightness(200%);
     }
+
     .accordion-button:not(.collapsed)::after {
       filter: invert(1) grayscale(100%) brightness(200%);
     }

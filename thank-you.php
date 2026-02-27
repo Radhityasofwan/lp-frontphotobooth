@@ -40,7 +40,86 @@ $redirectDelay = 8; // Waktu tunggu dalam detik
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <link rel="stylesheet" href="<?= h(defined('BASE_PATH') ? BASE_PATH : '') ?>/assets/css/style.css">
+
+  <style>
+    /* 
+    * Minimal Overrides (Bootstrap 5 controls the rest)
+    * Ozverligsportwear x Kemalikart
+    */
+
+    :root {
+      --bg-dark: #060608;
+      --bg-card: #0e0e12;
+      --brand-red: #f0131e;
+      --brand-green: #00ff66;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: #f8f9fa;
+      /* BS light */
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .font-rajdhani {
+      font-family: 'Rajdhani', system-ui, sans-serif;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    /* Red accents */
+    .text-brand-red {
+      color: var(--brand-red) !important;
+    }
+
+    .bg-brand-red {
+      background-color: var(--brand-red) !important;
+      color: #fff;
+    }
+
+    .border-brand-red {
+      border-color: var(--brand-red) !important;
+    }
+
+    /* Dark cards */
+    .card-dark {
+      background-color: var(--bg-card);
+      border: 1px solid #222;
+    }
+
+    /* Custom Btn */
+    .btn-red {
+      background-color: var(--brand-red);
+      color: #fff;
+      border: 1px solid var(--brand-red);
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .btn-red:hover {
+      background-color: #d00f18;
+      color: #fff;
+    }
+
+    /* Skew util */
+    .skew-btn {
+      transform: skewX(-8deg);
+    }
+
+    .skew-btn>span {
+      display: inline-block;
+      transform: skewX(8deg);
+    }
+  </style>
 
   <!-- Tracking config -->
   <script>
@@ -173,8 +252,23 @@ $redirectDelay = 8; // Waktu tunggu dalam detik
       }
     })();
   </script>
+  <script>
+    /**
+     * Minimal JS (UTM & Countdown)
+     */
+    (function () {
+      // Capture UTMs
+      const params = new URLSearchParams(location.search);
+      const fields = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'gclid', 'wbraid', 'gbraid'];
 
-  <script src="<?= h(defined('BASE_PATH') ? BASE_PATH : '') ?>/assets/js/app.js" defer></script>
+      fields.forEach(f => {
+        if (params.has(f)) sessionStorage.setItem(f, params.get(f));
+      });
+      if (document.referrer && !sessionStorage.getItem('referrer')) {
+        sessionStorage.setItem('referrer', document.referrer);
+      }
+    })();
+  </script>
 </body>
 
 </html>
