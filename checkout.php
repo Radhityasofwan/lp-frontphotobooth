@@ -335,6 +335,104 @@ CSS;
     .form-control::placeholder {
       color: rgba(255, 255, 255, 0.3) !important;
     }
+
+    /* Floating WA Widget */
+    .float-wa {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      background-color: #25d366;
+      color: #FFF;
+      border-radius: 50px;
+      text-align: center;
+      font-size: 30px;
+      box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+      z-index: 1050;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .float-wa:hover,
+    .float-wa:focus {
+      background-color: #128C7E;
+      color: #fff;
+      transform: translateY(-5px);
+      box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+    }
+
+    @media(max-width: 767px) {
+      .float-wa {
+        bottom: 80px;
+        /* offset for mobile sticky CTA */
+      }
+    }
+
+    /* WA Modal Adjustments */
+    .wa-modal-header {
+      background-color: #075e54;
+      color: white;
+      border-bottom: none;
+    }
+
+    .wa-modal-body {
+      background-color: #e5ddd5;
+      padding: 1.5rem;
+    }
+
+    .wa-chat-bubble {
+      background: white;
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      border-top-left-radius: 0;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      margin-bottom: 1rem;
+      position: relative;
+      color: #303030;
+      font-size: 0.95rem;
+    }
+
+    .wa-chat-bubble::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -10px;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 0 10px 10px 0;
+      border-color: transparent white transparent transparent;
+    }
+
+    .wa-reply-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: #dcf8c6;
+      border: 1px solid #c8e6b1;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      color: #303030;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .wa-reply-btn:hover {
+      background: #c8e6b1;
+      color: #202020;
+    }
+
+    .wa-reply-btn i {
+      color: #128C7E;
+      margin-right: 0.5rem;
+    }
   </style>
 
   <!-- Preload hero image -->
@@ -692,6 +790,73 @@ CSS;
         data-track="wa_contact">WhatsApp</a>
       <a class="btn btn-red flex-grow-1 py-2 font-rajdhani fw-bold text-uppercase" href="#order"
         data-track="initiate_checkout">Pesan</a>
+    </div>
+  </div>
+
+  <!-- ── Floating WhatsApp Button & Modal ── -->
+  <button type="button" class="float-wa border-0" data-bs-toggle="modal" data-bs-target="#waModal"
+    aria-label="Chat WhatsApp">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-whatsapp"
+      viewBox="0 0 16 16">
+      <path
+        d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232" />
+    </svg>
+  </button>
+
+  <!-- WA Modal -->
+  <div class="modal fade" id="waModal" tabindex="-1" aria-labelledby="waModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content border-0 overflow-hidden shadow">
+        <div class="modal-header wa-modal-header py-3">
+          <div class="d-flex align-items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-whatsapp"
+              viewBox="0 0 16 16">
+              <path
+                d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232" />
+            </svg>
+            <div>
+              <h5 class="modal-title fs-6 font-rajdhani fw-bold" id="waModalLabel">CS Ozverligsportwear</h5>
+              <div class="small" style="font-size: 0.75rem; opacity: 0.8;">Online</div>
+            </div>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body wa-modal-body">
+          <div class="wa-chat-bubble fw-bold">
+            Halo! Ada yang bisa kami bantu terkait pesanan Jersey Kamen Rider Anda? Silakan pilih opsi di bawah ini:
+          </div>
+
+          <div class="d-flex flex-column gap-2">
+            <a href="https://wa.me/<?= h(WA_NUMBER) ?>?text=Halo%20Admin,%20saya%20ingin%20bertanya%20detail%20ukuran%20(size%20chart)%20Jersey%20Kamen%20Rider."
+              class="wa-reply-btn" target="_blank" rel="noopener">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-rulers me-2" viewBox="0 0 16 16">
+                <path
+                  d="M1 0a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h5v-1H2v-1h4v-1H4v-1h2v-1H2v-1h4V9H4V8h2V7H2V6h4V2h1v4h1V4h1v2h1V2h1v4h1V4h1v2h1V2h1v4h1V1a1 1 0 0 0-1-1z" />
+              </svg>
+              Konsultasi Ukuran (Size)
+            </a>
+            <a href="https://wa.me/<?= h(WA_NUMBER) ?>?text=Halo%20Admin,%20saya%20butuh%20bantuan%20cara%20pemesanan%20/%20pengisian%20form%20Jersey%20Kamen%20Rider."
+              class="wa-reply-btn" target="_blank" rel="noopener">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-cart-question me-2" viewBox="0 0 16 16">
+                <path
+                  d="M11.5 5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zM3 14a2 2 0 1 1 0 4 2 2 0 0 1 0-4m10 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0M6.5 7h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1 0-1" />
+              </svg>
+              Cara Pesan / Form
+            </a>
+            <a href="https://wa.me/<?= h(WA_NUMBER) ?>?text=Halo%20Admin,%20saya%20ingin%20bertanya%20seputar%20pengiriman%20dan%20produksi%20Jersey%20Kamen%20Rider."
+              class="wa-reply-btn" target="_blank" rel="noopener">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-truck me-2" viewBox="0 0 16 16">
+                <path
+                  d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5v-7zm1.294 7.456A1.999 1.999 0 0 1 4.732 11h5.536a2.01 2.01 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456zM12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12v4zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+              </svg>
+              Jadwal Produksi & Ongkir
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
