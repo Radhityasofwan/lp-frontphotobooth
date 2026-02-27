@@ -8,7 +8,6 @@
 // TIMEZONE
 // ─────────────────────────────────────────────
 date_default_timezone_set('Asia/Jakarta');
-session_start();
 
 // ─────────────────────────────────────────────
 // BRAND
@@ -56,18 +55,24 @@ define('UPLOAD_MAX_SIZE', 5 * 1024 * 1024); // 5MB  // minimum down-payment per 
 // ─────────────────────────────────────────────
 // TRACKING IDs  (fill before going live)
 // ─────────────────────────────────────────────
-define('GA4_ID', '');   // e.g. 'G-XXXXXXXXXX'
-define('GADS_AW_ID', '');   // e.g. 'AW-XXXXXXXXX'
-define('GADS_CONV_LABEL', '');   // e.g. 'AbCdEfGhIj'
-define('META_PIXEL_ID', '');   // e.g. '123456789012345'
+define('GA4_ID', defined('LOCAL_GA4_ID') ? LOCAL_GA4_ID : '');
+define('GADS_AW_ID', defined('LOCAL_GADS_AW_ID') ? LOCAL_GADS_AW_ID : '');
+define('GADS_CONV_LABEL', defined('LOCAL_GADS_CONV_LABEL') ? LOCAL_GADS_CONV_LABEL : '');
+define('META_PIXEL_ID', defined('LOCAL_META_PIXEL_ID') ? LOCAL_META_PIXEL_ID : '');
+
+// Load local secrets if exists (DB + Tracking)
+if (file_exists(__DIR__ . '/config.local.php')) {
+    require_once __DIR__ . '/config.local.php';
+}
 
 // ─────────────────────────────────────────────
 // DATABASE (PDO)
 // ─────────────────────────────────────────────
-define('DB_HOST', 'localhost');
-define('DB_USER', 'u830768701_ozverlig');
-define('DB_PASS', 'Merdeka313');
-define('DB_NAME', 'u830768701_kamenriders');
+// Fallback defaults if config.local.php is missing (Not recommended for Prod)
+defined('DB_HOST') or define('DB_HOST', 'localhost');
+defined('DB_USER') or define('DB_USER', 'root');
+defined('DB_PASS') or define('DB_PASS', '');
+defined('DB_NAME') or define('DB_NAME', 'kamenriders');
 
 try {
     $pdo = new PDO(
@@ -138,6 +143,9 @@ function asset(string $path): string
 {
     $base = rtrim(BASE_URL, '/');
     $filePath = __DIR__ . '/' . ltrim($path, '/');
-    $v = file_exists($filePath) ? filemtime($filePath) : time();
-    return $base . '/' . ltrim($path, '/') . '?v=' . $v;
+    $v = file_exists($filePath) ? filemtime($filePath) : 0;
+    if ($v === 0) {
+        error_log('[' . date('c') . '] asset missing: ' . $filePath . PHP_EOL, 3, __DIR__ . '/storage/events.log');
+    }
+    return $base . '/' . ltrim($path, '/') . ($v > 0 ? '?v=' . $v : '');
 }

@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS leads (
     total_price INT NOT NULL DEFAULT 0,
     note TEXT,
     payment_proof VARCHAR(255),
+    order_token VARCHAR(64),
     status ENUM('pending', 'contacted', 'paid', 'cancelled') DEFAULT 'pending',
     utm_source VARCHAR(50),
     utm_medium VARCHAR(50),

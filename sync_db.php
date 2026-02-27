@@ -59,6 +59,7 @@ CREATE TABLE IF NOT EXISTS `leads` (
     `total_price`   INT          NOT NULL DEFAULT 0,
     `note`          TEXT,
     `payment_proof` VARCHAR(255),
+    `order_token`   VARCHAR(64),
     `status`        ENUM('pending','contacted','paid','cancelled') DEFAULT 'pending',
     `utm_source`    VARCHAR(100),
     `utm_medium`    VARCHAR(100),
@@ -79,6 +80,7 @@ CREATE TABLE IF NOT EXISTS `leads` (
 $columns_to_add = [
     ['leads', 'total_price', "INT NOT NULL DEFAULT 0 AFTER `quantity`"],
     ['leads', 'payment_proof', "VARCHAR(255) AFTER `note`"],
+    ['leads', 'order_token', "VARCHAR(64) AFTER `payment_proof`"],
     ['leads', 'utm_content', "VARCHAR(255) AFTER `utm_campaign`"],
     ['leads', 'utm_term', "VARCHAR(255) AFTER `utm_content`"],
     ['leads', 'wbraid', "VARCHAR(255) AFTER `gclid`"],

@@ -4,6 +4,7 @@
  * Sanitizes, validates, saves to CSV + MySQL (if available), redirects to thank-you
  */
 require_once __DIR__ . '/config.php';
+session_start();
 
 header('Content-Type: text/html; charset=utf-8');
 
@@ -131,6 +132,14 @@ if (in_array(strtoupper($size), ['XXL', '3XL', '4XL', '5XL'])) {
 }
 $total_price = $base_price + $surcharge;
 
+// ─── Generate/Read Token ─────────────────────────────────────────────────────
+$orderToken = $_COOKIE['order_session'] ?? '';
+if (!$orderToken) {
+  $orderToken = bin2hex(random_bytes(32));
+  // Set cookie for 30 days
+  setcookie('order_session', $orderToken, time() + 2592000, '/', '', isset($_SERVER['HTTPS']), true);
+}
+
 // ─── Save to CSV (fallback + primary log) ─────────────────────────────────────
 $csvRow = array_map(function ($v) {
   // Prevent CSV injection: prefix dangerous chars
@@ -158,6 +167,7 @@ $csvRow = array_map(function ($v) {
   $tracking['wbraid'],
   $tracking['gbraid'],
   $tracking['referrer'],
+  $orderToken,
 ]);
 
 $csvExists = file_exists(LEADS_CSV);
@@ -184,50 +194,96 @@ if ($fp) {
       'gclid',
       'wbraid',
       'gbraid',
-      'referrer'
+      'referrer',
+      'order_token'
     ]);
   }
   fputcsv($fp, $csvRow);
   fclose($fp);
 }
 
-// ─── Save to MySQL (if available) ────────────────────────────────────────────
+// ─── Save/Update MySQL (UPSERT logic via token) ──────────────────────────────
 if ($pdo) {
   try {
-    $stmt = $pdo->prepare("
-            INSERT INTO leads
-              (name, phone, address, design, size, quantity, total_price, note, payment_proof, status,
-               utm_source, utm_medium, utm_campaign, utm_content, utm_term,
-               fbclid, gclid, wbraid, gbraid, referrer)
-            VALUES (?,?,?,?,?,?,?,?,?,'pending',?,?,?,?,?,?,?,?,?,?)
-        ");
-    $stmt->execute([
-      $name,
-      $phone_norm,
-      $address,
-      $design,
-      $size,
-      $qty,
-      $total_price,
-      $note,
-      $paymentProofFile,
-      $tracking['utm_source'],
-      $tracking['utm_medium'],
-      $tracking['utm_campaign'],
-      $tracking['utm_content'],
-      $tracking['utm_term'],
-      $tracking['fbclid'],
-      $tracking['gclid'],
-      $tracking['wbraid'],
-      $tracking['gbraid'],
-      $tracking['referrer'],
-    ]);
-  } catch (PDOException $e) {
-    log_event('MySQL insert failed: ' . $e->getMessage());
-  }
-}
+    $existingOrder = false;
+    if ($orderToken) {
+      $stmtCheck = $pdo->prepare("SELECT id FROM leads WHERE order_token = ? LIMIT 1");
+      $stmtCheck->execute([$orderToken]);
+      $existingOrder = $stmtCheck->fetchColumn();
+    }
 
-log_event("New lead: $name | $phone_norm | $design | $size x$qty");
+    if ($existingOrder) {
+      // OVERWRITE existing order
+      $stmt = $pdo->prepare("
+          UPDATE leads SET
+            name=?, phone=?, address=?, design=?, size=?, quantity=?, total_price=?, note=?, payment_proof=?,
+            utm_source=?, utm_medium=?, utm_campaign=?, utm_content=?, utm_term=?,
+            fbclid=?, gclid=?, wbraid=?, gbraid=?, referrer=?, updated_at=NOW()
+          WHERE id=?
+      ");
+      $stmt->execute([
+        $name,
+        $phone_norm,
+        $address,
+        $design,
+        $size,
+        $qty,
+        $total_price,
+        $note,
+        $paymentProofFile,
+        $tracking['utm_source'],
+        $tracking['utm_medium'],
+        $tracking['utm_campaign'],
+        $tracking['utm_content'],
+        $tracking['utm_term'],
+        $tracking['fbclid'],
+        $tracking['gclid'],
+        $tracking['wbraid'],
+        $tracking['gbraid'],
+        $tracking['referrer'],
+        $existingOrder
+      ]);
+      log_event("Updated lead id {$existingOrder}: $name | $design x$qty");
+    } else {
+      // NEW order
+      $stmt = $pdo->prepare("
+              INSERT INTO leads
+                (name, phone, address, design, size, quantity, total_price, note, payment_proof, order_token, status,
+                 utm_source, utm_medium, utm_campaign, utm_content, utm_term,
+                 fbclid, gclid, wbraid, gbraid, referrer)
+              VALUES (?,?,?,?,?,?,?,?,?,?,'pending',?,?,?,?,?,?,?,?,?,?)
+          ");
+      $stmt->execute([
+        $name,
+        $phone_norm,
+        $address,
+        $design,
+        $size,
+        $qty,
+        $total_price,
+        $note,
+        $paymentProofFile,
+        $orderToken,
+        $tracking['utm_source'],
+        $tracking['utm_medium'],
+        $tracking['utm_campaign'],
+        $tracking['utm_content'],
+        $tracking['utm_term'],
+        $tracking['fbclid'],
+        $tracking['gclid'],
+        $tracking['wbraid'],
+        $tracking['gbraid'],
+        $tracking['referrer'],
+      ]);
+      log_event("New lead: $name | $phone_norm | $design | $size x$qty");
+    }
+  } catch (PDOException $e) {
+    log_event("MySQL transaction failed: " . $e->getMessage());
+  }
+} else {
+  // If DB offline, log basic to file
+  log_event("New lead recorded offline: $name | $phone_norm | $design | $size x$qty");
+}
 
 // ─── Build WhatsApp message ───────────────────────────────────────────────────
 $waMsg = implode("\n", [
@@ -255,6 +311,7 @@ $_SESSION['last_order'] = [
   'design' => $design,
   'size' => $size,
   'qty' => $qty,
+  'total_price' => $total_price,
   'wa' => $waUrl,
 ];
 

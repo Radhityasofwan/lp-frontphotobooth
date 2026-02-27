@@ -4,6 +4,7 @@
  * Reads from CSV, filter by status, search by name/phone, export CSV, update status
  */
 require_once __DIR__ . '/config.php';
+session_start();
 
 if (empty($_SESSION['admin_ok'])) {
     header('Location: ' . BASE_URL . '/login.php');

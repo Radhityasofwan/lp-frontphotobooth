@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/config.php';
+session_start();
 
 // Default admin credentials (change immediately in production!)
 define('ADMIN_USER', 'admin');

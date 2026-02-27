@@ -17,6 +17,11 @@ RewriteRule ^ /%1 [R=301,L]
 # ── Protect storage directory ──
 RewriteRule ^storage(/|$) - [F,L]
 
+# ── Block secret/local config files and backups ──
+<FilesMatch "^(config\.local\.php|.*\.bak\..*)$">
+  Require all denied
+</FilesMatch>
+
 # ── PHP settings (shared hosting safe) ──
 <IfModule mod_php8.c>
   php_flag display_errors Off

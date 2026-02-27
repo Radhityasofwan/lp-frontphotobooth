@@ -1,6 +1,29 @@
 <?php
 require_once __DIR__ . '/config.php';
 
+// Check for existing session token
+$orderToken = $_COOKIE['order_session'] ?? '';
+$myOrder = null;
+
+if ($orderToken && $pdo) {
+  try {
+    $stmt = $pdo->prepare("SELECT * FROM leads WHERE order_token = ? LIMIT 1");
+    $stmt->execute([$orderToken]);
+    $myOrder = $stmt->fetch();
+  } catch (PDOException $e) {
+    $myOrder = null;
+  }
+}
+
+// Prefill values
+$f_name = $myOrder ? $myOrder['name'] : '';
+$f_phone = $myOrder ? $myOrder['phone'] : '';
+$f_address = $myOrder ? $myOrder['address'] : '';
+$f_design = $myOrder ? $myOrder['design'] : '';
+$f_size = $myOrder ? $myOrder['size'] : '';
+$f_qty = $myOrder ? $myOrder['quantity'] : '1';
+$f_note = $myOrder ? $myOrder['note'] : '';
+
 $canonical = rtrim(BASE_URL, '/') . '/';
 $ogImage = asset('assets/img/og-cover.webp');
 
@@ -297,15 +320,20 @@ CSS;
   <?php if (!empty(META_PIXEL_ID)): ?>
     <!-- Meta Pixel Code -->
     <script>
-      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-      n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-      document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      !function (f, b, e, v, n, t, s) {
+        if (f.fbq) return; n = f.fbq = function () {
+          n.callMethod ?
+            n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+        }; if (!f._fbq) f._fbq = n;
+        n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = []; t = b.createElement(e); t.async = !0;
+        t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s)
+      }(window,
+        document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
       fbq('init', '<?= h(META_PIXEL_ID) ?>');
       fbq('track', 'PageView');
     </script>
-    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=<?= h(META_PIXEL_ID) ?>&ev=PageView&noscript=1"/></noscript>
+    <noscript><img height="1" width="1" style="display:none"
+        src="https://www.facebook.com/tr?id=<?= h(META_PIXEL_ID) ?>&ev=PageView&noscript=1" /></noscript>
   <?php endif; ?>
 
   <?php if (!empty(GA4_ID)): ?>
@@ -313,11 +341,11 @@ CSS;
     <script async src="https://www.googletagmanager.com/gtag/js?id=<?= h(GA4_ID) ?>"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
+      function gtag() { dataLayer.push(arguments); }
       gtag('js', new Date());
       gtag('config', '<?= h(GA4_ID) ?>');
       <?php if (!empty(GADS_AW_ID)): ?>
-      gtag('config', '<?= h(GADS_AW_ID) ?>');
+        gtag('config', '<?= h(GADS_AW_ID) ?>');
       <?php endif; ?>
     </script>
   <?php endif; ?>
@@ -359,7 +387,8 @@ CSS;
               <span class="badge bg-dark border border-secondary">Edisi 1</span>
             </div>
 
-            <h1 class="display-4 fw-bold mb-3 text-white text-center text-lg-start">Jersey <span class="text-gradient">Kamen Rider</span><br>Ichigo &amp; Black</h1>
+            <h1 class="display-4 fw-bold mb-3 text-white text-center text-lg-start">Jersey <span
+                class="text-gradient">Kamen Rider</span><br>Ichigo &amp; Black</h1>
 
             <p class="lead text-secondary mb-4 text-center text-lg-start">
               Nostalgia di tahun 90an, terinspirasi dari film <strong>Satria Baja Hitam</strong> — jersey sporty premium
@@ -601,6 +630,21 @@ CSS;
       </div>
     </section>
 
+    <!-- ── SIZE CHART ── -->
+    <section class="py-5" id="size-chart" style="background: linear-gradient(180deg, #060608 0%, #0a0a0e 100%);">
+      <div class="container text-center">
+        <h2 class="display-6 font-rajdhani fw-bold text-white mb-4">Size Chart</h2>
+        <p class="lead text-secondary mb-5">Panduan ukuran untuk mendapatkan fitting terbaik.</p>
+        <div class="row justify-content-center">
+          <div class="col-md-8 col-lg-6">
+            <img src="<?= h(asset('assets/img/size-chart.png')) ?>" alt="Size Chart Jersey Kamen Rider"
+              class="img-fluid rounded border border-secondary drop-shadow"
+              style="filter: drop-shadow(0 0 15px rgba(255, 30, 39, 0.2));" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ── ORDER FORM ── -->
     <section class="py-5 border-top border-dark" id="order"
       style="background: linear-gradient(180deg, #0a0a0e 0%, #060608 100%);">
@@ -632,7 +676,7 @@ CSS;
 
                 <div class="mb-4">
                   <label for="inp_name" class="form-label text-white fw-bold">1. Nama Lengkap Pemesan</label>
-                  <input id="inp_name" type="text" name="name"
+                  <input id="inp_name" type="text" name="name" value="<?= h($f_name) ?>"
                     class="form-control bg-dark text-white border-secondary rounded-0" required maxlength="80"
                     placeholder="Budi Santoso" autocomplete="name">
                 </div>
@@ -641,12 +685,12 @@ CSS;
                   <label for="inp_address" class="form-label text-white fw-bold">2. Alamat Lengkap Pemesan</label>
                   <textarea id="inp_address" name="address"
                     class="form-control bg-dark text-white border-secondary rounded-0" rows="3" required maxlength="300"
-                    placeholder="Jalan, Kelurahan, Kecamatan, Kota, Provinsi, Kodepos"></textarea>
+                    placeholder="Jalan, Kelurahan, Kecamatan, Kota, Provinsi, Kodepos"><?= h($f_address) ?></textarea>
                 </div>
 
                 <div class="mb-4">
                   <label for="inp_phone" class="form-label text-white fw-bold">3. Nomor Telepon (Whatsapp)</label>
-                  <input id="inp_phone" type="tel" name="phone"
+                  <input id="inp_phone" type="tel" name="phone" value="<?= h($f_phone) ?>"
                     class="form-control bg-dark text-white border-secondary rounded-0 mb-1" required maxlength="20"
                     placeholder="0812xxxxxxx" autocomplete="tel">
                   <div class="form-text text-secondary">(Untuk konfirmasi & pengiriman invoice)</div>
@@ -657,9 +701,9 @@ CSS;
                   <select id="inp_design" name="design"
                     class="form-select bg-dark text-white border-secondary rounded-0" required>
                     <option value="">— Pilih desain —</option>
-                    <option value="Ichigo">Kamen Rider Ichigo</option>
-                    <option value="Black">Kamen Rider Black</option>
-                    <option value="Ichigo + Black (Paket Doble)">Paket Doble – Ichigo + Black</option>
+                    <option value="Ichigo" <?= $f_design === 'Ichigo' ? 'selected' : '' ?>>Kamen Rider Ichigo</option>
+                    <option value="Black" <?= $f_design === 'Black' ? 'selected' : '' ?>>Kamen Rider Black</option>
+                    <option value="Ichigo + Black (Paket Doble)" <?= $f_design === 'Ichigo + Black (Paket Doble)' ? 'selected' : '' ?>>Paket Doble – Ichigo + Black</option>
                   </select>
                 </div>
 
@@ -669,28 +713,29 @@ CSS;
                     <select id="inp_size" name="size" class="form-select bg-dark text-white border-secondary rounded-0"
                       required>
                       <option value="">— Pilih ukuran —</option>
-                      <option value="S">S (49x70CM)</option>
-                      <option value="M">M (51x72CM)</option>
-                      <option value="L">L (53x74CM)</option>
-                      <option value="XL">XL (55x76CM)</option>
-                      <option value="XXL">XXL (57x78CM) (+20.000)</option>
-                      <option value="3XL">3XL (59x80CM) (+20.000)</option>
-                      <option value="4XL">4XL (61x82CM) (+20.000)</option>
-                      <option value="5XL">5XL (63x84CM) (+20.000)</option>
+                      <option value="S" <?= $f_size === 'S' ? 'selected' : '' ?>>S (49x70CM)</option>
+                      <option value="M" <?= $f_size === 'M' ? 'selected' : '' ?>>M (51x72CM)</option>
+                      <option value="L" <?= $f_size === 'L' ? 'selected' : '' ?>>L (53x74CM)</option>
+                      <option value="XL" <?= $f_size === 'XL' ? 'selected' : '' ?>>XL (55x76CM)</option>
+                      <option value="XXL" <?= $f_size === 'XXL' ? 'selected' : '' ?>>XXL (57x78CM) (+20.000)</option>
+                      <option value="3XL" <?= $f_size === '3XL' ? 'selected' : '' ?>>3XL (59x80CM) (+20.000)</option>
+                      <option value="4XL" <?= $f_size === '4XL' ? 'selected' : '' ?>>4XL (61x82CM) (+20.000)</option>
+                      <option value="5XL" <?= $f_size === '5XL' ? 'selected' : '' ?>>5XL (63x84CM) (+20.000)</option>
                     </select>
                   </div>
                   <div class="col-md-4">
                     <label for="inp_qty" class="form-label text-white fw-bold">Jumlah</label>
                     <input id="inp_qty" type="number" name="qty"
-                      class="form-control bg-dark text-white border-secondary rounded-0" min="1" max="20" value="1"
-                      required>
+                      class="form-control bg-dark text-white border-secondary rounded-0" min="1" max="20"
+                      value="<?= h($f_qty) ?>" required>
                   </div>
                 </div>
 
                 <div class="mb-4">
                   <label for="inp_note" class="form-label text-white fw-bold">5. Note (Catatan Tambahan)</label>
                   <textarea id="inp_note" name="note" class="form-control bg-dark text-white border-secondary rounded-0"
-                    rows="2" maxlength="300" placeholder="Misal: packing aman, request warna, dll."></textarea>
+                    rows="2" maxlength="300"
+                    placeholder="Misal: packing aman, request warna, dll."><?= h($f_note) ?></textarea>
                 </div>
 
                 <!-- Payment Info Box -->
@@ -703,9 +748,56 @@ CSS;
                   <div class="border-top border-secondary pt-3 mt-3">
                     <div class="text-white mb-2"><strong>Nomor WA Konfirmasi:</strong> <span
                         class="text-brand-green">0816-1726-0666</span></div>
-                    <label for="inp_proof" class="form-label fw-bold text-white">Upload Bukti Pembayaran</label>
-                    <input id="inp_proof" type="file" name="payment_proof" accept="image/*"
-                      class="form-control bg-dark text-white border-secondary rounded-0" required>
+                    <label for="inp_proof" class="form-label fw-bold text-white mb-3">Upload Bukti Pembayaran <span
+                        class="text-danger">*</span></label>
+                    <div class="position-relative">
+                      <input id="inp_proof" type="file" name="payment_proof" accept="image/*"
+                        class="form-control bg-dark text-white border-secondary rounded-0 position-absolute"
+                        style="opacity: 0; width: 100%; height: 100%; top: 0; left: 0; z-index: 2; cursor: pointer;"
+                        required>
+                      <label for="inp_proof"
+                        class="d-flex flex-column align-items-center justify-content-center p-4 border border-secondary rounded-0 bg-dark text-center"
+                        style="border-style: dashed !important; border-width: 2px !important;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                          class="bi bi-cloud-arrow-up text-brand-red mb-2" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd"
+                            d="M7.646 5.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708z" />
+                          <path
+                            d="M4.406 3.342A5.53 5.53 0 0 1 8 2c2.69 0 4.923 2 5.166 4.579C14.758 6.804 16 8.137 16 9.773 16 11.569 14.502 13 12.687 13H3.781C1.708 13 0 11.366 0 9.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383zm.653.757c-.757.653-1.153 1.44-1.153 2.056v.448l-.445.049C2.064 6.805 1 7.952 1 9.318 1 10.785 2.23 12 3.781 12h8.906C13.984 12 15 10.988 15 9.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 4.825 10.328 3 8 3a4.53 4.53 0 0 0-2.941 1.1z" />
+                        </svg>
+                        <span class="text-white fw-bold mb-1" id="file_name_display">Klik atau Tarik File Kesini</span>
+                        <span class="text-secondary small">Format: JPG, PNG, WEBP (Max: 5MB)</span>
+                      </label>
+                    </div>
+
+                    <script>
+                      // Minimal JS to display selected file name
+                      const inpProof = document.getElementById('inp_proof');
+                      const nameDisplay = document.getElementById('file_name_display');
+                      if (inpProof && nameDisplay) {
+                        inpProof.addEventListener('change', function () {
+                          if (this.files && this.files[0]) {
+                            nameDisplay.textContent = this.files[0].name;
+                            nameDisplay.classList.add('text-brand-green');
+                          } else {
+                            nameDisplay.textContent = 'Klik atau Tarik File Kesini';
+                            nameDisplay.classList.remove('text-brand-green');
+                          }
+                        });
+                      }
+                    </script>
+                  </div>
+                </div>
+
+                <!-- Dynamic Pricing Display -->
+                <div class="row gx-0 mb-4 align-items-center bg-black p-3 rounded"
+                  style="border: 1px solid rgba(255, 30, 39, 0.3);">
+                  <div class="col-8">
+                    <span class="text-secondary small d-block">TOTAL PEMBAYARAN</span>
+                    <strong class="text-brand-green fs-4 font-rajdhani" id="ui_total_price">Rp 0</strong>
+                  </div>
+                  <div class="col-4 text-end">
+                    <span class="badge bg-brand-red">Transfer Kesini</span>
                   </div>
                 </div>
 
@@ -713,12 +805,14 @@ CSS;
                   <input class="form-check-input bg-dark border-secondary" type="checkbox" id="agree_dp" name="agree_dp"
                     value="1" required>
                   <label class="form-check-label text-secondary small" for="agree_dp">
-                    Saya setuju DP minimal <?= idr(PRICE_DP) ?> / jersey dan memahami timeline produksi.
+                    Saya setuju mengirimkan dp/lunas sejumlah tagihan di atas dan memahami timeline produksi tertera.
                   </label>
                 </div>
 
+                <p class="text-white text-center mb-2 <?= $myOrder ? 'd-block' : 'd-none' ?>">Anda sedeng mengedit
+                  pesanan sebelumnya.</p>
                 <button class="btn btn-red w-100 py-3 skew-btn fs-5 mb-3" type="submit" id="btnSubmit">
-                  <span>Kirim Pesanan & Bukti Transfer</span>
+                  <span><?= $myOrder ? 'Update Pesanan & Bukti Transfer' : 'Kirim Pesanan & Bukti Transfer' ?></span>
                 </button>
 
                 <div class="text-center text-secondary small">
@@ -842,17 +936,22 @@ CSS;
     <section class="py-5 border-top border-dark" id="seo-content"
       style="background: linear-gradient(180deg, #0a0a0e 0%, #060608 100%);">
       <div class="container" style="max-width: 800px;">
-        <h2 class="h5 font-rajdhani fw-bold text-secondary mb-3">Jersey Kamen Rider untuk Penggemar Tokusatsu Indonesia
-        </h2>
+        <h2 class="h4 font-rajdhani fw-bold text-secondary mb-4">Jersey Kamen Rider Custom untuk Komunitas Rider
+          Indonesia</h2>
         <div class="text-secondary small" style="line-height: 1.8;">
-          <p class="mb-3">Jersey Kamen Rider merupakan apparel yang diminati komunitas tokusatsu Indonesia.
-            <strong>Jersey Series Fantasy Kamen Rider Ichigo &amp; Black (Edisi 1)</strong> terinspirasi era 90an dan
-            film <strong>Satria Baja Hitam</strong>, diwujudkan menjadi jersey sporty premium bergaya jagoan masa kecil.
+          <p class="mb-3">Desain <strong>jersey kamen rider custom</strong> yang sedang booming kini telah hadir untuk
+            pencinta tokusatsu tanah air! Bernostalgia bersama <strong>jersey satria baja hitam</strong> dan pahlawan
+            abad ke-90an kini terasa lebih autentik dan eksklusif dengan rilisan limited edition ini.</p>
+          <p class="mb-3">Diproduksi secara matang oleh <em>Ozverligsportwear</em> berkolaborasi dengan komunitas seni
+            <em>Kemalikart</em>, setiap balutan <strong>jersey fantasy kamen rider</strong> kami dirancang untuk
+            menemani gaya hidup aktif Anda. Dari <strong>jersey anime custom indonesia</strong> hingga kebutuhan apparel
+            harian saat riding akhir pekan, kualitas material premium (Andromax Sublimasi) kami dijamin tahan terhadap
+            cuaca.
           </p>
-          <p class="mb-0">Diproduksi oleh <strong>Ozverligsportwear</strong> berkolaborasi dengan
-            <strong>Kemalikart</strong> — mengutamakan tampilan modern, cocok harian, komunitas, maupun riding. Sistem
-            <strong>pre-order</strong> memastikan produksi terjadwal dan kualitas terjaga.
-          </p>
+          <p class="mb-0">Bagi para die-hard fans, sebuah <strong>jersey komunitas rider</strong> tak lengkap tanpa
+            detil sempurna layaknya pahlawan itu sendiri. Jadikan <strong>jersey tokusatsu indonesia</strong> ini
+            pelengkap koleksi utama Anda. Tunggu apa lagi? Lengkapi hari-harimu dengan gaya nostalgia <strong>jersey
+              kamen rider indonesia</strong> yang membalut karakter gagah jagoan idola.</p>
         </div>
       </div>
     </section>
@@ -893,7 +992,17 @@ CSS;
   <!-- Custom logic -->
   <script>
     /**
-     * Minimal JS (UTM & Countdown)
+     * Runtime Variables from PHP config
+     */
+    window.__T__ = {
+      promoDeadline: "<?= h(PROMO_DEADLINE) ?>",
+      price1: <?= PRICE_PROMO_1 ?>,
+      price2: <?= PRICE_PROMO_2 ?>,
+      surcharge: <?= PRICE_SURCHARGE ?>
+    };
+
+    /**
+     * Minimal JS (UTM, Countdown, Dynamic Pricing)
      */
     (function () {
       // Capture UTMs
@@ -929,31 +1038,72 @@ CSS;
 
         const end = new Date(window.__T__.promoDeadline).getTime();
 
-        function tick() {
+        const tick = setInterval(() => {
           const now = new Date().getTime();
-          const diff = end - now;
+          const d = end - now;
 
-          if (diff <= 0) {
-            cdWrap.style.display = 'none';
+          if (d < 0) {
+            clearInterval(tick);
+            cdWrap.classList.add('d-none');
             if (endedWrap) endedWrap.classList.remove('d-none');
             return;
           }
 
-          const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-          const s = Math.floor((diff % (1000 * 60)) / 1000);
+          document.getElementById('cd-h').innerText = String(Math.floor((d % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+          document.getElementById('cd-m').innerText = String(Math.floor((d % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+          document.getElementById('cd-s').innerText = String(Math.floor((d % (1000 * 60)) / 1000)).padStart(2, '0');
+        }, 1000);
 
-          const eh = document.getElementById('cd-h');
-          const em = document.getElementById('cd-m');
-          const es = document.getElementById('cd-s');
+        // ── Dynamic Pricing ──
+        const inpDesign = document.getElementById('inp_design');
+        const inpSize = document.getElementById('inp_size');
+        const inpQty = document.getElementById('inp_qty');
+        const uiTotal = document.getElementById('ui_total_price');
 
-          if (eh) eh.innerText = h.toString().padStart(2, '0');
-          if (em) em.innerText = m.toString().padStart(2, '0');
-          if (es) es.innerText = s.toString().padStart(2, '0');
+        function calcPrice() {
+          if (!inpDesign || !inpSize || !inpQty || !uiTotal) return;
+          let qty = parseInt(inpQty.value) || 1;
+          let totalQty = qty;
+          if (inpDesign.value === 'Ichigo + Black (Paket Doble)') totalQty = qty * 2;
 
-          setTimeout(tick, 1000);
+          let pairs = Math.floor(totalQty / 2);
+          let singles = totalQty % 2;
+          let basePrice = (pairs * window.__T__.price2) + (singles * window.__T__.price1);
+
+          let surchargeQty = 0;
+          if (['XXL', '3XL', '4XL', '5XL'].includes(inpSize.value.toUpperCase())) {
+            surchargeQty = window.__T__.surcharge * totalQty;
+          }
+
+          let finalPrice = basePrice + surchargeQty;
+          uiTotal.innerText = new Intl.NumberFormat('id-ID', {
+            style: 'currency', currency: 'IDR', minimumFractionDigits: 0
+          }).format(finalPrice);
         }
-        tick();
+
+        if (inpDesign) inpDesign.addEventListener('change', calcPrice);
+        if (inpSize) inpSize.addEventListener('change', calcPrice);
+        if (inpQty) {
+          inpQty.addEventListener('input', calcPrice);
+          inpQty.addEventListener('change', calcPrice);
+        }
+        calcPrice();
+
+        // ── Meta Ads Tracking Funnel ──
+        if (typeof fbq !== 'undefined') {
+          // 1. ViewContent
+          fbq('track', 'ViewContent', { content_name: 'Jersey Kamen Rider', content_category: 'Jersey' });
+
+          // 2. InitiateCheckout
+          document.querySelectorAll('[data-track="initiate_checkout"]').forEach(btn => {
+            btn.addEventListener('click', () => { fbq('track', 'InitiateCheckout'); });
+          });
+
+          // 3. Lead
+          if (form) {
+            form.addEventListener('submit', () => { fbq('track', 'Lead'); });
+          }
+        }
       });
     })();
   </script>

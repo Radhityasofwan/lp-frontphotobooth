@@ -237,6 +237,7 @@ $redirectDelay = 8; // Waktu tunggu dalam detik
   </main>
 
   <!-- Conversion tracking (Modern ES6, Deferred) -->
+  <?php $trackValue = (int) ($order['total_price'] ?? 0); ?>
   <script>
     (() => {
       const ObjectConfig = window.__T__ || {};
@@ -258,12 +259,14 @@ $redirectDelay = 8; // Waktu tunggu dalam detik
           gtag('config', ObjectConfig.ga4);
 
           // Trigger Events
-          gtag('event', 'generate_lead', { value: 100000, currency: 'IDR' });
-          gtag('event', 'purchase', {
-            value: 100000,
-            currency: 'IDR',
-            transaction_id: `TRX-${Date.now()}`
-          });
+          if (<?= $trackValue ?> > 0) {
+            gtag('event', 'generate_lead', { value: <?= $trackValue ?>, currency: 'IDR' });
+            gtag('event', 'purchase', {
+              value: <?= $trackValue ?>,
+              currency: 'IDR',
+              transaction_id: `TRX-${Date.now()}`
+            });
+          }
         });
       }
 
@@ -274,11 +277,13 @@ $redirectDelay = 8; // Waktu tunggu dalam detik
         loadScript(`https://www.googletagmanager.com/gtag/js?id=${ObjectConfig.gadsAw}`, () => {
           gtag('js', new Date());
           gtag('config', ObjectConfig.gadsAw);
-          gtag('event', 'conversion', {
-            send_to: `${ObjectConfig.gadsAw}/${ObjectConfig.gadsLabel}`,
-            value: 100000,
-            currency: 'IDR'
-          });
+          if (<?= $trackValue ?> > 0) {
+            gtag('event', 'conversion', {
+              send_to: `${ObjectConfig.gadsAw}/${ObjectConfig.gadsLabel}`,
+              value: <?= $trackValue ?>,
+              currency: 'IDR'
+            });
+          }
         });
       }
 
@@ -293,7 +298,11 @@ $redirectDelay = 8; // Waktu tunggu dalam detik
 
         fbq('init', ObjectConfig.meta);
         fbq('track', 'PageView');
-        fbq('track', 'Lead', { value: 100000, currency: 'IDR' });
+
+        if (<?= $trackValue ?> > 0) {
+          fbq('track', 'Lead', { value: <?= $trackValue ?>, currency: 'IDR' });
+          fbq('track', 'Purchase', { value: <?= $trackValue ?>, currency: 'IDR' });
+        }
       }
     })();
   </script>
