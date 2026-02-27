@@ -133,3 +133,11 @@ function log_event(string $msg): void
 {
     error_log('[' . date('c') . '] ' . $msg . PHP_EOL, 3, EVENTS_LOG);
 }
+
+function asset(string $path): string
+{
+    $base = rtrim(BASE_URL, '/');
+    $filePath = __DIR__ . '/' . ltrim($path, '/');
+    $v = file_exists($filePath) ? filemtime($filePath) : time();
+    return $base . '/' . ltrim($path, '/') . '?v=' . $v;
+}

@@ -2,7 +2,7 @@
 require_once __DIR__ . '/config.php';
 
 $canonical = rtrim(BASE_URL, '/') . '/';
-$ogImage = rtrim(BASE_URL, '/') . '/assets/img/og-cover.webp';
+$ogImage = asset('assets/img/og-cover.webp');
 
 // Promo deadline as ISO 8601 for JS (Asia/Jakarta → UTC offset +07:00)
 $dt = new DateTimeImmutable(PROMO_DEADLINE, new DateTimeZone('Asia/Jakarta'));
@@ -15,7 +15,7 @@ $schemaJson = json_encode([
       '@type' => 'Organization',
       'name' => BRAND_NAME,
       'url' => $canonical,
-      'logo' => rtrim(BASE_URL, '/') . '/assets/img/logo-ozverlig.webp',
+      'logo' => asset('assets/img/logo-ozverlig.webp'),
       'sameAs' => ['https://www.instagram.com/ozverlig', 'https://www.instagram.com/kemalikart'],
     ],
     [
@@ -23,7 +23,7 @@ $schemaJson = json_encode([
       'name' => 'Jersey Series Fantasy Kamen Rider Ichigo & Black (Edisi 1)',
       'brand' => ['@type' => 'Brand', 'name' => BRAND_NAME],
       'description' => 'Nostalgia 90an terinspirasi Satria Baja Hitam. Pre-order ' . BRAND_NAME . ' x ' . COLLAB_NAME . '. Periode 27 Feb – 08 Mar 2026.',
-      'image' => [rtrim(BASE_URL, '/') . '/assets/img/hero.webp'],
+      'image' => [asset('assets/img/hero.webp')],
       'offers' => [
         [
           '@type' => 'Offer',
@@ -126,7 +126,7 @@ CSS;
 
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    onerror="this.onerror=null;this.href='<?= h(rtrim(BASE_URL, '/')) ?>/assets/vendor/bootstrap/bootstrap.min.css';">
+    onerror="this.onerror=null;this.href='<?= h(asset('assets/vendor/bootstrap/bootstrap.min.css')) ?>';">
 
   <style>
     /* 
@@ -278,14 +278,12 @@ CSS;
   </style>
 
   <!-- Preload hero image -->
-  <link rel="preload"
-    href="<?= h(rtrim(BASE_URL, '/')) ?>/assets/img/hero.webp?v=<?= filemtime(__DIR__ . '/assets/img/hero.webp') ?>"
-    as="image" type="image/webp">
+  <link rel="preload" href="<?= h(asset('assets/img/hero.webp')) ?>" as="image" type="image/webp">
 
   <!-- Structured Data -->
   <script type="application/ld+json"><?= $schemaJson ?></script>
 
-  <!-- Tracking config (no external call here) -->
+  <!-- Tracking config -->
   <script>
     window.__T__ = {
       ga4: "<?= h(GA4_ID) ?>",
@@ -295,6 +293,34 @@ CSS;
       promoDeadline: "<?= h($promoDeadlineISO) ?>"
     };
   </script>
+
+  <?php if (!empty(META_PIXEL_ID)): ?>
+    <!-- Meta Pixel Code -->
+    <script>
+      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+      n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+      document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '<?= h(META_PIXEL_ID) ?>');
+      fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=<?= h(META_PIXEL_ID) ?>&ev=PageView&noscript=1"/></noscript>
+  <?php endif; ?>
+
+  <?php if (!empty(GA4_ID)): ?>
+    <!-- Google tag (gtag.js) GA4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=<?= h(GA4_ID) ?>"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '<?= h(GA4_ID) ?>');
+      <?php if (!empty(GADS_AW_ID)): ?>
+      gtag('config', '<?= h(GADS_AW_ID) ?>');
+      <?php endif; ?>
+    </script>
+  <?php endif; ?>
 </head>
 
 <body>
@@ -304,22 +330,20 @@ CSS;
     style="background: rgba(6,6,8,0.95) !important; backdrop-filter: blur(10px);">
     <div class="container d-flex justify-content-between align-items-center">
       <div class="d-flex align-items-center gap-2">
-        <img
-          src="<?= h(rtrim(BASE_URL, '/')) ?>/assets/img/logo-ozverlig.webp?v=<?= filemtime(__DIR__ . '/assets/img/logo-ozverlig.webp') ?>"
-          alt="Logo Ozverligsportwear" width="36" height="36" loading="eager">
+        <img src="<?= h(asset('assets/img/logo-ozverlig.webp')) ?>" alt="Logo Ozverligsportwear" width="36" height="36"
+          loading="eager">
         <div class="lh-1">
           <div class="font-rajdhani text-white fs-6">Ozverligsportwear</div>
           <div class="text-secondary" style="font-size:0.75rem;">x Kemalikart</div>
         </div>
+        <nav class="d-none d-md-flex gap-3 align-items-center font-rajdhani text-secondary fw-bold">
+          <a href="#produk" class="text-decoration-none text-secondary text-hover-white">Produk</a>
+          <a href="#harga" class="text-decoration-none text-secondary text-hover-white">Harga</a>
+          <a href="#faq" class="text-decoration-none text-secondary text-hover-white">FAQ</a>
+        </nav>
+        <a href="#order" class="btn btn-red btn-sm px-3 skew-btn" data-track="initiate_checkout"
+          id="btnOrder"><span>Pesan</span></a>
       </div>
-      <nav class="d-none d-md-flex gap-3 align-items-center font-rajdhani text-secondary fw-bold">
-        <a href="#produk" class="text-decoration-none text-secondary text-hover-white">Produk</a>
-        <a href="#harga" class="text-decoration-none text-secondary text-hover-white">Harga</a>
-        <a href="#faq" class="text-decoration-none text-secondary text-hover-white">FAQ</a>
-      </nav>
-      <a href="#order" class="btn btn-red btn-sm px-3 skew-btn" data-track="initiate_checkout"
-        id="btnOrder"><span>Pesan</span></a>
-    </div>
   </header>
 
   <main>
@@ -329,28 +353,28 @@ CSS;
       <div class="container">
         <div class="row align-items-center gy-5">
           <div class="col-lg-6 order-2 order-lg-1">
-            <div class="d-flex gap-2 mb-3 flex-wrap">
+            <div class="d-flex gap-2 mb-3 flex-wrap justify-content-center justify-content-lg-start">
               <span class="badge bg-brand-red">Open Pre-Order</span>
               <span class="badge bg-warning text-dark">Limited Edition</span>
               <span class="badge bg-dark border border-secondary">Edisi 1</span>
             </div>
 
-            <h1 class="display-4 fw-bold mb-3 text-white">Jersey Kamen Rider<br>Ichigo &amp; Black</h1>
+            <h1 class="display-4 fw-bold mb-3 text-white text-center text-lg-start">Jersey <span class="text-gradient">Kamen Rider</span><br>Ichigo &amp; Black</h1>
 
-            <p class="lead text-secondary mb-4">
+            <p class="lead text-secondary mb-4 text-center text-lg-start">
               Nostalgia di tahun 90an, terinspirasi dari film <strong>Satria Baja Hitam</strong> — jersey sporty premium
               bergaya jagoan masa kecil kita.<br>
               Diproduksi oleh <strong>Ozverligsportwear</strong> berkolaborasi dengan <strong>Kemalikart</strong>.
             </p>
 
-            <div class="d-flex gap-3 mb-5 flex-wrap">
+            <div class="d-flex gap-3 mb-5 flex-wrap justify-content-center justify-content-lg-start">
               <a class="btn btn-red px-4 py-2 skew-btn fs-5" href="#order" data-track="initiate_checkout"
                 id="btnOrder2"><span>Pesan Sekarang</span></a>
               <a class="btn btn-outline-light px-4 py-2 font-rajdhani fw-bold text-uppercase rounded-0"
                 style="letter-spacing:1px;" href="#harga">Lihat Harga</a>
             </div>
 
-            <div class="row text-center text-md-start g-3">
+            <div class="row text-center text-lg-start g-3">
               <div class="col-4">
                 <div class="text-secondary small text-uppercase fw-bold">Pre-Order</div>
                 <div class="text-white fw-medium">27 Feb – 08 Mar</div>
@@ -367,8 +391,7 @@ CSS;
           </div>
 
           <div class="col-lg-6 order-1 order-lg-2 text-center">
-            <img class="img-fluid drop-shadow"
-              src="<?= h(rtrim(BASE_URL, '/')) ?>/assets/img/hero.webp?v=<?= filemtime(__DIR__ . '/assets/img/hero.webp') ?>"
+            <img class="img-fluid drop-shadow" src="<?= h(asset('assets/img/hero.webp')) ?>"
               alt="Jersey Series Fantasy Kamen Rider Ichigo dan Black Edisi 1" loading="eager" fetchpriority="high"
               style="filter: drop-shadow(0 0 30px rgba(240,19,30,0.3)); max-width:90%">
           </div>
@@ -416,9 +439,8 @@ CSS;
         <div class="row g-4 mb-5">
           <div class="col-md-6">
             <article class="card card-dark h-100 rounded-0">
-              <img
-                src="<?= h(rtrim(BASE_URL, '/')) ?>/assets/img/ichigo.webp?v=<?= filemtime(__DIR__ . '/assets/img/ichigo.webp') ?>"
-                class="card-img-top rounded-0" alt="Fantasy Kamen Rider Ichigo v.01" loading="lazy" decoding="async">
+              <img src="<?= h(asset('assets/img/ichigo.webp')) ?>" class="card-img-top rounded-0"
+                alt="Fantasy Kamen Rider Ichigo v.01" loading="lazy" decoding="async">
               <div class="card-body p-4">
                 <h3 class="card-title font-rajdhani text-white fs-4">Fantasy Kamen Rider Ichigo v.01</h3>
                 <p class="card-text text-secondary">Kolaborasi Ozverligsportwear x Kemalikart. Cocok untuk komunitas,
@@ -429,9 +451,8 @@ CSS;
 
           <div class="col-md-6">
             <article class="card card-dark h-100 rounded-0">
-              <img
-                src="<?= h(rtrim(BASE_URL, '/')) ?>/assets/img/black.webp?v=<?= filemtime(__DIR__ . '/assets/img/black.webp') ?>"
-                class="card-img-top rounded-0" alt="Fantasy Kamen Rider Black v.01" loading="lazy" decoding="async">
+              <img src="<?= h(asset('assets/img/black.webp')) ?>" class="card-img-top rounded-0"
+                alt="Fantasy Kamen Rider Black v.01" loading="lazy" decoding="async">
               <div class="card-body p-4">
                 <h3 class="card-title font-rajdhani text-white fs-4">Fantasy Kamen Rider Black v.01</h3>
                 <p class="card-text text-secondary">Karakter kuat, tegas, clean. Limited drop — raih sebelum kehabisan.
@@ -867,7 +888,7 @@ CSS;
   <!-- Bootstrap JS (bundle includes Popper) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <!-- Bootstrap JS Local Fallback -->
-  <script>window.bootstrap || document.write('<script src="<?= h(rtrim(BASE_URL, '/')) ?>/assets/vendor/bootstrap/bootstrap.bundle.min.js"><\/script>');</script>
+  <script>window.bootstrap || document.write('<script src="<?= h(asset('assets/vendor/bootstrap/bootstrap.bundle.min.js')) ?>"><\/script>');</script>
 
   <!-- Custom logic -->
   <script>
