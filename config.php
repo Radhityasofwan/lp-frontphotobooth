@@ -1,84 +1,130 @@
 <?php
-// =========================
-// Global Config (AUTO BASE PATH)
-// Works for: https://domain.com/  OR  https://domain.com/subfolder/
-// =========================
+/**
+ * config.php – Central configuration
+ * Ozverligsportwear x Kemalikart | Kamen Riders
+ */
 
-// Detect scheme behind proxy / shared hosting
-$proto = 'http';
-if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
-  $proto = strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https' ? 'https' : 'http';
-} elseif (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
-  $proto = 'https';
-}
+// ─────────────────────────────────────────────
+// TIMEZONE
+// ─────────────────────────────────────────────
+date_default_timezone_set('Asia/Jakarta');
+session_start();
 
-// Detect host
-$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-
-// Detect base path from current script location
-// Example root: /index.php -> dirname = "/" -> basePath = ""
-// Example subfolder: /kamenriders/index.php -> dirname = "/kamenriders"
-$dir = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/');
-$basePath = ($dir === '' || $dir === '/') ? '' : $dir;
-
-// Define BASE_PATH + BASE_URL
-define('BASE_PATH', $basePath);
-define('BASE_URL', $proto . '://' . $host . BASE_PATH);
-
-// WhatsApp number (E.164 without +)
-define('WA_NUMBER', '6281617260666');
-
-// Brand info
+// ─────────────────────────────────────────────
+// BRAND
+// ─────────────────────────────────────────────
 define('BRAND_NAME', 'Ozverligsportwear');
 define('COLLAB_NAME', 'Kemalikart');
+define('WA_NUMBER', '6281617260666');  // E.164 without +
 
-// Tracking IDs (fill these)
-define('GA4_ID', '');            // e.g. 'G-ABC123DEF4'
-define('GADS_AW_ID', '');        // e.g. 'AW-123456789'
-define('GADS_CONV_LABEL', '');   // e.g. 'AbCdEfGhIjkLmNoPq'
-define('META_PIXEL_ID', '');     // e.g. '123456789012345'
+// ─────────────────────────────────────────────
+// BASE URL (auto-detect; works with/without subfolder)
+// ─────────────────────────────────────────────
+(function () {
+    $proto = 'http';
+    if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+        $proto = strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https' ? 'https' : 'http';
+    } elseif (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+        $proto = 'https';
+    }
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    $dir = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/');
+    $base = ($dir === '' || $dir === '/') ? '' : $dir;
+    define('BASE_PATH', $base);
+    define('BASE_URL', $proto . '://' . $host . $base);
+})();
 
-// Lead storage
-define('LEADS_CSV', __DIR__ . '/storage/leads.csv');
-define('EVENTS_LOG', __DIR__ . '/storage/events.log');
+// ─────────────────────────────────────────────
+// PROMO / PRE-ORDER DEADLINE
+// ─────────────────────────────────────────────
+define('PROMO_DEADLINE', '2026-03-08 23:59:59'); // Asia/Jakarta
 
-// Basic rate limit seconds per session
-define('RATE_LIMIT_SECONDS', 10);
+// ─────────────────────────────────────────────
+// PRICING
+// ─────────────────────────────────────────────
+define('PRICE_ORIGINAL_1', 275000);  // strikethrough price for 1 pcs
+define('PRICE_PROMO_1', 225000);  // promo price for 1 pcs
+define('PRICE_ORIGINAL_2', 500000);  // strikethrough price for 2 pcs
+define('PRICE_PROMO_2', 400000);  // promo price for 2 pcs
+define('PRICE_DP', 100000);  // minimum down-payment per jersey
 
-// =========================
-// Database Configuration
-// =========================
+// ─────────────────────────────────────────────
+// TRACKING IDs  (fill before going live)
+// ─────────────────────────────────────────────
+define('GA4_ID', '');   // e.g. 'G-XXXXXXXXXX'
+define('GADS_AW_ID', '');   // e.g. 'AW-XXXXXXXXX'
+define('GADS_CONV_LABEL', '');   // e.g. 'AbCdEfGhIj'
+define('META_PIXEL_ID', '');   // e.g. '123456789012345'
+
+// ─────────────────────────────────────────────
+// DATABASE (PDO)
+// ─────────────────────────────────────────────
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_NAME', 'kamenriders');
 
-// Toggle error reporting for production
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 try {
-    $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
-    $pdo = new PDO($dsn, DB_USER, DB_PASS);
-    
-    // Set PDO attributes for error modes and default fetch modes
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-    $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-
-} catch(PDOException $e) {
-    error_log("[" . date("Y-m-d H:i:s") . "] Connection failed: " . $e->getMessage() . PHP_EOL, 3, __DIR__ . '/storage/logs/error.log');
-    die("Database connection error. Please proceed to check logs.");
+    $pdo = new PDO(
+        'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4',
+        DB_USER,
+        DB_PASS,
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
+        ]
+    );
+} catch (PDOException $e) {
+    $pdo = null; // fallback to CSV if DB unavailable
+    error_log(
+        '[' . date('c') . '] DB connect fail: ' . $e->getMessage(),
+        3,
+        __DIR__ . '/storage/events.log'
+    );
 }
 
-// Utility function to sanitize inputs
-function sanitize($data) {
-    if (is_array($data)) {
-        foreach ($data as $key => $value) {
-            $data[$key] = sanitize($value);
-        }
-        return $data;
-    }
-    return htmlspecialchars(strip_tags(trim($data)), ENT_QUOTES, 'UTF-8');
+// ─────────────────────────────────────────────
+// STORAGE PATHS
+// ─────────────────────────────────────────────
+define('LEADS_CSV', __DIR__ . '/storage/leads.csv');
+define('EVENTS_LOG', __DIR__ . '/storage/events.log');
+
+// ─────────────────────────────────────────────
+// RATE LIMIT (seconds between submissions per session)
+// ─────────────────────────────────────────────
+define('RATE_LIMIT_SECONDS', 15);
+
+// ─────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────
+function h(string $s): string
+{
+    return htmlspecialchars($s, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+}
+
+function idr(int $n): string
+{
+    return 'IDR ' . number_format($n, 0, ',', '.');
+}
+
+function clean(string $s, int $max = 255): string
+{
+    $s = trim(preg_replace('/\s+/', ' ', $s));
+    return mb_substr($s, 0, $max);
+}
+
+function norm_phone(string $p): string
+{
+    $p = preg_replace('/[^0-9]/', '', $p);
+    if (str_starts_with($p, '0'))
+        $p = '62' . substr($p, 1);
+    if (!str_starts_with($p, '62'))
+        $p = '62' . $p;
+    return $p;
+}
+
+function log_event(string $msg): void
+{
+    error_log('[' . date('c') . '] ' . $msg . PHP_EOL, 3, EVENTS_LOG);
 }

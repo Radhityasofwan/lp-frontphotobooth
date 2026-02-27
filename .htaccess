@@ -1,43 +1,56 @@
-# =========================
-# Ozverlig Kamen Riders - .htaccess
-# Fast, stable, SEO-friendly for shared hosting
-# =========================
+# Kamen Riders – Root .htaccess
+# Optimized for Hostinger shared hosting
 
 Options -Indexes
 ServerSignature Off
 
-# Force HTTPS (Hostinger usually behind proxy; this works for most cases)
+# ── Force HTTPS ──
 RewriteEngine On
 RewriteCond %{HTTPS} !=on [OR]
 RewriteCond %{HTTP:X-Forwarded-Proto} !https
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-# Canonical: remove trailing slash for files (optional safe)
-RewriteCond %{THE_REQUEST} \s/+(.+?)//+\s [NC]
-RewriteRule ^ %1 [R=301,L]
+# ── Remove double slashes ──
+RewriteCond %{THE_REQUEST} \s/+([^?]+?)/{2,} [NC]
+RewriteRule ^ /%1 [R=301,L]
 
-# Compression (if allowed)
-<IfModule mod_deflate.c>
-  AddOutputFilterByType DEFLATE text/html text/plain text/css text/javascript application/javascript application/json image/svg+xml
+# ── Protect storage directory ──
+RewriteRule ^storage(/|$) - [F,L]
+
+# ── PHP settings (shared hosting safe) ──
+<IfModule mod_php8.c>
+  php_flag display_errors Off
+  php_value upload_max_filesize 4M
+  php_value post_max_size 4M
 </IfModule>
 
-# Cache static assets
+# ── GZIP Compression ──
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+  AddOutputFilterByType DEFLATE application/javascript application/json image/svg+xml
+</IfModule>
+
+# ── Browser Caching ──
 <IfModule mod_expires.c>
   ExpiresActive On
-  ExpiresByType text/css "access plus 30 days"
-  ExpiresByType application/javascript "access plus 30 days"
-  ExpiresByType image/webp "access plus 30 days"
-  ExpiresByType image/png "access plus 30 days"
-  ExpiresByType image/jpeg "access plus 30 days"
-  ExpiresByType image/svg+xml "access plus 30 days"
+  ExpiresByType text/css                 "access plus 30 days"
+  ExpiresByType application/javascript   "access plus 30 days"
+  ExpiresByType image/webp               "access plus 30 days"
+  ExpiresByType image/png                "access plus 30 days"
+  ExpiresByType image/jpeg               "access plus 30 days"
+  ExpiresByType image/svg+xml            "access plus 30 days"
+  ExpiresByType image/x-icon             "access plus 1 year"
+  ExpiresByType font/woff2               "access plus 1 year"
 </IfModule>
 
+# ── Security Headers ──
 <IfModule mod_headers.c>
-  Header set X-Content-Type-Options "nosniff"
-  Header set X-Frame-Options "SAMEORIGIN"
-  Header set Referrer-Policy "strict-origin-when-cross-origin"
-  Header set Permissions-Policy "geolocation=(), camera=(), microphone=()"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "geolocation=(), camera=(), microphone=()"
+  # Cache immutable assets
+  <FilesMatch "\.(webp|png|jpg|jpeg|svg|woff2|css|js)$">
+    Header append Cache-Control "public, immutable"
+  </FilesMatch>
 </IfModule>
-
-# Protect storage
-RewriteRule ^storage/ - [F,L]

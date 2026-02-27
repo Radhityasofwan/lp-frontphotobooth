@@ -1,151 +1,205 @@
 <?php
+/**
+ * order.php – Form processor
+ * Sanitizes, validates, saves to CSV + MySQL (if available), redirects to thank-you
+ */
 require_once __DIR__ . '/config.php';
 
-session_start();
 header('Content-Type: text/html; charset=utf-8');
+
+// Method guard
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+  http_response_code(405);
+  exit('Method Not Allowed');
+}
 
 // Rate limit per session
 $now = time();
-$last = isset($_SESSION['last_submit']) ? (int) $_SESSION['last_submit'] : 0;
+$last = (int) ($_SESSION['last_submit'] ?? 0);
 if ($last && ($now - $last) < RATE_LIMIT_SECONDS) {
   http_response_code(429);
-  echo "Terlalu cepat. Coba lagi beberapa detik.";
-  exit;
-}
-$_SESSION['last_submit'] = $now;
-
-// Helpers
-function clean($s, $max = 240)
-{
-  $s = trim((string) $s);
-  $s = preg_replace('/\s+/', ' ', $s);
-  if (mb_strlen($s) > $max)
-    $s = mb_substr($s, 0, $max);
-  return $s;
+  exit('Terlalu cepat. Tunggu beberapa detik lalu coba lagi.');
 }
 
-function norm_phone($p)
-{
-  $p = preg_replace('/[^0-9+]/', '', (string) $p);
-  // normalize Indonesian numbers
-  $p = ltrim($p);
-  if (strpos($p, '+') === 0)
-    $p = substr($p, 1);
-  if (strpos($p, '0') === 0)
-    $p = '62' . substr($p, 1);
-  if (strpos($p, '62') !== 0)
-    $p = '62' . $p;
-  return $p;
-}
-
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-  http_response_code(405);
-  echo "Method not allowed";
-  exit;
-}
-
-// Collect
+// ─── Collect & sanitize ───────────────────────────────────────────────────────
 $name = clean($_POST['name'] ?? '', 80);
 $phone = clean($_POST['phone'] ?? '', 20);
-$address = clean($_POST['address'] ?? '', 240);
+$address = clean($_POST['address'] ?? '', 300);
 $design = clean($_POST['design'] ?? '', 60);
 $size = clean($_POST['size'] ?? '', 10);
-$qty = (int) ($_POST['qty'] ?? 1);
-$note = clean($_POST['note'] ?? '', 240);
-$agree = isset($_POST['agree_dp']) ? (int) $_POST['agree_dp'] : 0;
+$qty = max(1, min(20, (int) ($_POST['qty'] ?? 1)));
+$note = clean($_POST['note'] ?? '', 300);
+$agree = (int) ($_POST['agree_dp'] ?? 0);
 
-// UTM
-$utm_source = clean($_POST['utm_source'] ?? '', 80);
-$utm_medium = clean($_POST['utm_medium'] ?? '', 80);
-$utm_campaign = clean($_POST['utm_campaign'] ?? '', 120);
-$utm_content = clean($_POST['utm_content'] ?? '', 120);
-$utm_term = clean($_POST['utm_term'] ?? '', 120);
+// UTM / Click IDs
+$fields = [
+  'utm_source',
+  'utm_medium',
+  'utm_campaign',
+  'utm_content',
+  'utm_term',
+  'fbclid',
+  'gclid',
+  'wbraid',
+  'gbraid',
+  'referrer'
+];
+$tracking = [];
+foreach ($fields as $f) {
+  $tracking[$f] = clean($_POST[$f] ?? '', 255);
+}
 
-// Validate
+// ─── Validate ──────────────────────────────────────────────────────────────────
 $errors = [];
 if ($name === '')
-  $errors[] = "Nama wajib diisi";
+  $errors[] = 'Nama wajib diisi.';
 if ($phone === '')
-  $errors[] = "Nomor WA wajib diisi";
+  $errors[] = 'Nomor WhatsApp wajib diisi.';
 if ($address === '')
-  $errors[] = "Alamat wajib diisi";
+  $errors[] = 'Alamat wajib diisi.';
 if ($design === '')
-  $errors[] = "Pilih desain";
+  $errors[] = 'Pilih desain.';
 if ($size === '')
-  $errors[] = "Pilih ukuran";
-if ($qty < 1 || $qty > 20)
-  $errors[] = "Jumlah tidak valid";
+  $errors[] = 'Pilih ukuran.';
 if ($agree !== 1)
-  $errors[] = "Persetujuan DP wajib dicentang";
+  $errors[] = 'Persetujuan DP wajib dicentang.';
+
+// Honeypot check (add hidden field "hp_email" filled only by bots)
+if (!empty($_POST['hp_email'])) {
+  http_response_code(400);
+  exit('Bad request');
+}
 
 if ($errors) {
   http_response_code(400);
-  echo "Error: " . implode(", ", $errors);
+  echo '<p>Error: ' . implode(' ', array_map('htmlspecialchars', $errors)) . '</p>';
+  echo '<p><a href="javascript:history.back()">← Kembali</a></p>';
   exit;
 }
 
 $phone_norm = norm_phone($phone);
+$_SESSION['last_submit'] = $now;
 
-// Save to MySQL
-$referrer = $_SESSION['referrer'] ?? '';
-$fbclid = $_SESSION['fbclid'] ?? '';
-$gclid = $_SESSION['gclid'] ?? '';
+// ─── Save to CSV (fallback + primary log) ─────────────────────────────────────
+$csvRow = array_map(function ($v) {
+  // Prevent CSV injection: prefix dangerous chars
+  if (in_array($v[0] ?? '', ['=', '@', '+', '-', '|', '%'], true))
+    $v = "'" . $v;
+  return $v;
+}, [
+  date('c'),
+  $name,
+  $phone_norm,
+  $address,
+  $design,
+  $size,
+  (string) $qty,
+  $note,
+  $tracking['utm_source'],
+  $tracking['utm_medium'],
+  $tracking['utm_campaign'],
+  $tracking['utm_content'],
+  $tracking['utm_term'],
+  $tracking['fbclid'],
+  $tracking['gclid'],
+  $tracking['wbraid'],
+  $tracking['gbraid'],
+  $tracking['referrer'],
+]);
 
-try {
-  $stmt = $pdo->prepare("INSERT INTO leads (name, phone, address, design, size, quantity, note, status, utm_source, utm_medium, utm_campaign, fbclid, gclid, referrer) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?)");
-
-  $stmt->execute([
-    $name,
-    $phone_norm,
-    $address,
-    $design,
-    $size,
-    $qty,
-    $note,
-    $utm_source,
-    $utm_medium,
-    $utm_campaign,
-    $fbclid,
-    $gclid,
-    $referrer
-  ]);
-} catch (PDOException $e) {
-  // log error but continue to redirect so user can still chat WA
-  error_log("[" . date("Y-m-d H:i:s") . "] Insert Lead Error: " . $e->getMessage() . PHP_EOL, 3, __DIR__ . '/storage/logs/error.log');
+$csvExists = file_exists(LEADS_CSV);
+$fp = @fopen(LEADS_CSV, 'a');
+if ($fp) {
+  if (!$csvExists) {
+    fputcsv($fp, [
+      'timestamp',
+      'name',
+      'phone',
+      'address',
+      'design',
+      'size',
+      'qty',
+      'note',
+      'utm_source',
+      'utm_medium',
+      'utm_campaign',
+      'utm_content',
+      'utm_term',
+      'fbclid',
+      'gclid',
+      'wbraid',
+      'gbraid',
+      'referrer'
+    ]);
+  }
+  fputcsv($fp, $csvRow);
+  fclose($fp);
 }
 
-// Build WA message
-$msgLines = [
-  "Halo admin, saya ingin order Jersey Kamen Rider (Edisi 1)",
-  "",
-  "Nama: {$name}",
-  "No WA: {$phone_norm}",
-  "Alamat: {$address}",
-  "Desain: {$design}",
-  "Size: {$size}",
-  "Jumlah: {$qty}",
-  "Catatan: " . ($note ?: "-"),
-  "",
-  "DP minimal: IDR 100.000 / jersey",
-  "Periode PO: 27 Feb - 08 Mar 2026",
-  "Produksi: 09 - 21 Mar 2026",
-  "",
-  "UTM Source: " . ($utm_source ?: "-"),
-  "UTM Campaign: " . ($utm_campaign ?: "-")
-];
+// ─── Save to MySQL (if available) ────────────────────────────────────────────
+if ($pdo) {
+  try {
+    $stmt = $pdo->prepare("
+            INSERT INTO leads
+              (name, phone, address, design, size, quantity, note, status,
+               utm_source, utm_medium, utm_campaign, utm_content, utm_term,
+               fbclid, gclid, wbraid, gbraid, referrer)
+            VALUES (?,?,?,?,?,?,?,'pending',?,?,?,?,?,?,?,?,?,?)
+        ");
+    $stmt->execute([
+      $name,
+      $phone_norm,
+      $address,
+      $design,
+      $size,
+      $qty,
+      $note,
+      $tracking['utm_source'],
+      $tracking['utm_medium'],
+      $tracking['utm_campaign'],
+      $tracking['utm_content'],
+      $tracking['utm_term'],
+      $tracking['fbclid'],
+      $tracking['gclid'],
+      $tracking['wbraid'],
+      $tracking['gbraid'],
+      $tracking['referrer'],
+    ]);
+  } catch (PDOException $e) {
+    log_event('MySQL insert failed: ' . $e->getMessage());
+  }
+}
 
-$waText = implode("\n", $msgLines);
-$waUrl = "https://wa.me/" . WA_NUMBER . "?text=" . rawurlencode($waText);
+log_event("New lead: $name | $phone_norm | $design | $size x$qty");
 
-// Redirect to thank-you page (fires tracking + offers WA)
+// ─── Build WhatsApp message ───────────────────────────────────────────────────
+$waMsg = implode("\n", [
+  'Halo Admin Ozverligsportwear, saya ingin konfirmasi pesanan:',
+  '',
+  "Nama    : $name",
+  "WA      : $phone_norm",
+  "Alamat  : $address",
+  "Desain  : $design",
+  "Ukuran  : $size",
+  "Jumlah  : $qty",
+  'Catatan : ' . ($note ?: '-'),
+  '',
+  'DP minimal : IDR 100.000 / jersey',
+  'Pre-Order  : 27 Feb – 08 Mar 2026',
+  'Produksi   : 09 – 21 Mar 2026',
+]);
+$waUrl = 'https://wa.me/' . WA_NUMBER . '?text=' . rawurlencode($waMsg);
+
+// ─── Session for thank-you page ───────────────────────────────────────────────
 $_SESSION['last_order'] = [
   'name' => $name,
   'phone' => $phone_norm,
   'design' => $design,
   'size' => $size,
   'qty' => $qty,
-  'wa' => $waUrl
+  'wa' => $waUrl,
 ];
 
-header('Location: ' . BASE_PATH . '/thank-you.php', true, 302);
+// ─── Redirect ────────────────────────────────────────────────────────────────
+header('Location: ' . BASE_URL . '/thank-you.php', true, 302);
 exit;
