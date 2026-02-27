@@ -41,23 +41,26 @@ $redirectDelay = 8; // Waktu tunggu dalam detik
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
-    /* 
+    /*
     * Minimal Overrides (Bootstrap 5 controls the rest)
     * Ozverligsportwear x Kemalikart
     */
 
     :root {
-      --bg-dark: #060608;
-      --bg-card: #0e0e12;
-      --brand-red: #f0131e;
-      --brand-green: #00ff66;
+      --bg-dark: #050505;
+      --bg-card: #0a0a0d;
+      --brand-red: #ff1e27;
+      --brand-green: #00e65b;
+      --text-main: #f8f9fa;
+      --text-muted: #8b8f97;
     }
 
     body {
       background-color: var(--bg-dark);
-      color: #f8f9fa;
+      color: var(--text-main);
       /* BS light */
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      overflow-x: hidden;
     }
 
     h1,
@@ -71,6 +74,13 @@ $redirectDelay = 8; // Waktu tunggu dalam detik
       text-transform: uppercase;
       font-weight: 700;
       letter-spacing: 1px;
+    }
+
+    /* Premium gradient texts */
+    .text-gradient {
+      background: linear-gradient(90deg, #fff, #999);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     /* Red accents */
@@ -87,26 +97,53 @@ $redirectDelay = 8; // Waktu tunggu dalam detik
       border-color: var(--brand-red) !important;
     }
 
-    /* Dark cards */
+    /* Dark cards with glassy touch */
     .card-dark {
-      background-color: var(--bg-card);
-      border: 1px solid #222;
+      background-color: rgba(14, 14, 18, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card-dark:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255, 30, 39, 0.3);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
     }
 
     /* Custom Btn */
     .btn-red {
-      background-color: var(--brand-red);
+      background: linear-gradient(135deg, #ff1e27 0%, #d00f18 100%);
       color: #fff;
-      border: 1px solid var(--brand-red);
+      border: none;
       font-family: 'Rajdhani', sans-serif;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
+      box-shadow: 0 4px 15px rgba(255, 30, 39, 0.4);
+      transition: all 0.3s ease;
     }
 
     .btn-red:hover {
-      background-color: #d00f18;
+      background: linear-gradient(135deg, #ff333b 0%, #e6101a 100%);
       color: #fff;
+      box-shadow: 0 6px 20px rgba(255, 30, 39, 0.6);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline-light,
+    .btn-outline-secondary {
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      backdrop-filter: blur(5px);
+      color: var(--text-muted);
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline-light:hover,
+    .btn-outline-secondary:hover {
+      background: rgba(255, 255, 255, 0.1) !important;
+      border-color: rgba(255, 255, 255, 0.4) !important;
+      color: #fff !important;
     }
 
     /* Skew util */
