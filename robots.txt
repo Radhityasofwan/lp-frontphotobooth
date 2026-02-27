@@ -1,3 +1,7 @@
 User-agent: *
 Allow: /
-Sitemap: https://kamenriders.ozverligsportwear.com/kamenriders/sitemap.xml
+Disallow: /admin/
+Disallow: /storage/
+Disallow: /order.php
+
+Sitemap: https://kamenriders.ozverligsportwear.com/sitemap.xml

@@ -1,134 +1,84 @@
-(function () {
-  'use strict';
+document.addEventListener('DOMContentLoaded', () => {
+  // 1. UTM and Click ID Tracking
+  const urlParams = new URLSearchParams(window.location.search);
+  const trackingKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'gclid'];
 
-  // ---------- UTM capture ----------
-  const params = new URLSearchParams(window.location.search);
-  const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+  trackingKeys.forEach(key => {
+    let value = urlParams.get(key);
+    if (value) {
+      sessionStorage.setItem(key, value);
+    } else {
+      value = sessionStorage.getItem(key) || '';
+    }
 
-  function setInput(id, val) {
-    const el = document.getElementById(id);
-    if (el) el.value = val || '';
-  }
-
-  // store UTMs in sessionStorage for navigation without query
-  utmKeys.forEach(k => {
-    const v = params.get(k);
-    if (v) sessionStorage.setItem(k, v);
+    // Fill hidden form fields if they exist
+    const input = document.getElementById(key);
+    if (input) {
+      input.value = value;
+    }
   });
 
-  utmKeys.forEach(k => setInput(k, sessionStorage.getItem(k) || params.get(k) || ''));
-
-  // ---------- WhatsApp links ----------
-  const waNumber = '6281617260666';
-  function makeWaLink(text) {
-    return 'https://wa.me/' + waNumber + '?text=' + encodeURIComponent(text);
+  // Capture referrer if it's external, or load from session
+  if (document.referrer && new URL(document.referrer).hostname !== window.location.hostname) {
+    sessionStorage.setItem('referrer', document.referrer);
   }
 
-  const waText = [
-    'Halo admin, saya ingin tanya Jersey Kamen Rider (Edisi 1).',
-    '',
-    'Nama:',
-    'Desain:',
-    'Size:',
-    'Jumlah:',
-    '',
-    'Sumber: ' + (sessionStorage.getItem('utm_source') || '-'),
-    'Campaign: ' + (sessionStorage.getItem('utm_campaign') || '-')
-  ].join('\n');
+  // 2. Smooth Scrolling for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      const href = this.getAttribute('href');
+      if (href !== '#') {
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+          const topbarHeight = document.querySelector('.topbar')?.offsetHeight || 0;
+          const targetPosition = target.getBoundingClientRect().top + window.scrollY - topbarHeight - 20;
+          window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+        }
+      }
+    });
+  });
 
-  const waLink = document.getElementById('waLink');
-  const waSticky = document.getElementById('waSticky');
-  if (waLink) waLink.href = makeWaLink(waText);
-  if (waSticky) waSticky.href = makeWaLink(waText);
+  // 3. Pixel & Analytics Event Tracking Helper
+  const trackEvent = (eventName, params = {}) => {
+    try {
+      if (typeof gtag === 'function') {
+        gtag('event', eventName, params);
+      }
+      if (typeof fbq === 'function') {
+        // Map GA4 events to FB Pixel standard events where appropriate
+        let fbEvent = 'Track';
+        if (eventName === 'Lead') fbEvent = 'Lead';
+        if (eventName === 'Purchase') fbEvent = 'Purchase';
+        if (eventName === 'Begin_Checkout') fbEvent = 'InitiateCheckout';
 
-  // ---------- Tracking bootstrap ----------
-  const T = (window.__TRACKING__ || {});
-  const hasGA4 = !!(T.ga4 && T.ga4.trim());
-  const hasGAds = !!(T.gadsAw && T.gadsAw.trim());
-  const hasMeta = !!(T.metaPixel && T.metaPixel.trim());
+        fbq('track', fbEvent, params);
+      }
+    } catch (error) {
+      console.warn('Tracking issue:', error);
+    }
+  };
 
-  // GA4
-  if (hasGA4) {
-    const s = document.createElement('script');
-    s.async = true;
-    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(T.ga4);
-    document.head.appendChild(s);
+  // Track button clicks
+  document.querySelectorAll('[data-track]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const trackName = btn.getAttribute('data-track');
+      trackEvent('click_button', { element: trackName });
+    });
+  });
 
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = function(){ window.dataLayer.push(arguments); };
-    window.gtag('js', new Date());
-    window.gtag('config', T.ga4, {
-      anonymize_ip: true
+  // Track form submission
+  const orderForm = document.getElementById('orderForm');
+  if (orderForm) {
+    orderForm.addEventListener('submit', () => {
+      trackEvent('Lead', { event_category: 'Order_Form', value: 100000, currency: 'IDR' });
     });
   }
 
-  // Google Ads base tag (optional but recommended if you use conversion)
-  if (hasGAds) {
-    const s2 = document.createElement('script');
-    s2.async = true;
-    s2.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(T.gadsAw);
-    document.head.appendChild(s2);
-
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = window.gtag || function(){ window.dataLayer.push(arguments); };
-    window.gtag('js', new Date());
-    window.gtag('config', T.gadsAw);
+  // 4. Set Sticky WhatsApp Link
+  const waLink = document.getElementById('waSticky');
+  if (waLink) {
+    // Base WA link can be configured to add dynamic message
+    waLink.href = `https://wa.me/6281617260666?text=Halo%20Admin%20Ozverligsportwear,%20saya%20tertarik%20pesan%20Jersey%20Kamen%20Rider`;
   }
-
-  // Meta Pixel
-  if (hasMeta) {
-    !function(f,b,e,v,n,t,s){
-      if(f.fbq)return; n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-      if(!f._fbq)f._fbq=n; n.push=n; n.loaded=!0; n.version='2.0';
-      n.queue=[]; t=b.createElement(e); t.async=!0;
-      t.src=v; s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s)
-    }(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
-    window.fbq('init', T.metaPixel);
-    window.fbq('track', 'PageView');
-    window.fbq('track', 'ViewContent');
-  }
-
-  // ---------- Event helper ----------
-  function track(name, extra) {
-    extra = extra || {};
-    // GA4 custom event
-    if (window.gtag && hasGA4) {
-      window.gtag('event', name, extra);
-    }
-    // Meta standard/custom event
-    if (window.fbq && hasMeta) {
-      if (name === 'form_submit') window.fbq('track', 'Lead');
-      if (name === 'wa_click') window.fbq('track', 'Contact');
-      // also custom
-      window.fbq('trackCustom', name, extra);
-    }
-  }
-
-  // Track clicks by data-track attribute
-  document.addEventListener('click', function (e) {
-    const a = e.target.closest('[data-track]');
-    if (!a) return;
-
-    const ev = a.getAttribute('data-track');
-    track(ev, {
-      utm_source: sessionStorage.getItem('utm_source') || '',
-      utm_campaign: sessionStorage.getItem('utm_campaign') || ''
-    });
-
-    // Google Ads conversion on WhatsApp click (optional)
-    if (window.gtag && hasGAds && ev && ev.indexOf('wa') >= 0 && T.gadsLabel) {
-      window.gtag('event', 'conversion', {
-        'send_to': T.gadsAw + '/' + T.gadsLabel
-      });
-    }
-  });
-
-  // Track form view
-  track('page_ready', {
-    utm_source: sessionStorage.getItem('utm_source') || '',
-    utm_campaign: sessionStorage.getItem('utm_campaign') || ''
-  });
-
-})();
+});

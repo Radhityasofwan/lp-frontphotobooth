@@ -6,7 +6,7 @@ header('Content-Type: text/html; charset=utf-8');
 
 // Rate limit per session
 $now = time();
-$last = isset($_SESSION['last_submit']) ? (int)$_SESSION['last_submit'] : 0;
+$last = isset($_SESSION['last_submit']) ? (int) $_SESSION['last_submit'] : 0;
 if ($last && ($now - $last) < RATE_LIMIT_SECONDS) {
   http_response_code(429);
   echo "Terlalu cepat. Coba lagi beberapa detik.";
@@ -15,20 +15,26 @@ if ($last && ($now - $last) < RATE_LIMIT_SECONDS) {
 $_SESSION['last_submit'] = $now;
 
 // Helpers
-function clean($s, $max=240) {
-  $s = trim((string)$s);
+function clean($s, $max = 240)
+{
+  $s = trim((string) $s);
   $s = preg_replace('/\s+/', ' ', $s);
-  if (mb_strlen($s) > $max) $s = mb_substr($s, 0, $max);
+  if (mb_strlen($s) > $max)
+    $s = mb_substr($s, 0, $max);
   return $s;
 }
 
-function norm_phone($p) {
-  $p = preg_replace('/[^0-9+]/', '', (string)$p);
+function norm_phone($p)
+{
+  $p = preg_replace('/[^0-9+]/', '', (string) $p);
   // normalize Indonesian numbers
   $p = ltrim($p);
-  if (strpos($p, '+') === 0) $p = substr($p, 1);
-  if (strpos($p, '0') === 0) $p = '62' . substr($p, 1);
-  if (strpos($p, '62') !== 0) $p = '62' . $p;
+  if (strpos($p, '+') === 0)
+    $p = substr($p, 1);
+  if (strpos($p, '0') === 0)
+    $p = '62' . substr($p, 1);
+  if (strpos($p, '62') !== 0)
+    $p = '62' . $p;
   return $p;
 }
 
@@ -44,9 +50,9 @@ $phone = clean($_POST['phone'] ?? '', 20);
 $address = clean($_POST['address'] ?? '', 240);
 $design = clean($_POST['design'] ?? '', 60);
 $size = clean($_POST['size'] ?? '', 10);
-$qty = (int)($_POST['qty'] ?? 1);
+$qty = (int) ($_POST['qty'] ?? 1);
 $note = clean($_POST['note'] ?? '', 240);
-$agree = isset($_POST['agree_dp']) ? (int)$_POST['agree_dp'] : 0;
+$agree = isset($_POST['agree_dp']) ? (int) $_POST['agree_dp'] : 0;
 
 // UTM
 $utm_source = clean($_POST['utm_source'] ?? '', 80);
@@ -57,13 +63,20 @@ $utm_term = clean($_POST['utm_term'] ?? '', 120);
 
 // Validate
 $errors = [];
-if ($name === '') $errors[] = "Nama wajib diisi";
-if ($phone === '') $errors[] = "Nomor WA wajib diisi";
-if ($address === '') $errors[] = "Alamat wajib diisi";
-if ($design === '') $errors[] = "Pilih desain";
-if ($size === '') $errors[] = "Pilih ukuran";
-if ($qty < 1 || $qty > 20) $errors[] = "Jumlah tidak valid";
-if ($agree !== 1) $errors[] = "Persetujuan DP wajib dicentang";
+if ($name === '')
+  $errors[] = "Nama wajib diisi";
+if ($phone === '')
+  $errors[] = "Nomor WA wajib diisi";
+if ($address === '')
+  $errors[] = "Alamat wajib diisi";
+if ($design === '')
+  $errors[] = "Pilih desain";
+if ($size === '')
+  $errors[] = "Pilih ukuran";
+if ($qty < 1 || $qty > 20)
+  $errors[] = "Jumlah tidak valid";
+if ($agree !== 1)
+  $errors[] = "Persetujuan DP wajib dicentang";
 
 if ($errors) {
   http_response_code(400);
@@ -73,36 +86,32 @@ if ($errors) {
 
 $phone_norm = norm_phone($phone);
 
-// Save to CSV
-if (!file_exists(LEADS_CSV)) {
-  @file_put_contents(LEADS_CSV, "timestamp,name,phone,address,design,size,qty,note,utm_source,utm_medium,utm_campaign,utm_content,utm_term,user_agent,ip\n");
-}
+// Save to MySQL
+$referrer = $_SESSION['referrer'] ?? '';
+$fbclid = $_SESSION['fbclid'] ?? '';
+$gclid = $_SESSION['gclid'] ?? '';
 
-$ip = $_SERVER['REMOTE_ADDR'] ?? '';
-$ua = clean($_SERVER['HTTP_USER_AGENT'] ?? '', 200);
+try {
+  $stmt = $pdo->prepare("INSERT INTO leads (name, phone, address, design, size, quantity, note, status, utm_source, utm_medium, utm_campaign, fbclid, gclid, referrer) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?)");
 
-$row = [
-  date('c'),
-  $name,
-  $phone_norm,
-  $address,
-  $design,
-  $size,
-  (string)$qty,
-  $note,
-  $utm_source,
-  $utm_medium,
-  $utm_campaign,
-  $utm_content,
-  $utm_term,
-  $ua,
-  $ip
-];
-
-$fp = @fopen(LEADS_CSV, 'a');
-if ($fp) {
-  fputcsv($fp, $row);
-  fclose($fp);
+  $stmt->execute([
+    $name,
+    $phone_norm,
+    $address,
+    $design,
+    $size,
+    $qty,
+    $note,
+    $utm_source,
+    $utm_medium,
+    $utm_campaign,
+    $fbclid,
+    $gclid,
+    $referrer
+  ]);
+} catch (PDOException $e) {
+  // log error but continue to redirect so user can still chat WA
+  error_log("[" . date("Y-m-d H:i:s") . "] Insert Lead Error: " . $e->getMessage() . PHP_EOL, 3, __DIR__ . '/storage/logs/error.log');
 }
 
 // Build WA message

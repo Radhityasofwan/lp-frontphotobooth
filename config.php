@@ -44,3 +44,41 @@ define('EVENTS_LOG', __DIR__ . '/storage/events.log');
 
 // Basic rate limit seconds per session
 define('RATE_LIMIT_SECONDS', 10);
+
+// =========================
+// Database Configuration
+// =========================
+define('DB_HOST', 'localhost');
+define('DB_USER', 'root');
+define('DB_PASS', '');
+define('DB_NAME', 'kamenriders');
+
+// Toggle error reporting for production
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+try {
+    $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
+    $pdo = new PDO($dsn, DB_USER, DB_PASS);
+    
+    // Set PDO attributes for error modes and default fetch modes
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+
+} catch(PDOException $e) {
+    error_log("[" . date("Y-m-d H:i:s") . "] Connection failed: " . $e->getMessage() . PHP_EOL, 3, __DIR__ . '/storage/logs/error.log');
+    die("Database connection error. Please proceed to check logs.");
+}
+
+// Utility function to sanitize inputs
+function sanitize($data) {
+    if (is_array($data)) {
+        foreach ($data as $key => $value) {
+            $data[$key] = sanitize($value);
+        }
+        return $data;
+    }
+    return htmlspecialchars(strip_tags(trim($data)), ENT_QUOTES, 'UTF-8');
+}
