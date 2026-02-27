@@ -63,6 +63,7 @@ if (isset($_GET['export'])) {
             'Design',
             'Size',
             'Qty',
+            'Total Price',
             'Note',
             'Payment Proof',
             'Status',
@@ -79,7 +80,30 @@ if (isset($_GET['export'])) {
         ]);
         $rows = $pdo->query('SELECT * FROM leads ORDER BY id ASC')->fetchAll();
         foreach ($rows as $r) {
-            fputcsv($out, $r);
+            fputcsv($out, [
+                $r['id'] ?? '',
+                $r['created_at'] ?? '',
+                $r['name'] ?? '',
+                $r['phone'] ?? '',
+                $r['address'] ?? '',
+                $r['design'] ?? '',
+                $r['size'] ?? '',
+                $r['quantity'] ?? '',
+                $r['total_price'] ?? '',
+                $r['note'] ?? '',
+                $r['payment_proof'] ?? '',
+                $r['status'] ?? '',
+                $r['utm_source'] ?? '',
+                $r['utm_medium'] ?? '',
+                $r['utm_campaign'] ?? '',
+                $r['utm_content'] ?? '',
+                $r['utm_term'] ?? '',
+                $r['fbclid'] ?? '',
+                $r['gclid'] ?? '',
+                $r['wbraid'] ?? '',
+                $r['gbraid'] ?? '',
+                $r['referrer'] ?? ''
+            ]);
         }
         fclose($out);
         exit;
@@ -594,6 +618,7 @@ function statusClass(string $s): string
                                     $des = $l['design'] ?? '-';
                                     $sz = $l['size'] ?? '-';
                                     $qty = $l['quantity'] ?? $l['qty'] ?? '-';
+                                    $tot = $l['total_price'] ?? 0;
                                     $proof = $l['payment_proof'] ?? '-';
                                     $st = $l['status'] ?? 'pending';
                                     $src = $l['utm_source'] ?? '-';
@@ -629,6 +654,9 @@ function statusClass(string $s): string
                                             <span class="text-muted">
                                                 <?= h($sz) ?> ×
                                                 <?= h((string) $qty) ?>
+                                            </span><br>
+                                            <span class="text-muted" style="color:var(--green)">
+                                                <?= idr((int) $tot) ?>
                                             </span>
                                         </td>
                                         <td>

@@ -116,6 +116,21 @@ if ($errors) {
 $phone_norm = norm_phone($phone);
 $_SESSION['last_submit'] = $now;
 
+// ─── Calculate Price ──────────────────────────────────────────────────────────
+$total_qty = $qty;
+if ($design === 'Ichigo + Black (Paket Doble)') {
+  $total_qty = $qty * 2;
+}
+$pairs = floor($total_qty / 2);
+$singles = $total_qty % 2;
+$base_price = ($pairs * PRICE_PROMO_2) + ($singles * PRICE_PROMO_1);
+
+$surcharge = 0;
+if (in_array(strtoupper($size), ['XXL', '3XL', '4XL', '5XL'])) {
+  $surcharge = PRICE_SURCHARGE * $total_qty;
+}
+$total_price = $base_price + $surcharge;
+
 // ─── Save to CSV (fallback + primary log) ─────────────────────────────────────
 $csvRow = array_map(function ($v) {
   // Prevent CSV injection: prefix dangerous chars
@@ -130,6 +145,7 @@ $csvRow = array_map(function ($v) {
   $design,
   $size,
   (string) $qty,
+  (string) $total_price,
   $note,
   $paymentProofFile,
   $tracking['utm_source'],
@@ -156,6 +172,7 @@ if ($fp) {
       'design',
       'size',
       'qty',
+      'total_price',
       'note',
       'payment_proof',
       'utm_source',
@@ -179,10 +196,10 @@ if ($pdo) {
   try {
     $stmt = $pdo->prepare("
             INSERT INTO leads
-              (name, phone, address, design, size, quantity, note, payment_proof, status,
+              (name, phone, address, design, size, quantity, total_price, note, payment_proof, status,
                utm_source, utm_medium, utm_campaign, utm_content, utm_term,
                fbclid, gclid, wbraid, gbraid, referrer)
-            VALUES (?,?,?,?,?,?,?,?,'pending',?,?,?,?,?,?,?,?,?,?)
+            VALUES (?,?,?,?,?,?,?,?,?,'pending',?,?,?,?,?,?,?,?,?,?)
         ");
     $stmt->execute([
       $name,
@@ -191,6 +208,7 @@ if ($pdo) {
       $design,
       $size,
       $qty,
+      $total_price,
       $note,
       $paymentProofFile,
       $tracking['utm_source'],
@@ -221,6 +239,7 @@ $waMsg = implode("\n", [
   "Desain  : $design",
   "Ukuran  : $size",
   "Jumlah  : $qty",
+  "Total Rp: " . number_format($total_price, 0, ',', '.'),
   'Catatan : ' . ($note ?: '-'),
   'Bukti TF: (Telah dilampirkan via web)',
   '',
