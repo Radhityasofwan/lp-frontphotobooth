@@ -208,6 +208,40 @@ function statusClass(string $s): string
         default => 'st-pending',
     };
 }
+
+// ─── Analytics Aggregation ────────────────────────────────────────────────────
+$stat_views = 0;
+$stat_reach = 0;
+$stat_clicks = 0;
+$stat_duration = 0;
+
+if ($pdo) {
+    try {
+        $rowViews = $pdo->query("SELECT COUNT(*) AS c FROM analytics WHERE event_type LIKE 'view_%'")->fetch();
+        $stat_views = $rowViews['c'] ?? 0;
+
+        $rowReach = $pdo->query("SELECT COUNT(DISTINCT ip_address) AS c FROM analytics WHERE event_type LIKE 'view_%'")->fetch();
+        $stat_reach = $rowReach['c'] ?? 0;
+
+        $rowClicks = $pdo->query("SELECT COUNT(*) AS c FROM analytics WHERE event_type LIKE 'click_%'")->fetch();
+        $stat_clicks = $rowClicks['c'] ?? 0;
+
+        $rowDur = $pdo->query("SELECT AVG(event_value) AS a FROM analytics WHERE event_type = 'time_spent' AND event_value > 0")->fetch();
+        $stat_duration = $rowDur['a'] ? round($rowDur['a']) : 0;
+    } catch (PDOException $e) {
+        // Table might not exist yet if no visits occurred
+    }
+}
+
+// Formatting Helper for Duration
+function formatDuration($seconds)
+{
+    if ($seconds < 60)
+        return $seconds . 's';
+    $m = floor($seconds / 60);
+    $s = $seconds % 60;
+    return $m . 'm ' . $s . 's';
+}
 ?>
 <!doctype html>
 <html lang="id">
@@ -553,7 +587,40 @@ function statusClass(string $s): string
 
     <div class="main">
 
-        <!-- Stats -->
+        <!-- Tracking Insights (Batch 20) -->
+        <h3 class="mt-2 mb-3"
+            style="color:var(--red); font-family:'Rajdhani',sans-serif; text-transform:uppercase; letter-spacing:1px; border-bottom: 1px solid rgba(255, 30, 39, 0.3); padding-bottom:0.5rem;">
+            Traffic & Engagement</h3>
+        <div class="stats">
+            <div class="stat-card" style="border-top-color:#00ff66;">
+                <div class="stat-card__n">Impressions</div>
+                <div class="stat-card__v" style="color:#00ff66">
+                    <?= number_format($stat_views) ?>
+                </div>
+            </div>
+            <div class="stat-card" style="border-top-color:#38bdf8;">
+                <div class="stat-card__n">Unique Reach</div>
+                <div class="stat-card__v" style="color:#38bdf8">
+                    <?= number_format($stat_reach) ?>
+                </div>
+            </div>
+            <div class="stat-card" style="border-top-color:#fbbf24;">
+                <div class="stat-card__n">CTA Clicks</div>
+                <div class="stat-card__v" style="color:#fbbf24">
+                    <?= number_format($stat_clicks) ?>
+                </div>
+            </div>
+            <div class="stat-card" style="border-top-color:#a855f7;">
+                <div class="stat-card__n">Avg. Duration</div>
+                <div class="stat-card__v" style="color:#a855f7">
+                    <?= formatDuration($stat_duration) ?>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="mt-4 mb-3"
+            style="color:#fff; font-family:'Rajdhani',sans-serif; text-transform:uppercase; letter-spacing:1px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom:0.5rem;">
+            Sales Conversions</h3>
         <div class="stats">
             <div class="stat-card">
                 <div class="stat-card__n">Total Leads</div>

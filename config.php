@@ -85,6 +85,22 @@ try {
             PDO::ATTR_EMULATE_PREPARES => false,
         ]
     );
+
+    // Auto-create Analytics table if missing
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS analytics (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            session_id VARCHAR(64) NOT NULL,
+            ip_address VARCHAR(45),
+            event_type VARCHAR(50) NOT NULL,
+            event_value INT DEFAULT 0,
+            page_url VARCHAR(255),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            INDEX (event_type),
+            INDEX (session_id)
+        )
+    ");
+
 } catch (PDOException $e) {
     $pdo = null; // fallback to CSV if DB unavailable
     error_log(

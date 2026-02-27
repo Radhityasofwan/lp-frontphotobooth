@@ -34,3 +34,15 @@ CREATE TABLE IF NOT EXISTS leads (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS analytics (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    session_id VARCHAR(64) NOT NULL,
+    ip_address VARCHAR(45),
+    event_type VARCHAR(50) NOT NULL, -- e.g., 'view', 'click', 'time_spent'
+    event_value INT DEFAULT 0, -- e.g. amount of seconds spent
+    page_url VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX (event_type),
+    INDEX (session_id)
+);
