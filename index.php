@@ -168,8 +168,15 @@ CSS;
 
     body {
       background-color: var(--bg-dark);
+      background-image:
+        radial-gradient(ellipse at 50% 50%, rgba(200, 200, 200, 0.05) 0%, rgba(5, 5, 5, 0.9) 60%),
+        linear-gradient(135deg, rgba(0, 230, 91, 0.15) 0%, rgba(5, 5, 5, 0) 35%, rgba(5, 5, 5, 0) 65%, rgba(255, 30, 39, 0.15) 100%),
+        url('<?= h(asset('assets/img/hero.webp')) ?>');
+      background-size: cover, cover, cover;
+      background-position: center, center, center;
+      background-attachment: fixed, fixed, fixed;
+      background-blend-mode: overlay, normal, overlay;
       color: var(--text-main);
-      /* BS light */
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       overflow-x: hidden;
     }
@@ -194,7 +201,7 @@ CSS;
       -webkit-text-fill-color: transparent;
     }
 
-    /* Red accents */
+    /* Red & Green accents */
     .text-brand-red {
       color: var(--brand-red) !important;
     }
@@ -208,18 +215,41 @@ CSS;
       border-color: var(--brand-red) !important;
     }
 
+    .border-brand-green {
+      border-color: var(--brand-green) !important;
+    }
+
     /* Dark cards with glassy touch */
     .card-dark {
-      background-color: rgba(14, 14, 18, 0.8);
-      backdrop-filter: blur(10px);
+      background-color: rgba(14, 14, 18, 0.75);
+      backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.05);
       transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
     .card-dark:hover {
       transform: translateY(-5px);
-      border-color: rgba(255, 30, 39, 0.3);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Custom colored card glows */
+    .glow-green {
+      box-shadow: 0 0 25px rgba(0, 230, 91, 0.15);
+      border: 1px solid rgba(0, 230, 91, 0.3);
+    }
+
+    .glow-green:hover {
+      box-shadow: 0 0 35px rgba(0, 230, 91, 0.3);
+      border-color: rgba(0, 230, 91, 0.6);
+    }
+
+    .glow-red {
+      box-shadow: 0 0 25px rgba(255, 30, 39, 0.15);
+      border: 1px solid rgba(255, 30, 39, 0.3);
+    }
+
+    .glow-red:hover {
+      box-shadow: 0 0 35px rgba(255, 30, 39, 0.3);
+      border-color: rgba(255, 30, 39, 0.6);
     }
 
     /* Custom Btn */
@@ -509,8 +539,9 @@ CSS;
     </section>
 
     <!-- ── SPESIFIKASI ── -->
-    <section class="py-5" id="spesifikasi" style="background: linear-gradient(180deg, #0a0a0e 0%, #060608 100%);">
-      <div class="container">
+    <section class="py-5 text-center" id="spesifikasi"
+      style="background: rgba(6,6,8,0.4); backdrop-filter: blur(5px); border-top: 1px solid rgba(255,255,255,0.05);">
+      <div class="container d-flex flex-column align-items-center">
         <h2 class="display-6 font-rajdhani fw-bold text-white mb-4">Spesifikasi Jersey</h2>
         <ul class="list-group list-group-flush border-top border-dark mb-4" style="max-width: 600px;">
           <li class="list-group-item bg-transparent text-white border-dark d-flex justify-content-between px-0 py-3">
@@ -543,24 +574,24 @@ CSS;
         <p class="lead text-secondary mb-5">Promo terbatas selama periode pre-order.</p>
 
         <div class="row g-4 justify-content-center justify-content-md-start mb-4">
-          <!-- 1 pcs -->
+          <!-- 1 pcs (Left - Green) -->
           <div class="col-md-5 col-lg-4">
-            <div class="card card-dark h-100 rounded-0 text-center py-5 px-3">
-              <div class="font-rajdhani fs-4 text-white mb-3">1 Jersey</div>
+            <div class="card card-dark h-100 rounded-0 text-center py-5 px-3 glow-green">
+              <div class="font-rajdhani fs-4 text-white mb-3">HARGA JERSEY</div>
               <div class="price-strike mb-2"><?= idr(PRICE_ORIGINAL_1) ?></div>
               <div class="display-5 fw-bold text-brand-green mb-4 font-rajdhani"><?= idr(PRICE_PROMO_1) ?></div>
-              <div class="text-secondary small">DP minimal <?= idr(PRICE_DP) ?> / jersey</div>
+              <div class="text-secondary small">DP MINIMAL <?= idr(PRICE_DP) ?> / JERSEY</div>
             </div>
           </div>
 
-          <!-- 2 pcs (featured) -->
+          <!-- 2 pcs (Right - Red) -->
           <div class="col-md-5 col-lg-4">
-            <div class="card card-dark h-100 rounded-0 text-center py-5 px-3 border-brand-red position-relative shadow"
+            <div class="card card-dark h-100 rounded-0 text-center py-5 px-3 glow-red position-relative"
               style="transform: scale(1.05); z-index:2;">
               <span
                 class="position-absolute top-0 start-50 translate-middle badge bg-brand-red px-3 py-2 text-uppercase letter-spacing-1">Best
                 Value</span>
-              <div class="font-rajdhani fs-4 text-white mb-3">Paket 2 Jersey</div>
+              <div class="font-rajdhani fs-4 text-white mb-3">HARGA JERSEY PAKET DOBLE</div>
               <div class="price-strike mb-2"><?= idr(PRICE_ORIGINAL_2) ?></div>
               <div class="display-5 fw-bold text-brand-green mb-4 font-rajdhani"><?= idr(PRICE_PROMO_2) ?></div>
               <div class="text-white small fw-bold">Hemat <?= idr(PRICE_ORIGINAL_2 - PRICE_PROMO_2) ?> — koleksi 2
@@ -574,11 +605,13 @@ CSS;
     </section>
 
     <!-- ── JADWAL ── -->
-    <section class="py-5" id="jadwal" style="background: linear-gradient(180deg, #0a0a0e 0%, #060608 100%);">
-      <div class="container">
+    <section class="py-5 text-center" id="jadwal"
+      style="background: rgba(6,6,8,0.4); backdrop-filter: blur(5px); border-top: 1px solid rgba(255,255,255,0.05);">
+      <div class="container d-flex flex-column align-items-center">
         <h2 class="display-6 font-rajdhani fw-bold text-white mb-4">Jadwal Pre-Order</h2>
 
-        <div class="row g-0 border-start border-brand-red border-3 ms-3 mb-4">
+        <div class="row w-100 g-0 border-start border-end border-brand-red border-3 mx-auto mb-4"
+          style="max-width: 600px; text-align: center;">
           <div class="col-12 ps-4 py-3 border-bottom border-dark position-relative">
             <div class="text-secondary small text-uppercase fw-bold mb-1">Periode Pemesanan</div>
             <div class="text-white fs-5">27 Februari – 08 Maret 2026</div>
@@ -587,7 +620,7 @@ CSS;
             <div class="text-secondary small text-uppercase fw-bold mb-1">Periode Produksi</div>
             <div class="text-white fs-5">09 – 21 Maret 2026</div>
           </div>
-          <div class="col-12 ps-4 py-3 position-relative">
+          <div class="col-12 py-3 position-relative">
             <div class="text-secondary small text-uppercase fw-bold mb-1">Pengiriman</div>
             <div class="text-white fs-5">Dilakukan setelah produksi selesai</div>
           </div>
@@ -601,7 +634,8 @@ CSS;
     </section>
 
     <!-- ── SOCIAL PROOF ── -->
-    <section class="py-5 bg-dark" id="bukti">
+    <section class="py-5 bg-dark" id="bukti"
+      style="background: rgba(6,6,8,0.8) !important; border-top: 1px solid rgba(255,255,255,0.05);">
       <div class="container text-center">
         <h2 class="display-6 font-rajdhani fw-bold text-white mb-5">Kepercayaan &amp; Kualitas</h2>
         <div class="row g-4 justify-content-center">
@@ -631,8 +665,9 @@ CSS;
     </section>
 
     <!-- ── SIZE CHART ── -->
-    <section class="py-5" id="size-chart" style="background: linear-gradient(180deg, #060608 0%, #0a0a0e 100%);">
-      <div class="container text-center">
+    <section class="py-5 text-center" id="size-chart"
+      style="background: rgba(10,10,14,0.6); backdrop-filter: blur(5px); border-top: 1px solid rgba(255,255,255,0.05);">
+      <div class="container d-flex flex-column align-items-center">
         <h2 class="display-6 font-rajdhani fw-bold text-white mb-4">Size Chart</h2>
         <p class="lead text-secondary mb-5">Panduan ukuran untuk mendapatkan fitting terbaik.</p>
         <div class="row justify-content-center">
@@ -646,22 +681,22 @@ CSS;
     </section>
 
     <!-- ── ORDER FORM ── -->
-    <section class="py-5 border-top border-dark" id="order"
-      style="background: linear-gradient(180deg, #0a0a0e 0%, #060608 100%);">
-      <div class="container">
+    <section class="py-5 border-top border-dark text-center" id="order"
+      style="background: rgba(6,6,8,0.6); backdrop-filter: blur(10px);">
+      <div class="container d-flex flex-column align-items-center">
         <div class="text-center mb-5">
           <h2 class="display-6 font-rajdhani fw-bold text-white mb-2">Form Pemesanan</h2>
           <p class="lead text-secondary">Isi form di bawah. Setelah submit, Anda diarahkan ke WhatsApp untuk konfirmasi.
           </p>
         </div>
 
-        <div class="row justify-content-center">
+        <div class="row justify-content-center w-100 text-start">
           <div class="col-lg-8">
             <div class="card card-dark p-4 p-md-5 rounded-0 shadow-lg">
               <div id="formError" class="text-danger mb-3 d-none fw-bold"></div>
 
               <form id="orderForm" method="post" action="<?= h(BASE_PATH) ?>/order.php" enctype="multipart/form-data"
-                novalidate>
+                class="needs-validation" novalidate>
                 <!-- Hidden tracking fields -->
                 <input type="hidden" name="utm_source" id="f_utm_source">
                 <input type="hidden" name="utm_medium" id="f_utm_medium">
@@ -792,12 +827,19 @@ CSS;
                 <!-- Dynamic Pricing Display -->
                 <div class="row gx-0 mb-4 align-items-center bg-black p-3 rounded"
                   style="border: 1px solid rgba(255, 30, 39, 0.3);">
-                  <div class="col-8">
-                    <span class="text-secondary small d-block">TOTAL PEMBAYARAN</span>
-                    <strong class="text-brand-green fs-4 font-rajdhani" id="ui_total_price">Rp 0</strong>
+                  <div
+                    class="col-12 mb-2 pb-2 border-bottom border-dark d-flex justify-content-between align-items-center">
+                    <span class="text-secondary small fw-bold">TOTAL HARGA JERSEY:</span>
+                    <strong class="text-white fs-5 font-rajdhani" id="ui_total_price">Rp 0</strong>
                   </div>
-                  <div class="col-4 text-end">
-                    <span class="badge bg-brand-red">Transfer Kesini</span>
+                  <div class="col-12 d-flex justify-content-between align-items-center mt-2">
+                    <div>
+                      <span class="text-brand-green small d-block fw-bold">DP MINIMAL:</span>
+                      <span class="text-secondary" style="font-size: 0.70rem;">(Bisa ditransfer lunas)</span>
+                    </div>
+                    <div class="text-end">
+                      <strong class="text-brand-green fs-3 font-rajdhani" id="ui_dp_price">Rp 0</strong>
+                    </div>
                   </div>
                 </div>
 
@@ -1060,6 +1102,8 @@ CSS;
         const inpQty = document.getElementById('inp_qty');
         const uiTotal = document.getElementById('ui_total_price');
 
+        const uiDp = document.getElementById('ui_dp_price');
+
         function calcPrice() {
           if (!inpDesign || !inpSize || !inpQty || !uiTotal) return;
           let qty = parseInt(inpQty.value) || 1;
@@ -1079,6 +1123,12 @@ CSS;
           uiTotal.innerText = new Intl.NumberFormat('id-ID', {
             style: 'currency', currency: 'IDR', minimumFractionDigits: 0
           }).format(finalPrice);
+
+          if (uiDp) {
+            uiDp.innerText = new Intl.NumberFormat('id-ID', {
+              style: 'currency', currency: 'IDR', minimumFractionDigits: 0
+            }).format(totalQty * 100000);
+          }
         }
 
         if (inpDesign) inpDesign.addEventListener('change', calcPrice);
@@ -1088,6 +1138,48 @@ CSS;
           inpQty.addEventListener('change', calcPrice);
         }
         calcPrice();
+
+        // ── Form Validation (Frontend) ──
+        if (form) {
+          form.addEventListener('submit', function (event) {
+            // Check Bootstrap native validation
+            if (!form.checkValidity()) {
+              event.preventDefault();
+              event.stopPropagation();
+              form.classList.add('was-validated');
+
+              // Scroll to first invalid element
+              const firstInvalid = form.querySelector(':invalid');
+              if (firstInvalid) {
+                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
+              return;
+            }
+
+            // Check File Size
+            const proofInput = document.getElementById('inp_proof');
+            if (proofInput && proofInput.files.length > 0) {
+              const fileSize = proofInput.files[0].size / 1024 / 1024; // MB
+              if (fileSize > 5) {
+                event.preventDefault();
+                event.stopPropagation();
+                alert('Ukuran file maksimal 5MB. Silakan kompres gambar Anda terlebih dahulu.');
+                proofInput.value = ''; // clear
+                const nameDisplay = document.getElementById('file_name_display');
+                if (nameDisplay) {
+                  nameDisplay.textContent = 'Klik atau Tarik File Kesini';
+                  nameDisplay.classList.remove('text-brand-green');
+                }
+                return;
+              }
+            }
+
+            // Fire Meta Lead Event if valid
+            if (typeof fbq !== 'undefined') {
+              fbq('track', 'Lead');
+            }
+          }, false);
+        }
 
         // ── Meta Ads Tracking Funnel ──
         if (typeof fbq !== 'undefined') {
