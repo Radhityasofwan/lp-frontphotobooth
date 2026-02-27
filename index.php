@@ -602,6 +602,42 @@ CSS;
       </div>
     </div>
 
+    <!-- ── INSTAGRAM SHOWCASES ── -->
+    <section class="py-5 border-bottom border-dark position-relative z-1" id="showcase">
+      <div class="container">
+        <div class="text-center mb-5">
+          <h2 class="display-6 font-rajdhani fw-bold text-white">Our Showcase</h2>
+          <p class="text-secondary">Detail dan tampilan nyata karya kami di Instagram.</p>
+        </div>
+        <div class="row g-4 justify-content-center">
+          <!-- Ichigo Embed (Green Glow) -->
+          <div class="col-md-6 col-lg-5">
+            <div class="card card-dark h-100 rounded text-center p-3 glow-green border border-dark">
+              <h5 class="font-rajdhani fw-bold text-brand-green mb-3">#Ichigo Edition</h5>
+              <div class="ratio ratio-1x1 w-100 overflow-hidden rounded bg-black d-flex justify-content-center">
+                <blockquote class="instagram-media w-100 border-0 m-0 bg-transparent"
+                  data-instgrm-permalink="https://www.instagram.com/p/DVRdmS_E9Kq/?utm_source=ig_web_button_share_sheet&igsh=MzRlODBiNWFlZA=="
+                  data-instgrm-version="14"></blockquote>
+              </div>
+            </div>
+          </div>
+
+          <!-- Black Embed (Red Glow) -->
+          <div class="col-md-6 col-lg-5">
+            <div class="card card-dark h-100 rounded text-center p-3 glow-red border border-dark">
+              <h5 class="font-rajdhani fw-bold text-brand-red mb-3">#Black Edition</h5>
+              <div class="ratio ratio-1x1 w-100 overflow-hidden rounded bg-black d-flex justify-content-center">
+                <blockquote class="instagram-media w-100 border-0 m-0 bg-transparent"
+                  data-instgrm-permalink="https://www.instagram.com/p/DVRd5kNE0B4/?utm_source=ig_web_button_share_sheet&igsh=MzRlODBiNWFlZA=="
+                  data-instgrm-version="14"></blockquote>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script async src="//www.instagram.com/embed.js"></script>
+
     <!-- ── PRODUK ── -->
     <section class="py-5 bg-dark border-bottom border-dark" id="produk">
       <div class="container">
