@@ -158,8 +158,22 @@ if ($pdo) {
     // CSV fallback
     $lines = file(LEADS_CSV, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $header = str_getcsv(array_shift($lines));
+    $is_old_csv = !in_array('payment_proof', $header);
+    $new_header = ['timestamp', 'name', 'phone', 'address', 'design', 'size', 'qty', 'total_price', 'note', 'payment_proof', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'gclid', 'wbraid', 'gbraid', 'referrer', 'order_token'];
+
     foreach ($lines as $line) {
-        $row = array_combine($header, str_getcsv($line));
+        $csv_row = str_getcsv($line);
+        $current_header = ($is_old_csv && count($csv_row) >= 20) ? $new_header : $header;
+
+        $hc = count($current_header);
+        $rc = count($csv_row);
+        if ($rc < $hc) {
+            $csv_row = array_pad($csv_row, $hc, '');
+        } else if ($rc > $hc) {
+            $csv_row = array_slice($csv_row, 0, $hc);
+        }
+        $row = array_combine($current_header, $csv_row);
+
         if (!$row)
             continue;
         if ($filterStatus && ($row['status'] ?? '') !== $filterStatus)

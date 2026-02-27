@@ -833,11 +833,23 @@ CSS;
                 </div>
 
                 <!-- Dynamic Pricing Display -->
-                <div class="row gx-0 mb-4 align-items-center bg-black p-3 rounded"
-                  style="border: 1px solid rgba(255, 30, 39, 0.3);">
-                  <div
-                    class="col-12 mb-2 pb-2 border-bottom border-dark d-flex justify-content-between align-items-center">
-                    <span class="text-secondary small fw-bold">TOTAL HARGA JERSEY:</span>
+                <div class="row gx-0 mb-4 bg-black p-3 rounded" style="border: 1px solid rgba(255, 30, 39, 0.3);">
+                  <div class="col-12 mb-3 pb-3 border-bottom border-dark text-secondary small lh-lg">
+                    <div class="d-flex justify-content-between">
+                      <span>HARGA JERSEY</span>
+                      <span class="text-white fw-bold">IDR. 225.000,-</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                      <span class="text-brand-red fw-bold">HARGA JERSEY PAKET DOBLE</span>
+                      <span class="text-white fw-bold">IDR. 400.000,-</span>
+                    </div>
+                    <div class="d-flex justify-content-between mt-1 pt-1 border-top border-secondary">
+                      <span>DP MINIMAL</span>
+                      <span class="text-white">IDR. 100.000,- / JERSEY</span>
+                    </div>
+                  </div>
+                  <div class="col-12 mb-2 d-flex justify-content-between align-items-center">
+                    <span class="text-secondary small fw-bold">TOTAL HARGA:</span>
                     <strong class="text-white fs-5 font-rajdhani" id="ui_total_price">Rp 0</strong>
                   </div>
                   <div class="col-12 d-flex justify-content-between align-items-center mt-2">
