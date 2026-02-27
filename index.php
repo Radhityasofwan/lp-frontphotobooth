@@ -170,7 +170,6 @@ CSS;
       background-color: var(--bg-dark);
       color: var(--text-main);
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      overflow-x: hidden;
     }
 
     body::before {
@@ -354,7 +353,7 @@ CSS;
       text-align: center;
       font-size: 30px;
       box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
-      z-index: 1050;
+      z-index: 9999;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -949,7 +948,8 @@ CSS;
   </footer>
 
   <!-- ── Sticky CTA (mobile) ── -->
-  <div class="fixed-bottom d-md-none bg-dark border-top border-dark p-2" style="z-index: 1040;">
+  <div class="fixed-bottom d-md-none bg-dark border-top border-dark p-2"
+    style="z-index: 9998; padding-bottom: max(env(safe-area-inset-bottom), 12px) !important;">
     <div class="container d-flex gap-2">
       <a class="btn btn-outline-light flex-grow-1 py-2 font-rajdhani fw-bold text-uppercase"
         href="https://wa.me/<?= h(WA_NUMBER) ?>" target="_blank" rel="noopener noreferrer" data-wa
