@@ -64,6 +64,42 @@ if ($size === '')
 if ($agree !== 1)
   $errors[] = 'Persetujuan DP wajib dicentang.';
 
+// Handle File Upload
+$paymentProofFile = '';
+if (isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] !== UPLOAD_ERR_NO_FILE) {
+  $file = $_FILES['payment_proof'];
+
+  // Check errors
+  if ($file['error'] !== UPLOAD_ERR_OK) {
+    $errors[] = 'Gagal mengunggah bukti pembayaran.';
+  } elseif ($file['size'] > UPLOAD_MAX_SIZE) {
+    $errors[] = 'Ukuran file maksimal 5MB.';
+  } else {
+    // Check MIME type
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mime = finfo_file($finfo, $file['tmp_name']);
+    finfo_close($finfo);
+
+    $allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    if (!in_array($mime, $allowedTypes, true)) {
+      $errors[] = 'Format file harus berupa gambar (JPG, PNG, WEBP).';
+    } else {
+      // Move file securely
+      $ext = pathinfo($file['name'], PATHINFO_EXTENSION) ?: 'jpg';
+      $filename = uniqid('proof_', true) . '.' . strtolower($ext);
+      $destination = UPLOAD_DIR . $filename;
+
+      if (move_uploaded_file($file['tmp_name'], $destination)) {
+        $paymentProofFile = $filename;
+      } else {
+        $errors[] = 'Gagal menyimpan file bukti pembayaran.';
+      }
+    }
+  }
+} else {
+  $errors[] = 'Bukti pembayaran wajib dilampirkan.';
+}
+
 // Honeypot check (add hidden field "hp_email" filled only by bots)
 if (!empty($_POST['hp_email'])) {
   http_response_code(400);
@@ -95,6 +131,7 @@ $csvRow = array_map(function ($v) {
   $size,
   (string) $qty,
   $note,
+  $paymentProofFile,
   $tracking['utm_source'],
   $tracking['utm_medium'],
   $tracking['utm_campaign'],
@@ -120,6 +157,7 @@ if ($fp) {
       'size',
       'qty',
       'note',
+      'payment_proof',
       'utm_source',
       'utm_medium',
       'utm_campaign',
@@ -141,10 +179,10 @@ if ($pdo) {
   try {
     $stmt = $pdo->prepare("
             INSERT INTO leads
-              (name, phone, address, design, size, quantity, note, status,
+              (name, phone, address, design, size, quantity, note, payment_proof, status,
                utm_source, utm_medium, utm_campaign, utm_content, utm_term,
                fbclid, gclid, wbraid, gbraid, referrer)
-            VALUES (?,?,?,?,?,?,?,'pending',?,?,?,?,?,?,?,?,?,?)
+            VALUES (?,?,?,?,?,?,?,?,'pending',?,?,?,?,?,?,?,?,?,?)
         ");
     $stmt->execute([
       $name,
@@ -154,6 +192,7 @@ if ($pdo) {
       $size,
       $qty,
       $note,
+      $paymentProofFile,
       $tracking['utm_source'],
       $tracking['utm_medium'],
       $tracking['utm_campaign'],
@@ -183,8 +222,8 @@ $waMsg = implode("\n", [
   "Ukuran  : $size",
   "Jumlah  : $qty",
   'Catatan : ' . ($note ?: '-'),
+  'Bukti TF: (Telah dilampirkan via web)',
   '',
-  'DP minimal : IDR 100.000 / jersey',
   'Pre-Order  : 27 Feb – 08 Mar 2026',
   'Produksi   : 09 – 21 Mar 2026',
 ]);

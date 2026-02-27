@@ -64,6 +64,7 @@ if (isset($_GET['export'])) {
             'Size',
             'Qty',
             'Note',
+            'Payment Proof',
             'Status',
             'UTM Source',
             'UTM Medium',
@@ -573,6 +574,7 @@ function statusClass(string $s): string
                                 <th>Nama</th>
                                 <th>WA / Alamat</th>
                                 <th>Pesanan</th>
+                                <th>Bukti TF</th>
                                 <th>Status</th>
                                 <th>UTM</th>
                             </tr>
@@ -592,6 +594,7 @@ function statusClass(string $s): string
                                     $des = $l['design'] ?? '-';
                                     $sz = $l['size'] ?? '-';
                                     $qty = $l['quantity'] ?? $l['qty'] ?? '-';
+                                    $proof = $l['payment_proof'] ?? '-';
                                     $st = $l['status'] ?? 'pending';
                                     $src = $l['utm_source'] ?? '-';
                                     $camp = $l['utm_campaign'] ?? '-';
@@ -629,6 +632,14 @@ function statusClass(string $s): string
                                             </span>
                                         </td>
                                         <td>
+                                            <?php if ($proof && $proof !== '-'): ?>
+                                                <a href="<?= h(BASE_URL) ?>/storage/uploads/<?= h($proof) ?>" target="_blank"
+                                                    style="color:var(--red); text-decoration:underline;">Lihat Bukti</a>
+                                            <?php else: ?>
+                                                <span class="text-muted">-</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
                                             <span class="<?= statusClass($st) ?>">
                                                 <?= h($st) ?>
                                             </span>
@@ -640,10 +651,12 @@ function statusClass(string $s): string
                                                     <select name="new_status" class="st-sel" onchange="this.form.submit()">
                                                         <option value="pending" <?= $st === 'pending' ? 'selected' : '' ?>>Pending
                                                         </option>
-                                                        <option value="contacted" <?= $st === 'contacted' ? 'selected' : '' ?>>Contacted
+                                                        <option value="contacted" <?= $st === 'contacted' ? 'selected' : '' ?>>
+                                                            Contacted
                                                         </option>
                                                         <option value="paid" <?= $st === 'paid' ? 'selected' : '' ?>>Paid</option>
-                                                        <option value="cancelled" <?= $st === 'cancelled' ? 'selected' : '' ?>>Cancelled
+                                                        <option value="cancelled" <?= $st === 'cancelled' ? 'selected' : '' ?>>
+                                                            Cancelled
                                                         </option>
                                                     </select>
                                                 </form>

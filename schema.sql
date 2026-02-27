@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS leads (
     size VARCHAR(10) NOT NULL,
     quantity INT NOT NULL DEFAULT 1,
     note TEXT,
+    payment_proof VARCHAR(255),
     status ENUM('pending', 'contacted', 'paid', 'cancelled') DEFAULT 'pending',
     utm_source VARCHAR(50),
     utm_medium VARCHAR(50),

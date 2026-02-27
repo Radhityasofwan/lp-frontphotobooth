@@ -1,0 +1,13 @@
+# Disable execution of scripts
+<FilesMatch "\.(php|phtml|php3|php4|php5|pl|py|jsp|asp|sh|cgi)$">
+    Require all denied
+    Deny from all
+</FilesMatch>
+
+# Only allow certain image types
+<FilesMatch "\.(?i:jpg|jpeg|png|webp|gif)$">
+    Require all granted
+</FilesMatch>
+
+# Remove execution capabilities
+Options -ExecCGI -Indexes

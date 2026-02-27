@@ -404,7 +404,8 @@ CSS;
 
         <div class="form-wrap">
           <div id="formError" class="form-error"></div>
-          <form id="orderForm" method="post" action="<?= h(BASE_PATH) ?>/order.php" novalidate>
+          <form id="orderForm" method="post" action="<?= h(BASE_PATH) ?>/order.php" enctype="multipart/form-data"
+            novalidate>
             <!-- Hidden tracking fields -->
             <input type="hidden" name="utm_source" id="f_utm_source">
             <input type="hidden" name="utm_medium" id="f_utm_medium">
@@ -418,26 +419,28 @@ CSS;
             <input type="hidden" name="referrer" id="f_referrer">
 
             <div class="form-grid">
-              <div class="form-field">
-                <label for="inp_name">Nama Lengkap</label>
+              <div class="form-field full">
+                <label for="inp_name">1. Nama Lengkap Pemesan</label>
                 <input id="inp_name" type="text" name="name" required maxlength="80" placeholder="Budi Santoso"
                   autocomplete="name">
               </div>
 
-              <div class="form-field">
-                <label for="inp_phone">Nomor WhatsApp</label>
-                <input id="inp_phone" type="tel" name="phone" required maxlength="20" placeholder="0812xxxxxxx"
-                  autocomplete="tel">
-              </div>
-
               <div class="form-field full">
-                <label for="inp_address">Alamat Lengkap</label>
+                <label for="inp_address">2. Alamat Lengkap Pemesan</label>
                 <textarea id="inp_address" name="address" required maxlength="300"
                   placeholder="Jalan, Kelurahan, Kecamatan, Kota, Provinsi, Kodepos"></textarea>
               </div>
 
-              <div class="form-field">
-                <label for="inp_design">Pilih Desain</label>
+              <div class="form-field full">
+                <label for="inp_phone">3. Nomor Telepon (Whatsapp)</label>
+                <input id="inp_phone" type="tel" name="phone" required maxlength="20" placeholder="0812xxxxxxx"
+                  autocomplete="tel">
+                <div style="font-size:0.75rem; color:var(--muted); margin-top:-0.25rem;">(Untuk konfirmasi & pengiriman
+                  invoice)</div>
+              </div>
+
+              <div class="form-field full">
+                <label for="inp_design">Pilih Desain (Edisi 1)</label>
                 <select id="inp_design" name="design" required>
                   <option value="">— Pilih desain —</option>
                   <option value="Ichigo">Kamen Rider Ichigo</option>
@@ -447,15 +450,17 @@ CSS;
               </div>
 
               <div class="form-field">
-                <label for="inp_size">Ukuran</label>
+                <label for="inp_size">4. Ukuran Jersey</label>
                 <select id="inp_size" name="size" required>
                   <option value="">— Pilih ukuran —</option>
-                  <option>S</option>
-                  <option>M</option>
-                  <option>L</option>
-                  <option>XL</option>
-                  <option>XXL</option>
-                  <option>XXXL</option>
+                  <option value="S">S (49x70CM)</option>
+                  <option value="M">M (51x72CM)</option>
+                  <option value="L">L (53x74CM)</option>
+                  <option value="XL">XL (55x76CM)</option>
+                  <option value="XXL">XXL (57x78CM) (+20.000)</option>
+                  <option value="3XL">3XL (59x80CM) (+20.000)</option>
+                  <option value="4XL">4XL (61x82CM) (+20.000)</option>
+                  <option value="5XL">5XL (63x84CM) (+20.000)</option>
                 </select>
               </div>
 
@@ -465,9 +470,32 @@ CSS;
               </div>
 
               <div class="form-field full">
-                <label for="inp_note">Catatan (opsional)</label>
+                <label for="inp_note">5. Note (Catatan Tambahan)</label>
                 <textarea id="inp_note" name="note" maxlength="300"
                   placeholder="Misal: packing aman, request warna, dll."></textarea>
+              </div>
+            </div>
+
+            <div class="callout" style="max-width:100%; border-color:var(--border); margin-top:2rem;">
+              <strong
+                style="color:var(--text); font-size:1.1rem; display:block; margin-bottom:0.5rem; font-family:var(--ff-head); letter-spacing:1px;">PEMBAYARAN
+                MELALUI REKENING:</strong>
+              <div
+                style="font-size:1.2rem; font-weight:700; color:var(--green); letter-spacing:1px; margin-bottom:0.25rem;">
+                BCA 6930242827</div>
+              <div style="color:var(--muted); margin-bottom:1rem;">a/n Bambang Kurniawan</div>
+              <div
+                style="font-size:0.85rem; color:var(--text); text-transform:uppercase; letter-spacing:0.5px; border-top:1px dashed #333; padding-top:1rem;">
+                (SERTAKAN BUKTI TRANSFER PEMBAYARAN)</div>
+
+              <div style="margin-top:1rem; padding-top:1rem; border-top:1px dashed #333;">
+                <div style="font-size:0.9rem; color:var(--text); margin-bottom:0.5rem;"><strong>Nomor WA
+                    Konfirmasi:</strong> 0816-1726-0666</div>
+                <div class="form-field">
+                  <label for="inp_proof" style="color:var(--red);">Upload Bukti Pembayaran</label>
+                  <input id="inp_proof" type="file" name="payment_proof" accept="image/*" required
+                    style="padding:0.5rem; background:#000;">
+                </div>
               </div>
             </div>
 
@@ -477,13 +505,14 @@ CSS;
                 produksi.</label>
             </div>
 
-            <div style="margin-top:1.25rem">
-              <button class="btn btn--block" type="submit" id="btnSubmit"><span>Kirim Pesanan</span></button>
+            <div style="margin-top:1.5rem">
+              <button class="btn btn--block" type="submit" id="btnSubmit"><span>Kirim Pesanan & Bukti
+                  Transfer</span></button>
             </div>
 
             <div class="form-helper">
-              Butuh info? <a href="https://wa.me/<?= h(WA_NUMBER) ?>" target="_blank" rel="noopener noreferrer" data-wa
-                data-track="wa_contact">WhatsApp +62816-1726-0666</a>
+              Butuh panduan? <a href="https://wa.me/<?= h(WA_NUMBER) ?>" target="_blank" rel="noopener noreferrer"
+                data-wa data-track="wa_contact">WhatsApp Admin</a>
             </div>
           </form>
         </div>

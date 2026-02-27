@@ -46,7 +46,12 @@ define('PRICE_ORIGINAL_1', 275000);  // strikethrough price for 1 pcs
 define('PRICE_PROMO_1', 225000);  // promo price for 1 pcs
 define('PRICE_ORIGINAL_2', 500000);  // strikethrough price for 2 pcs
 define('PRICE_PROMO_2', 400000);  // promo price for 2 pcs
-define('PRICE_DP', 100000);  // minimum down-payment per jersey
+define('PRICE_DP', 100000);
+define('PRICE_SURCHARGE', 20000);
+
+// Uploads
+define('UPLOAD_DIR', __DIR__ . '/storage/uploads/');
+define('UPLOAD_MAX_SIZE', 5 * 1024 * 1024); // 5MB  // minimum down-payment per jersey
 
 // ─────────────────────────────────────────────
 // TRACKING IDs  (fill before going live)
@@ -60,9 +65,9 @@ define('META_PIXEL_ID', '');   // e.g. '123456789012345'
 // DATABASE (PDO)
 // ─────────────────────────────────────────────
 define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'kamenriders');
+define('DB_USER', 'u830768701_ozverlig');
+define('DB_PASS', 'Merdeka313');
+define('DB_NAME', 'u830768701_kamenriders');
 
 try {
     $pdo = new PDO(
