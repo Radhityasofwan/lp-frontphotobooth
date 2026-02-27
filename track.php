@@ -49,7 +49,7 @@ try {
         if ($existing) {
             // Only update if the new value is higher
             if ($event_value > (int) $existing['event_value']) {
-                $stmtUpdate = $pdo->prepare("UPDATE analytics SET event_value = ?, updated_at = NOW() WHERE id = ?");
+                $stmtUpdate = $pdo->prepare("UPDATE analytics SET event_value = ? WHERE id = ?");
                 $stmtUpdate->execute([$event_value, $existing['id']]);
             }
             echo json_encode(['success' => true, 'action' => 'updated']);
