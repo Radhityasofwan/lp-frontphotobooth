@@ -121,19 +121,15 @@ CSS;
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
 
-  <!-- Inline critical CSS -->
-  <style>
-    <?= $criticalCSS ?>
-  </style>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
   <!-- Preload hero image -->
   <link rel="preload" href="<?= h(BASE_PATH) ?>/assets/img/hero.webp" as="image" type="image/webp">
 
-  <!-- Main stylesheet (non-critical, preload swap) -->
-  <link rel="preload" href="<?= h(BASE_PATH) ?>/assets/css/style.css" as="style" onload="this.rel='stylesheet'">
-  <noscript>
-    <link rel="stylesheet" href="<?= h(BASE_PATH) ?>/assets/css/style.css">
-  </noscript>
+  <!-- Main stylesheet (minimal overrides) -->
+  <link rel="stylesheet" href="<?= h(BASE_PATH) ?>/assets/css/style.css">
 
   <!-- Structured Data -->
   <script type="application/ld+json"><?= $schemaJson ?></script>
@@ -153,410 +149,466 @@ CSS;
 <body>
 
   <!-- ── TOPBAR ── -->
-  <header class="topbar">
-    <div class="container topbar__inner">
-      <div class="brand">
-        <img class="brand__img" src="<?= h(BASE_PATH) ?>/assets/img/logo-ozverlig.webp" alt="Logo Ozverligsportwear"
-          width="36" height="36" loading="eager">
-        <div class="brand__text">
-          <div class="brand__title">Ozverligsportwear</div>
-          <div class="brand__sub">x Kemalikart</div>
+  <header class="sticky-top bg-dark border-bottom border-dark py-2"
+    style="background: rgba(6,6,8,0.95) !important; backdrop-filter: blur(10px);">
+    <div class="container d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-2">
+        <img src="<?= h(BASE_PATH) ?>/assets/img/logo-ozverlig.webp" alt="Logo Ozverligsportwear" width="36" height="36"
+          loading="eager">
+        <div class="lh-1">
+          <div class="font-rajdhani text-white fs-6">Ozverligsportwear</div>
+          <div class="text-secondary" style="font-size:0.75rem;">x Kemalikart</div>
         </div>
       </div>
-      <nav aria-label="Navigasi utama">
-        <a href="#produk">Produk</a>
-        <a href="#harga">Harga</a>
-        <a href="#jadwal">Jadwal</a>
-        <a href="#faq">FAQ</a>
-        <a href="#order" class="btn btn--sm" data-track="initiate_checkout" id="btnOrder"><span>Pesan</span></a>
+      <nav class="d-none d-md-flex gap-3 align-items-center font-rajdhani text-secondary fw-bold">
+        <a href="#produk" class="text-decoration-none text-secondary text-hover-white">Produk</a>
+        <a href="#harga" class="text-decoration-none text-secondary text-hover-white">Harga</a>
+        <a href="#faq" class="text-decoration-none text-secondary text-hover-white">FAQ</a>
       </nav>
+      <a href="#order" class="btn btn-red btn-sm px-3 skew-btn" data-track="initiate_checkout"
+        id="btnOrder"><span>Pesan</span></a>
     </div>
   </header>
 
   <main>
 
     <!-- ── HERO ── -->
-    <section class="hero" id="home">
-      <div class="container hero__grid">
-        <div class="hero__content">
-          <div class="badge-row">
-            <span class="badge badge--red">Open Pre-Order</span>
-            <span class="badge badge--yellow">Limited Edition</span>
-            <span class="badge badge--dark">Edisi 1</span>
-          </div>
-
-          <h1>Jersey Kamen Rider<br>Ichigo &amp; Black</h1>
-
-          <p class="lead">
-            Nostalgia di tahun 90an, terinspirasi dari film <strong>Satria Baja Hitam</strong> — jersey sporty premium
-            bergaya jagoan masa kecil kita.
-            Diproduksi oleh <strong>Ozverligsportwear</strong> berkolaborasi dengan <strong>Kemalikart</strong>.
-          </p>
-
-          <div class="cta-row">
-            <a class="btn" href="#order" data-track="initiate_checkout" id="btnOrder2"><span>Pesan Sekarang</span></a>
-            <a class="btn btn--ghost" href="#harga"><span>Lihat Harga</span></a>
-          </div>
-
-          <div class="micro-trust">
-            <div>
-              <div class="micro-trust__lbl">Pre-Order</div>
-              <div class="micro-trust__val">27 Feb – 08 Mar</div>
+    <section class="py-5" id="home">
+      <div class="container">
+        <div class="row align-items-center gy-5">
+          <div class="col-lg-6 order-2 order-lg-1">
+            <div class="d-flex gap-2 mb-3 flex-wrap">
+              <span class="badge bg-brand-red">Open Pre-Order</span>
+              <span class="badge bg-warning text-dark">Limited Edition</span>
+              <span class="badge bg-dark border border-secondary">Edisi 1</span>
             </div>
-            <div>
-              <div class="micro-trust__lbl">Produksi</div>
-              <div class="micro-trust__val">09 – 21 Mar</div>
-            </div>
-            <div>
-              <div class="micro-trust__lbl">DP Minimal</div>
-              <div class="micro-trust__val">IDR 100.000</div>
-            </div>
-          </div>
 
-          <!-- IG Social Proof -->
-          <div class="ig-strip" aria-label="Foto produk dari Instagram">
-            <div class="ig-placeholder" data-url="https://www.instagram.com/p/DVQnp81AaRn/" role="img"
-              aria-label="Post Instagram Ozverligsportwear">
-              <div class="ig-skeleton"></div>
-              <span>Memuat foto produk…</span>
+            <h1 class="display-4 fw-bold mb-3 text-white">Jersey Kamen Rider<br>Ichigo &amp; Black</h1>
+
+            <p class="lead text-secondary mb-4">
+              Nostalgia di tahun 90an, terinspirasi dari film <strong>Satria Baja Hitam</strong> — jersey sporty premium
+              bergaya jagoan masa kecil kita.<br>
+              Diproduksi oleh <strong>Ozverligsportwear</strong> berkolaborasi dengan <strong>Kemalikart</strong>.
+            </p>
+
+            <div class="d-flex gap-3 mb-5 flex-wrap">
+              <a class="btn btn-red px-4 py-2 skew-btn fs-5" href="#order" data-track="initiate_checkout"
+                id="btnOrder2"><span>Pesan Sekarang</span></a>
+              <a class="btn btn-outline-light px-4 py-2 font-rajdhani fw-bold text-uppercase rounded-0"
+                style="letter-spacing:1px;" href="#harga">Lihat Harga</a>
             </div>
-            <div class="ig-placeholder" data-url="https://www.instagram.com/p/DVQoZK4AaiL/" role="img"
-              aria-label="Post Instagram Ozverligsportwear">
-              <div class="ig-skeleton"></div>
-              <span>Memuat foto produk…</span>
+
+            <div class="row text-center text-md-start g-3">
+              <div class="col-4">
+                <div class="text-secondary small text-uppercase fw-bold">Pre-Order</div>
+                <div class="text-white fw-medium">27 Feb – 08 Mar</div>
+              </div>
+              <div class="col-4">
+                <div class="text-secondary small text-uppercase fw-bold">Produksi</div>
+                <div class="text-white fw-medium">09 – 21 Mar</div>
+              </div>
+              <div class="col-4">
+                <div class="text-secondary small text-uppercase fw-bold">DP Minimal</div>
+                <div class="text-white fw-medium">IDR 100.000</div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="hero__media">
-          <div class="hero__img-wrap">
-            <img class="hero__img" src="<?= h(BASE_PATH) ?>/assets/img/hero.webp"
-              alt="Jersey Series Fantasy Kamen Rider Ichigo dan Black Edisi 1 – Ozverligsportwear" width="900"
-              height="900" loading="eager" decoding="async" fetchpriority="high">
+          <div class="col-lg-6 order-1 order-lg-2 text-center">
+            <img class="img-fluid drop-shadow" src="<?= h(BASE_PATH) ?>/assets/img/hero.webp"
+              alt="Jersey Series Fantasy Kamen Rider Ichigo dan Black Edisi 1" loading="eager" fetchpriority="high"
+              style="filter: drop-shadow(0 0 30px rgba(240,19,30,0.3)); max-width:90%">
           </div>
         </div>
       </div>
     </section>
 
     <!-- ── PROMO COUNTDOWN BAND ── -->
-    <div class="promo-band">
-      <div class="container promo-band__inner">
-        <div class="promo-label">🔥 <span>Promo Terbatas</span> – Pre-order berakhir dalam:</div>
-        <div id="countdown-wrap" class="countdown" aria-live="polite">
-          <div class="countdown__block"><span class="countdown__num" id="cd-h">--</span><span
-              class="countdown__lbl">Jam</span></div>
-          <span class="countdown__sep" aria-hidden="true">:</span>
-          <div class="countdown__block"><span class="countdown__num" id="cd-m">--</span><span
-              class="countdown__lbl">Menit</span></div>
-          <span class="countdown__sep" aria-hidden="true">:</span>
-          <div class="countdown__block"><span class="countdown__num" id="cd-s">--</span><span
-              class="countdown__lbl">Detik</span></div>
+    <div class="bg-brand-red text-center py-3">
+      <div
+        class="container fw-bold font-rajdhani fs-5 d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
+        <div>🔥 Promo Terbatas – Pre-order berakhir dalam:</div>
+        <div id="promo-cd" class="d-flex gap-2">
+          <div class="bg-dark text-white rounded px-2 py-1"><span id="cd-h">--</span> Jam</div>
+          <div class="bg-dark text-white rounded px-2 py-1"><span id="cd-m">--</span> Menit</div>
+          <div class="bg-dark text-white rounded px-2 py-1"><span id="cd-s">--</span> Detik</div>
         </div>
-        <div id="promo-ended" class="promo-ended">Pre-order sudah berakhir.</div>
+        <div id="promo-ended" class="text-dark bg-warning px-3 py-1 rounded d-none">Pre-order sudah berakhir.</div>
       </div>
     </div>
 
     <!-- ── PRODUK ── -->
-    <section class="section" id="produk">
+    <section class="py-5 bg-dark border-bottom border-dark" id="produk">
       <div class="container">
-        <h2>2 Desain Edisi Perdana</h2>
-        <p class="sublead">Jersey Series Fantasy – nuansa sporty premium, nostalgia 90an.</p>
+        <h2 class="display-6 font-rajdhani fw-bold text-white mb-2">2 Desain Edisi Perdana</h2>
+        <p class="lead text-secondary mb-5">Jersey Series Fantasy – nuansa sporty premium, nostalgia 90an.</p>
 
-        <div class="grid-2">
-          <article class="card">
-            <div class="card__img">
-              <img src="<?= h(BASE_PATH) ?>/assets/img/ichigo.webp" alt="Fantasy Kamen Rider Ichigo v.01" width="800"
-                height="800" loading="lazy" decoding="async">
-            </div>
-            <div class="card__body">
-              <h3 class="card__title">Fantasy Kamen Rider Ichigo v.01</h3>
-              <p class="card__desc">Kolaborasi Ozverligsportwear x Kemalikart. Cocok untuk komunitas, daily wear, dan
-                riding.</p>
-            </div>
-          </article>
+        <div class="row g-4 mb-5">
+          <div class="col-md-6">
+            <article class="card card-dark h-100 rounded-0">
+              <img src="<?= h(BASE_PATH) ?>/assets/img/ichigo.webp" class="card-img-top rounded-0"
+                alt="Fantasy Kamen Rider Ichigo v.01" loading="lazy" decoding="async">
+              <div class="card-body p-4">
+                <h3 class="card-title font-rajdhani text-white fs-4">Fantasy Kamen Rider Ichigo v.01</h3>
+                <p class="card-text text-secondary">Kolaborasi Ozverligsportwear x Kemalikart. Cocok untuk komunitas,
+                  daily wear, dan riding.</p>
+              </div>
+            </article>
+          </div>
 
-          <article class="card">
-            <div class="card__img">
-              <img src="<?= h(BASE_PATH) ?>/assets/img/black.webp" alt="Fantasy Kamen Rider Black v.01" width="800"
-                height="800" loading="lazy" decoding="async">
-            </div>
-            <div class="card__body">
-              <h3 class="card__title">Fantasy Kamen Rider Black v.01</h3>
-              <p class="card__desc">Karakter kuat, tegas, clean. Limited drop — raih sebelum kehabisan.</p>
-            </div>
-          </article>
+          <div class="col-md-6">
+            <article class="card card-dark h-100 rounded-0">
+              <img src="<?= h(BASE_PATH) ?>/assets/img/black.webp" class="card-img-top rounded-0"
+                alt="Fantasy Kamen Rider Black v.01" loading="lazy" decoding="async">
+              <div class="card-body p-4">
+                <h3 class="card-title font-rajdhani text-white fs-4">Fantasy Kamen Rider Black v.01</h3>
+                <p class="card-text text-secondary">Karakter kuat, tegas, clean. Limited drop — raih sebelum kehabisan.
+                </p>
+              </div>
+            </article>
+          </div>
         </div>
 
-        <div class="proof-bar">
-          <div class="proof-bar__item">
-            <div class="proof-bar__k">Diproduksi oleh</div>
-            <div class="proof-bar__v">Ozverligsportwear</div>
+        <div class="row g-3 text-center border-top border-dark pt-4">
+          <div class="col-md-4">
+            <div class="text-secondary small text-uppercase fw-bold">Diproduksi oleh</div>
+            <div class="text-white fw-medium">Ozverligsportwear</div>
           </div>
-          <div class="proof-bar__item">
-            <div class="proof-bar__k">Kolaborasi desain</div>
-            <div class="proof-bar__v">Kemalikart</div>
+          <div class="col-md-4 border-start border-end border-dark">
+            <div class="text-secondary small text-uppercase fw-bold">Kolaborasi desain</div>
+            <div class="text-white fw-medium">Kemalikart</div>
           </div>
-          <div class="proof-bar__item">
-            <div class="proof-bar__k">Model pemesanan</div>
-            <div class="proof-bar__v">Pre-Order</div>
+          <div class="col-md-4">
+            <div class="text-secondary small text-uppercase fw-bold">Model pemesanan</div>
+            <div class="text-white fw-medium">Pre-Order</div>
           </div>
         </div>
       </div>
     </section>
 
     <!-- ── SPESIFIKASI ── -->
-    <section class="section section--alt" id="spesifikasi">
+    <section class="py-5" id="spesifikasi" style="background: linear-gradient(180deg, #0a0a0e 0%, #060608 100%);">
       <div class="container">
-        <h2>Spesifikasi Jersey</h2>
-        <ul class="spec-list">
-          <li><strong>Material Fabric</strong> <span>Andromax Sublimation</span></li>
-          <li><strong>Crest</strong> <span>3D Tatami / Polyflock</span></li>
-          <li><strong>Apparel Crest</strong> <span>3D HD</span></li>
-          <li><strong>Collar / Cuff</strong> <span>Rib Knit</span></li>
-          <li><strong>Size Tag</strong> <span>DTF</span></li>
+        <h2 class="display-6 font-rajdhani fw-bold text-white mb-4">Spesifikasi Jersey</h2>
+        <ul class="list-group list-group-flush border-top border-dark mb-4" style="max-width: 600px;">
+          <li class="list-group-item bg-transparent text-white border-dark d-flex justify-content-between px-0 py-3">
+            <strong>Material Fabric</strong> <span class="text-secondary">Andromax Sublimation</span></li>
+          <li class="list-group-item bg-transparent text-white border-dark d-flex justify-content-between px-0 py-3">
+            <strong>Crest</strong> <span class="text-secondary">3D Tatami / Polyflock</span></li>
+          <li class="list-group-item bg-transparent text-white border-dark d-flex justify-content-between px-0 py-3">
+            <strong>Apparel Crest</strong> <span class="text-secondary">3D HD</span></li>
+          <li class="list-group-item bg-transparent text-white border-dark d-flex justify-content-between px-0 py-3">
+            <strong>Collar / Cuff</strong> <span class="text-secondary">Rib Knit</span></li>
+          <li class="list-group-item bg-transparent text-white border-dark d-flex justify-content-between px-0 py-3">
+            <strong>Size Tag</strong> <span class="text-secondary">DTF</span></li>
         </ul>
-        <div class="spec-note">
-          <p>Dirancang untuk kenyamanan dan tampilan rapi. Sporty dan relevan — cocok harian maupun riding.</p>
+        <div class="alert alert-dark bg-transparent border-secondary text-secondary" style="max-width: 600px;"
+          role="alert">
+          Dirancang untuk kenyamanan dan tampilan rapi. Sporty dan relevan — cocok harian maupun riding.
         </div>
       </div>
     </section>
 
     <!-- ── HARGA ── -->
-    <section class="section" id="harga">
-      <div class="container">
-        <h2>Harga &amp; DP</h2>
-        <p class="sublead text-center">Promo terbatas selama periode pre-order.</p>
+    <section class="py-5 bg-dark border-top border-dark" id="harga">
+      <div class="container text-center text-md-start">
+        <h2 class="display-6 font-rajdhani fw-bold text-white mb-2">Harga &amp; DP</h2>
+        <p class="lead text-secondary mb-5">Promo terbatas selama periode pre-order.</p>
 
-        <div class="price-grid">
+        <div class="row g-4 justify-content-center justify-content-md-start mb-4">
           <!-- 1 pcs -->
-          <div class="price-card">
-            <div class="price-card__name">1 Jersey</div>
-            <div class="price-card__original"><?= idr(PRICE_ORIGINAL_1) ?></div>
-            <div class="price-card__promo"><?= idr(PRICE_PROMO_1) ?></div>
-            <div class="price-card__dp">DP minimal <?= idr(PRICE_DP) ?> / jersey</div>
+          <div class="col-md-5 col-lg-4">
+            <div class="card card-dark h-100 rounded-0 text-center py-5 px-3">
+              <div class="font-rajdhani fs-4 text-white mb-3">1 Jersey</div>
+              <div class="price-strike mb-2"><?= idr(PRICE_ORIGINAL_1) ?></div>
+              <div class="display-5 fw-bold text-brand-green mb-4 font-rajdhani"><?= idr(PRICE_PROMO_1) ?></div>
+              <div class="text-secondary small">DP minimal <?= idr(PRICE_DP) ?> / jersey</div>
+            </div>
           </div>
 
           <!-- 2 pcs (featured) -->
-          <div class="price-card price-card--featured">
-            <div class="price-card__ribbon">Best Value</div>
-            <div class="price-card__name">Paket 2 Jersey</div>
-            <div class="price-card__original"><?= idr(PRICE_ORIGINAL_2) ?></div>
-            <div class="price-card__promo"><?= idr(PRICE_PROMO_2) ?></div>
-            <div class="price-card__dp">Hemat <?= idr(PRICE_ORIGINAL_2 - PRICE_PROMO_2) ?> — koleksi 2 desain!</div>
+          <div class="col-md-5 col-lg-4">
+            <div class="card card-dark h-100 rounded-0 text-center py-5 px-3 border-brand-red position-relative shadow"
+              style="transform: scale(1.05); z-index:2;">
+              <span
+                class="position-absolute top-0 start-50 translate-middle badge bg-brand-red px-3 py-2 text-uppercase letter-spacing-1">Best
+                Value</span>
+              <div class="font-rajdhani fs-4 text-white mb-3">Paket 2 Jersey</div>
+              <div class="price-strike mb-2"><?= idr(PRICE_ORIGINAL_2) ?></div>
+              <div class="display-5 fw-bold text-brand-green mb-4 font-rajdhani"><?= idr(PRICE_PROMO_2) ?></div>
+              <div class="text-white small fw-bold">Hemat <?= idr(PRICE_ORIGINAL_2 - PRICE_PROMO_2) ?> — koleksi 2
+                desain!</div>
+            </div>
           </div>
         </div>
 
-        <p class="price-note">Ongkir ditanggung pemesan.</p>
+        <p class="text-secondary small"><i class="text-danger">*</i> Ongkir ditanggung pemesan.</p>
       </div>
     </section>
 
     <!-- ── JADWAL ── -->
-    <section class="section section--alt" id="jadwal">
+    <section class="py-5" id="jadwal" style="background: linear-gradient(180deg, #0a0a0e 0%, #060608 100%);">
       <div class="container">
-        <h2>Jadwal Pre-Order</h2>
-        <div class="timeline">
-          <div class="timeline__item">
-            <div class="timeline__k">Periode Pemesanan</div>
-            <div class="timeline__v">27 Februari – 08 Maret 2026</div>
+        <h2 class="display-6 font-rajdhani fw-bold text-white mb-4">Jadwal Pre-Order</h2>
+
+        <div class="row g-0 border-start border-brand-red border-3 ms-3 mb-4">
+          <div class="col-12 ps-4 py-3 border-bottom border-dark position-relative">
+            <div class="text-secondary small text-uppercase fw-bold mb-1">Periode Pemesanan</div>
+            <div class="text-white fs-5">27 Februari – 08 Maret 2026</div>
           </div>
-          <div class="timeline__item">
-            <div class="timeline__k">Periode Produksi</div>
-            <div class="timeline__v">09 – 21 Maret 2026</div>
+          <div class="col-12 ps-4 py-3 border-bottom border-dark position-relative">
+            <div class="text-secondary small text-uppercase fw-bold mb-1">Periode Produksi</div>
+            <div class="text-white fs-5">09 – 21 Maret 2026</div>
           </div>
-          <div class="timeline__item">
-            <div class="timeline__k">Pengiriman</div>
-            <div class="timeline__v">Dilakukan setelah produksi selesai</div>
+          <div class="col-12 ps-4 py-3 position-relative">
+            <div class="text-secondary small text-uppercase fw-bold mb-1">Pengiriman</div>
+            <div class="text-white fs-5">Dilakukan setelah produksi selesai</div>
           </div>
         </div>
-        <div class="callout">
-          <strong>Pre-order ditutup sesuai periode.</strong> Amankan slot segera — jumlah produksi terbatas.
+
+        <div class="alert alert-danger bg-dark border-brand-red text-white" role="alert">
+          <strong class="text-brand-red">Pre-order ditutup sesuai periode.</strong> Amankan slot segera — jumlah
+          produksi terbatas.
         </div>
       </div>
     </section>
 
     <!-- ── SOCIAL PROOF ── -->
-    <section class="section" id="bukti">
-      <div class="container">
-        <h2>Kepercayaan &amp; Kualitas</h2>
-        <div class="grid-3">
-          <div class="mini-card">
-            <div class="mini-card__t">Produsen</div>
-            <div class="mini-card__v">Ozverligsportwear</div>
-            <div class="mini-card__s">Produksi jersey custom & komunitas</div>
+    <section class="py-5 bg-dark" id="bukti">
+      <div class="container text-center">
+        <h2 class="display-6 font-rajdhani fw-bold text-white mb-5">Kepercayaan &amp; Kualitas</h2>
+        <div class="row g-4 justify-content-center">
+          <div class="col-md-4">
+            <div class="card bg-transparent border-secondary h-100 p-4 rounded-0">
+              <div class="text-secondary small text-uppercase fw-bold mb-2">Produsen</div>
+              <div class="text-white fs-5 font-rajdhani fw-bold mb-2">Ozverligsportwear</div>
+              <div class="text-secondary small">Produksi jersey custom & komunitas</div>
+            </div>
           </div>
-          <div class="mini-card">
-            <div class="mini-card__t">Kolaborasi</div>
-            <div class="mini-card__v">Kemalikart</div>
-            <div class="mini-card__s">Konsep visual & artwork</div>
+          <div class="col-md-4">
+            <div class="card bg-transparent border-secondary h-100 p-4 rounded-0">
+              <div class="text-secondary small text-uppercase fw-bold mb-2">Kolaborasi</div>
+              <div class="text-white fs-5 font-rajdhani fw-bold mb-2">Kemalikart</div>
+              <div class="text-secondary small">Konsep visual & artwork</div>
+            </div>
           </div>
-          <div class="mini-card">
-            <div class="mini-card__t">Pemesanan</div>
-            <div class="mini-card__v">Pre-Order</div>
-            <div class="mini-card__s">Batch produksi terjadwal</div>
+          <div class="col-md-4">
+            <div class="card bg-transparent border-secondary h-100 p-4 rounded-0">
+              <div class="text-secondary small text-uppercase fw-bold mb-2">Pemesanan</div>
+              <div class="text-white fs-5 font-rajdhani fw-bold mb-2">Pre-Order</div>
+              <div class="text-secondary small">Batch produksi terjadwal</div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
     <!-- ── ORDER FORM ── -->
-    <section class="section section--alt" id="order">
+    <section class="py-5 border-top border-dark" id="order" style="background: linear-gradient(180deg, #0a0a0e 0%, #060608 100%);">
       <div class="container">
-        <h2>Form Pemesanan</h2>
-        <p class="sublead">Isi form di bawah. Setelah submit, Anda diarahkan ke WhatsApp untuk konfirmasi.</p>
+        <div class="text-center mb-5">
+          <h2 class="display-6 font-rajdhani fw-bold text-white mb-2">Form Pemesanan</h2>
+          <p class="lead text-secondary">Isi form di bawah. Setelah submit, Anda diarahkan ke WhatsApp untuk konfirmasi.</p>
+        </div>
 
-        <div class="form-wrap">
-          <div id="formError" class="form-error"></div>
-          <form id="orderForm" method="post" action="<?= h(BASE_PATH) ?>/order.php" enctype="multipart/form-data"
-            novalidate>
-            <!-- Hidden tracking fields -->
-            <input type="hidden" name="utm_source" id="f_utm_source">
-            <input type="hidden" name="utm_medium" id="f_utm_medium">
-            <input type="hidden" name="utm_campaign" id="f_utm_campaign">
-            <input type="hidden" name="utm_content" id="f_utm_content">
-            <input type="hidden" name="utm_term" id="f_utm_term">
-            <input type="hidden" name="fbclid" id="f_fbclid">
-            <input type="hidden" name="gclid" id="f_gclid">
-            <input type="hidden" name="wbraid" id="f_wbraid">
-            <input type="hidden" name="gbraid" id="f_gbraid">
-            <input type="hidden" name="referrer" id="f_referrer">
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            <div class="card card-dark p-4 p-md-5 rounded-0 shadow-lg">
+              <div id="formError" class="text-danger mb-3 d-none fw-bold"></div>
+              
+              <form id="orderForm" method="post" action="<?= h(BASE_PATH) ?>/order.php" enctype="multipart/form-data" novalidate>
+                <!-- Hidden tracking fields -->
+                <input type="hidden" name="utm_source" id="f_utm_source">
+                <input type="hidden" name="utm_medium" id="f_utm_medium">
+                <input type="hidden" name="utm_campaign" id="f_utm_campaign">
+                <input type="hidden" name="utm_content" id="f_utm_content">
+                <input type="hidden" name="utm_term" id="f_utm_term">
+                <input type="hidden" name="fbclid" id="f_fbclid">
+                <input type="hidden" name="gclid" id="f_gclid">
+                <input type="hidden" name="wbraid" id="f_wbraid">
+                <input type="hidden" name="gbraid" id="f_gbraid">
+                <input type="hidden" name="referrer" id="f_referrer">
 
-            <div class="form-grid">
-              <div class="form-field full">
-                <label for="inp_name">1. Nama Lengkap Pemesan</label>
-                <input id="inp_name" type="text" name="name" required maxlength="80" placeholder="Budi Santoso"
-                  autocomplete="name">
-              </div>
-
-              <div class="form-field full">
-                <label for="inp_address">2. Alamat Lengkap Pemesan</label>
-                <textarea id="inp_address" name="address" required maxlength="300"
-                  placeholder="Jalan, Kelurahan, Kecamatan, Kota, Provinsi, Kodepos"></textarea>
-              </div>
-
-              <div class="form-field full">
-                <label for="inp_phone">3. Nomor Telepon (Whatsapp)</label>
-                <input id="inp_phone" type="tel" name="phone" required maxlength="20" placeholder="0812xxxxxxx"
-                  autocomplete="tel">
-                <div style="font-size:0.75rem; color:var(--muted); margin-top:-0.25rem;">(Untuk konfirmasi & pengiriman
-                  invoice)</div>
-              </div>
-
-              <div class="form-field full">
-                <label for="inp_design">Pilih Desain (Edisi 1)</label>
-                <select id="inp_design" name="design" required>
-                  <option value="">— Pilih desain —</option>
-                  <option value="Ichigo">Kamen Rider Ichigo</option>
-                  <option value="Black">Kamen Rider Black</option>
-                  <option value="Ichigo + Black (Paket Doble)">Paket Doble – Ichigo + Black</option>
-                </select>
-              </div>
-
-              <div class="form-field">
-                <label for="inp_size">4. Ukuran Jersey</label>
-                <select id="inp_size" name="size" required>
-                  <option value="">— Pilih ukuran —</option>
-                  <option value="S">S (49x70CM)</option>
-                  <option value="M">M (51x72CM)</option>
-                  <option value="L">L (53x74CM)</option>
-                  <option value="XL">XL (55x76CM)</option>
-                  <option value="XXL">XXL (57x78CM) (+20.000)</option>
-                  <option value="3XL">3XL (59x80CM) (+20.000)</option>
-                  <option value="4XL">4XL (61x82CM) (+20.000)</option>
-                  <option value="5XL">5XL (63x84CM) (+20.000)</option>
-                </select>
-              </div>
-
-              <div class="form-field">
-                <label for="inp_qty">Jumlah</label>
-                <input id="inp_qty" type="number" name="qty" min="1" max="20" value="1" required>
-              </div>
-
-              <div class="form-field full">
-                <label for="inp_note">5. Note (Catatan Tambahan)</label>
-                <textarea id="inp_note" name="note" maxlength="300"
-                  placeholder="Misal: packing aman, request warna, dll."></textarea>
-              </div>
-            </div>
-
-            <div class="callout payment-box">
-              <strong class="payment-title">PEMBAYARAN MELALUI REKENING:</strong>
-              <div class="payment-acc">BCA 6930242827</div>
-              <div class="payment-name">a/n Bambang Kurniawan</div>
-              <div class="payment-req">(SERTAKAN BUKTI TRANSFER PEMBAYARAN)</div>
-
-              <div class="payment-proof-wrapper">
-                <div class="payment-wa"><strong>Nomor WA Konfirmasi:</strong> 0816-1726-0666</div>
-                <div class="form-field">
-                  <label for="inp_proof" class="payment-upload-label">Upload Bukti Pembayaran</label>
-                  <input id="inp_proof" type="file" name="payment_proof" accept="image/*" required
-                    class="payment-upload-input">
+                <div class="mb-4">
+                  <label for="inp_name" class="form-label text-white fw-bold">1. Nama Lengkap Pemesan</label>
+                  <input id="inp_name" type="text" name="name" class="form-control bg-dark text-white border-secondary rounded-0" required maxlength="80" placeholder="Budi Santoso" autocomplete="name">
                 </div>
-              </div>
-            </div>
 
-            <div class="form-check">
-              <input type="checkbox" id="agree_dp" name="agree_dp" value="1" required>
-              <label for="agree_dp">Saya setuju DP minimal <?= idr(PRICE_DP) ?> / jersey dan memahami timeline
-                produksi.</label>
-            </div>
+                <div class="mb-4">
+                  <label for="inp_address" class="form-label text-white fw-bold">2. Alamat Lengkap Pemesan</label>
+                  <textarea id="inp_address" name="address" class="form-control bg-dark text-white border-secondary rounded-0" rows="3" required maxlength="300" placeholder="Jalan, Kelurahan, Kecamatan, Kota, Provinsi, Kodepos"></textarea>
+                </div>
 
-            <div class="form-actions">
-              <button class="btn btn--block" type="submit" id="btnSubmit"><span>Kirim Pesanan & Bukti
-                  Transfer</span></button>
-            </div>
+                <div class="mb-4">
+                  <label for="inp_phone" class="form-label text-white fw-bold">3. Nomor Telepon (Whatsapp)</label>
+                  <input id="inp_phone" type="tel" name="phone" class="form-control bg-dark text-white border-secondary rounded-0 mb-1" required maxlength="20" placeholder="0812xxxxxxx" autocomplete="tel">
+                  <div class="form-text text-secondary">(Untuk konfirmasi & pengiriman invoice)</div>
+                </div>
 
-            <div class="form-helper">
-              Butuh panduan? <a href="https://wa.me/<?= h(WA_NUMBER) ?>" target="_blank" rel="noopener noreferrer"
-                data-wa data-track="wa_contact">WhatsApp Admin</a>
+                <div class="mb-4">
+                  <label for="inp_design" class="form-label text-white fw-bold">Pilih Desain (Edisi 1)</label>
+                  <select id="inp_design" name="design" class="form-select bg-dark text-white border-secondary rounded-0" required>
+                    <option value="">— Pilih desain —</option>
+                    <option value="Ichigo">Kamen Rider Ichigo</option>
+                    <option value="Black">Kamen Rider Black</option>
+                    <option value="Ichigo + Black (Paket Doble)">Paket Doble – Ichigo + Black</option>
+                  </select>
+                </div>
+
+                <div class="row g-3 mb-4">
+                  <div class="col-md-8">
+                    <label for="inp_size" class="form-label text-white fw-bold">4. Ukuran Jersey</label>
+                    <select id="inp_size" name="size" class="form-select bg-dark text-white border-secondary rounded-0" required>
+                      <option value="">— Pilih ukuran —</option>
+                      <option value="S">S (49x70CM)</option>
+                      <option value="M">M (51x72CM)</option>
+                      <option value="L">L (53x74CM)</option>
+                      <option value="XL">XL (55x76CM)</option>
+                      <option value="XXL">XXL (57x78CM) (+20.000)</option>
+                      <option value="3XL">3XL (59x80CM) (+20.000)</option>
+                      <option value="4XL">4XL (61x82CM) (+20.000)</option>
+                      <option value="5XL">5XL (63x84CM) (+20.000)</option>
+                    </select>
+                  </div>
+                  <div class="col-md-4">
+                    <label for="inp_qty" class="form-label text-white fw-bold">Jumlah</label>
+                    <input id="inp_qty" type="number" name="qty" class="form-control bg-dark text-white border-secondary rounded-0" min="1" max="20" value="1" required>
+                  </div>
+                </div>
+
+                <div class="mb-4">
+                  <label for="inp_note" class="form-label text-white fw-bold">5. Note (Catatan Tambahan)</label>
+                  <textarea id="inp_note" name="note" class="form-control bg-dark text-white border-secondary rounded-0" rows="2" maxlength="300" placeholder="Misal: packing aman, request warna, dll."></textarea>
+                </div>
+
+                <!-- Payment Info Box -->
+                <div class="payment-box mb-4">
+                  <strong class="d-block text-brand-red mb-2">PEMBAYARAN MELALUI REKENING:</strong>
+                  <div class="fs-4 font-rajdhani fw-bold text-white tracking-widest">BCA 6930242827</div>
+                  <div class="text-white">a/n Bambang Kurniawan</div>
+                  <div class="text-secondary small mb-3">(SERTAKAN BUKTI TRANSFER PEMBAYARAN)</div>
+
+                  <div class="border-top border-secondary pt-3 mt-3">
+                    <div class="text-white mb-2"><strong>Nomor WA Konfirmasi:</strong> <span class="text-brand-green">0816-1726-0666</span></div>
+                    <label for="inp_proof" class="form-label fw-bold text-white">Upload Bukti Pembayaran</label>
+                    <input id="inp_proof" type="file" name="payment_proof" accept="image/*" class="form-control bg-dark text-white border-secondary rounded-0" required>
+                  </div>
+                </div>
+
+                <div class="form-check mb-4">
+                  <input class="form-check-input bg-dark border-secondary" type="checkbox" id="agree_dp" name="agree_dp" value="1" required>
+                  <label class="form-check-label text-secondary small" for="agree_dp">
+                    Saya setuju DP minimal <?= idr(PRICE_DP) ?> / jersey dan memahami timeline produksi.
+                  </label>
+                </div>
+
+                <button class="btn btn-red w-100 py-3 skew-btn fs-5 mb-3" type="submit" id="btnSubmit">
+                  <span>Kirim Pesanan & Bukti Transfer</span>
+                </button>
+
+                <div class="text-center text-secondary small">
+                  Butuh panduan? <a href="https://wa.me/<?= h(WA_NUMBER) ?>" class="text-brand-green text-decoration-none fw-bold" target="_blank" rel="noopener noreferrer" data-wa data-track="wa_contact">WhatsApp Admin</a>
+                </div>
+              </form>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- ── FAQ ── -->
-    <section class="section" id="faq">
+    <section class="py-5 bg-dark border-top border-dark" id="faq">
       <div class="container">
-        <h2>FAQ</h2>
-        <div class="faq-list">
-          <details>
-            <summary>Berapa harga jersey?</summary>
-            <div>Harga promo 1 jersey IDR 225.000, paket doble 2 jersey IDR 400.000. DP minimal IDR 100.000 per jersey.
-              Ongkir ditanggung pemesan.</div>
-          </details>
-          <details>
-            <summary>Kapan periode pemesanan dan produksi?</summary>
-            <div>Pre-order: 27 Februari – 08 Maret 2026. Produksi: 09 – 21 Maret 2026. Pengiriman dilakukan setelah
-              produksi selesai.</div>
-          </details>
-          <details>
-            <summary>Apa saja spesifikasi jersey?</summary>
-            <div>Material Andromax Sublimation; Crest 3D Tatami/Polyflock; Apparel Crest 3D HD; Collar/Cuff Rib Knit;
-              Size Tag DTF.</div>
-          </details>
-          <details>
-            <summary>Bagaimana cara pemesanan?</summary>
-            <div>Isi form pemesanan di halaman ini, lalu lanjutkan konfirmasi dan pembayaran DP via WhatsApp.</div>
-          </details>
-          <details>
-            <summary>Apakah bisa request ukuran custom?</summary>
-            <div>Ukuran yang tersedia S, M, L, XL, XXL, XXXL. Untuk request khusus, hubungi admin via WhatsApp.</div>
-          </details>
+        <h2 class="display-6 font-rajdhani fw-bold text-white text-center mb-5">FAQ</h2>
+        
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            <div class="accordion accordion-dark" id="faqAccordion">
+              
+              <!-- FAQ 1 -->
+              <div class="accordion-item bg-transparent border-secondary mb-3 rounded-0">
+                <h2 class="accordion-header" id="headingOne">
+                  <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    Berapa harga jersey?
+                  </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body text-secondary border-top border-secondary">
+                    Harga promo 1 jersey IDR 225.000, paket doble 2 jersey IDR 400.000. DP minimal IDR 100.000 per jersey. Ongkir ditanggung pemesan.
+                  </div>
+                </div>
+              </div>
+
+              <!-- FAQ 2 -->
+              <div class="accordion-item bg-transparent border-secondary mb-3 rounded-0">
+                <h2 class="accordion-header" id="headingTwo">
+                  <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Kapan periode pemesanan dan produksi?
+                  </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body text-secondary border-top border-secondary">
+                    Pre-order: 27 Februari – 08 Maret 2026. Produksi: 09 – 21 Maret 2026. Pengiriman dilakukan setelah produksi selesai.
+                  </div>
+                </div>
+              </div>
+
+              <!-- FAQ 3 -->
+              <div class="accordion-item bg-transparent border-secondary mb-3 rounded-0">
+                <h2 class="accordion-header" id="headingThree">
+                  <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Apa saja spesifikasi jersey?
+                  </button>
+                </h2>
+                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body text-secondary border-top border-secondary">
+                    Material Andromax Sublimation; Crest 3D Tatami/Polyflock; Apparel Crest 3D HD; Collar/Cuff Rib Knit; Size Tag DTF.
+                  </div>
+                </div>
+              </div>
+
+              <!-- FAQ 4 -->
+              <div class="accordion-item bg-transparent border-secondary mb-3 rounded-0">
+                <h2 class="accordion-header" id="headingFour">
+                  <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                    Bagaimana cara pemesanan?
+                  </button>
+                </h2>
+                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body text-secondary border-top border-secondary">
+                    Isi form pemesanan di halaman ini, lalu lanjutkan konfirmasi dan pembayaran DP via WhatsApp.
+                  </div>
+                </div>
+              </div>
+
+              <!-- FAQ 5 -->
+              <div class="accordion-item bg-transparent border-secondary mb-3 rounded-0">
+                <h2 class="accordion-header" id="headingFive">
+                  <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                    Apakah bisa request ukuran custom?
+                  </button>
+                </h2>
+                <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body text-secondary border-top border-secondary">
+                    Ukuran yang tersedia S, M, L, XL, XXL, 3XL, 4XL, 5XL. Untuk request khusus, lengkapi catatan (note) saat mengisi form.
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
         </div>
+
       </div>
     </section>
 
     <!-- ── SEO Content ── -->
-    <section class="section section--alt" id="seo-content">
-      <div class="container container--sm">
-        <h2>Jersey Kamen Rider untuk Penggemar Tokusatsu Indonesia</h2>
-        <div class="seo-text">
-          <p>Jersey Kamen Rider merupakan apparel yang diminati komunitas tokusatsu Indonesia. <strong>Jersey Series
-              Fantasy Kamen Rider Ichigo &amp; Black (Edisi 1)</strong> terinspirasi era 90an dan film <strong>Satria
-              Baja Hitam</strong>, diwujudkan menjadi jersey sporty premium bergaya jagoan masa kecil.</p>
-          <p>Diproduksi oleh <strong>Ozverligsportwear</strong> berkolaborasi dengan <strong>Kemalikart</strong> —
-            mengutamakan tampilan modern, cocok harian, komunitas, maupun riding. Sistem <strong>pre-order</strong>
-            memastikan produksi terjadwal dan kualitas terjaga.</p>
+    <section class="py-5 border-top border-dark" id="seo-content" style="background: linear-gradient(180deg, #0a0a0e 0%, #060608 100%);">
+      <div class="container" style="max-width: 800px;">
+        <h2 class="h5 font-rajdhani fw-bold text-secondary mb-3">Jersey Kamen Rider untuk Penggemar Tokusatsu Indonesia</h2>
+        <div class="text-secondary small" style="line-height: 1.8;">
+          <p class="mb-3">Jersey Kamen Rider merupakan apparel yang diminati komunitas tokusatsu Indonesia. <strong>Jersey Series Fantasy Kamen Rider Ichigo &amp; Black (Edisi 1)</strong> terinspirasi era 90an dan film <strong>Satria Baja Hitam</strong>, diwujudkan menjadi jersey sporty premium bergaya jagoan masa kecil.</p>
+          <p class="mb-0">Diproduksi oleh <strong>Ozverligsportwear</strong> berkolaborasi dengan <strong>Kemalikart</strong> — mengutamakan tampilan modern, cocok harian, komunitas, maupun riding. Sistem <strong>pre-order</strong> memastikan produksi terjadwal dan kualitas terjaga.</p>
         </div>
       </div>
     </section>
@@ -564,29 +616,43 @@ CSS;
   </main>
 
   <!-- ── FOOTER ── -->
-  <footer class="footer">
-    <div class="container footer__grid">
-      <div>
-        <div class="footer__brand">Ozverligsportwear x Kemalikart</div>
-        <div class="footer__muted">Jersey Series Fantasy Kamen Rider — Edisi 1 &copy; 2026</div>
+  <footer class="py-4 bg-black border-top border-dark">
+    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+      <div class="text-center text-md-start">
+        <div class="font-rajdhani fw-bold text-white fs-5">Ozverligsportwear x Kemalikart</div>
+        <div class="text-secondary small">Jersey Series Fantasy Kamen Rider — Edisi 1 &copy; 2026</div>
       </div>
-      <nav class="footer__links" aria-label="Footer nav">
-        <a href="#order">Pesan</a>
-        <a href="#faq">FAQ</a>
-        <a href="<?= h(BASE_PATH) ?>/sitemap.xml">Sitemap</a>
+      <nav class="d-flex gap-3 align-items-center font-rajdhani fw-bold">
+        <a href="#order" class="text-decoration-none text-secondary">Pesan</a>
+        <a href="#faq" class="text-decoration-none text-secondary">FAQ</a>
+        <a href="<?= h(BASE_PATH) ?>/sitemap.xml" class="text-decoration-none text-secondary">Sitemap</a>
       </nav>
     </div>
   </footer>
 
   <!-- ── Sticky CTA (mobile) ── -->
-  <div class="sticky-cta" role="region" aria-label="Quick actions">
-    <a class="btn btn--ghost" href="https://wa.me/<?= h(WA_NUMBER) ?>" target="_blank" rel="noopener noreferrer" data-wa
-      data-track="wa_contact"><span>WhatsApp</span></a>
-    <a class="btn" href="#order" data-track="initiate_checkout"><span>Pesan</span></a>
+  <div class="fixed-bottom d-md-none bg-dark border-top border-dark p-2" style="z-index: 1040;">
+    <div class="container d-flex gap-2">
+      <a class="btn btn-outline-light flex-grow-1 py-2 font-rajdhani fw-bold text-uppercase" href="https://wa.me/<?= h(WA_NUMBER) ?>" target="_blank" rel="noopener noreferrer" data-wa data-track="wa_contact">WhatsApp</a>
+      <a class="btn btn-red flex-grow-1 py-2 font-rajdhani fw-bold text-uppercase" href="#order" data-track="initiate_checkout">Pesan</a>
+    </div>
   </div>
 
-  <!-- Deferred JS -->
+  <!-- Bootstrap JS (bundle includes Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmxc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+  <!-- Custom logic -->
   <script src="<?= h(BASE_PATH) ?>/assets/js/app.js" defer></script>
+
+  <style>
+    /* Utility class for BS5 Accordion custom styling */
+    .accordion-button::after {
+      filter: invert(1) grayscale(100%) brightness(200%);
+    }
+    .accordion-button:not(.collapsed)::after {
+      filter: invert(1) grayscale(100%) brightness(200%);
+    }
+  </style>
 
 </body>
 
