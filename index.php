@@ -274,7 +274,8 @@ CSS;
   </style>
 
   <!-- Preload hero image -->
-  <link rel="preload" href="<?= h(BASE_PATH) ?>/assets/img/hero.webp" as="image" type="image/webp">
+  <link rel="preload" href="<?= h(rtrim(BASE_URL, '/')) ?>/assets/img/hero.webp?v=<?= time() ?>" as="image"
+    type="image/webp">
 
   <!-- Structured Data -->
   <script type="application/ld+json"><?= $schemaJson ?></script>
@@ -298,8 +299,8 @@ CSS;
     style="background: rgba(6,6,8,0.95) !important; backdrop-filter: blur(10px);">
     <div class="container d-flex justify-content-between align-items-center">
       <div class="d-flex align-items-center gap-2">
-        <img src="<?= h(BASE_PATH) ?>/assets/img/logo-ozverlig.webp" alt="Logo Ozverligsportwear" width="36" height="36"
-          loading="eager">
+        <img src="<?= h(rtrim(BASE_URL, '/')) ?>/assets/img/logo-ozverlig.webp?v=<?= time() ?>"
+          alt="Logo Ozverligsportwear" width="36" height="36" loading="eager">
         <div class="lh-1">
           <div class="font-rajdhani text-white fs-6">Ozverligsportwear</div>
           <div class="text-secondary" style="font-size:0.75rem;">x Kemalikart</div>
@@ -360,7 +361,7 @@ CSS;
           </div>
 
           <div class="col-lg-6 order-1 order-lg-2 text-center">
-            <img class="img-fluid drop-shadow" src="<?= h(BASE_PATH) ?>/assets/img/hero.webp"
+            <img class="img-fluid drop-shadow" src="<?= h(rtrim(BASE_URL, '/')) ?>/assets/img/hero.webp?v=<?= time() ?>"
               alt="Jersey Series Fantasy Kamen Rider Ichigo dan Black Edisi 1" loading="eager" fetchpriority="high"
               style="filter: drop-shadow(0 0 30px rgba(240,19,30,0.3)); max-width:90%">
           </div>
@@ -408,8 +409,8 @@ CSS;
         <div class="row g-4 mb-5">
           <div class="col-md-6">
             <article class="card card-dark h-100 rounded-0">
-              <img src="<?= h(BASE_PATH) ?>/assets/img/ichigo.webp" class="card-img-top rounded-0"
-                alt="Fantasy Kamen Rider Ichigo v.01" loading="lazy" decoding="async">
+              <img src="<?= h(rtrim(BASE_URL, '/')) ?>/assets/img/ichigo.webp?v=<?= time() ?>"
+                class="card-img-top rounded-0" alt="Fantasy Kamen Rider Ichigo v.01" loading="lazy" decoding="async">
               <div class="card-body p-4">
                 <h3 class="card-title font-rajdhani text-white fs-4">Fantasy Kamen Rider Ichigo v.01</h3>
                 <p class="card-text text-secondary">Kolaborasi Ozverligsportwear x Kemalikart. Cocok untuk komunitas,
@@ -420,8 +421,8 @@ CSS;
 
           <div class="col-md-6">
             <article class="card card-dark h-100 rounded-0">
-              <img src="<?= h(BASE_PATH) ?>/assets/img/black.webp" class="card-img-top rounded-0"
-                alt="Fantasy Kamen Rider Black v.01" loading="lazy" decoding="async">
+              <img src="<?= h(rtrim(BASE_URL, '/')) ?>/assets/img/black.webp?v=<?= time() ?>"
+                class="card-img-top rounded-0" alt="Fantasy Kamen Rider Black v.01" loading="lazy" decoding="async">
               <div class="card-body p-4">
                 <h3 class="card-title font-rajdhani text-white fs-4">Fantasy Kamen Rider Black v.01</h3>
                 <p class="card-text text-secondary">Karakter kuat, tegas, clean. Limited drop — raih sebelum kehabisan.
