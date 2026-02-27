@@ -14,8 +14,8 @@ RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 RewriteCond %{THE_REQUEST} \s/+([^?]+?)/{2,} [NC]
 RewriteRule ^ /%1 [R=301,L]
 
-# ── Protect storage directory ──
-RewriteRule ^storage(/|$) - [F,L]
+# ── Protect sensitive storage files ──
+RewriteRule ^storage/(leads\.csv|events\.log) - [F,L]
 
 # ── Block secret/local config files and backups ──
 <FilesMatch "^(config\.local\.php|.*\.bak\..*)$">

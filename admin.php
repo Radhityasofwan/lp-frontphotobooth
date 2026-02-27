@@ -228,8 +228,8 @@ function statusClass(string $s): string
 
         body {
             font-family: system-ui, -apple-system, sans-serif;
-            background: #f5f5f5;
-            color: #1a1a1a;
+            background: #050505;
+            color: #f8f9fa;
         }
 
         .topbar {
@@ -290,15 +290,15 @@ function statusClass(string $s): string
         }
 
         .stat-card {
-            background: #fff;
-            border: 1px solid #e5e7eb;
+            background: #111;
+            border: 1px solid rgba(255, 30, 39, 0.2);
             border-radius: 6px;
             padding: 1rem;
         }
 
         .stat-card__n {
             font-size: .72rem;
-            color: #6b7280;
+            color: #8b8f97;
             text-transform: uppercase;
             letter-spacing: .5px;
         }
@@ -321,8 +321,8 @@ function statusClass(string $s): string
         }
 
         .box {
-            background: #fff;
-            border: 1px solid #e5e7eb;
+            background: #111;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 6px;
             padding: 1.1rem;
         }
@@ -344,7 +344,9 @@ function statusClass(string $s): string
         .toolbar input[type=text] {
             flex: 1;
             padding: .5rem .75rem;
-            border: 1px solid #d1d5db;
+            border: 1px solid #333;
+            background: #222;
+            color: #fff;
             border-radius: 4px;
             font-size: .9rem;
             outline: none;
@@ -363,22 +365,22 @@ function statusClass(string $s): string
         .pill {
             padding: .35rem .75rem;
             border-radius: 20px;
-            border: 1px solid #d1d5db;
+            border: 1px solid #333;
             font-size: .8rem;
             font-weight: 600;
             text-decoration: none;
-            color: #374151;
-            background: #fff;
+            color: #ccc;
+            background: #222;
         }
 
         .pill:hover {
-            background: #f3f4f6;
+            background: #333;
         }
 
         .pill.active {
-            background: #111;
+            background: #ff1e27;
             color: #fff;
-            border-color: #111;
+            border-color: #ff1e27;
         }
 
         .pill-green {
@@ -409,28 +411,28 @@ function statusClass(string $s): string
         }
 
         th {
-            background: #f9fafb;
+            background: #1a1a1a;
             padding: .65rem .75rem;
             text-align: left;
             font-size: .73rem;
-            color: #6b7280;
+            color: #8b8f97;
             text-transform: uppercase;
             letter-spacing: .5px;
-            border-bottom: 2px solid #e5e7eb;
+            border-bottom: 2px solid #333;
         }
 
         td {
             padding: .65rem .75rem;
-            border-bottom: 1px solid #f3f4f6;
+            border-bottom: 1px solid #222;
             vertical-align: top;
         }
 
         tr:hover td {
-            background: #fafafa;
+            background: #151515;
         }
 
         .text-muted {
-            color: #6b7280;
+            color: #8b8f97;
             font-size: .8rem;
         }
 
@@ -495,10 +497,11 @@ function statusClass(string $s): string
             margin-top: .35rem;
             padding: .3rem .5rem;
             border-radius: 4px;
-            border: 1px solid #d1d5db;
+            border: 1px solid #444;
             font-size: .8rem;
             outline: none;
-            background: #f9fafb;
+            background: #222;
+            color: #fff;
             cursor: pointer;
         }
 
@@ -512,7 +515,7 @@ function statusClass(string $s): string
             justify-content: space-between;
             align-items: center;
             padding: .5rem 0;
-            border-bottom: 1px dashed #e5e7eb;
+            border-bottom: 1px dashed #333;
             font-size: .85rem;
         }
 
@@ -523,7 +526,7 @@ function statusClass(string $s): string
         .guide li {
             margin-bottom: .5rem;
             font-size: .85rem;
-            color: #4b5563;
+            color: #aaa;
         }
 
         .guide ul {

@@ -168,18 +168,25 @@ CSS;
 
     body {
       background-color: var(--bg-dark);
-      background-image:
+      color: var(--text-main);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: -1;
+      background-image: 
         radial-gradient(circle at 15% 30%, rgba(0, 230, 91, 0.4) 0%, transparent 60%),
         radial-gradient(circle at 85% 30%, rgba(255, 30, 39, 0.4) 0%, transparent 60%),
         radial-gradient(ellipse at 50% 100%, rgba(200, 200, 220, 0.3) 0%, transparent 50%),
         url('<?= h(asset('assets/img/hero.webp')) ?>');
       background-size: 100% 100%, 100% 100%, 100% 100%, cover;
       background-position: center, center, center, top center;
-      background-attachment: fixed, fixed, fixed, fixed;
       background-blend-mode: screen, screen, screen, overlay;
-      color: var(--text-main);
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      overflow-x: hidden;
+      pointer-events: none;
     }
 
     h1,
@@ -722,6 +729,7 @@ CSS;
                   <input id="inp_name" type="text" name="name" value="<?= h($f_name) ?>"
                     class="form-control bg-dark text-white border-secondary rounded-0" required maxlength="80"
                     placeholder="Budi Santoso" autocomplete="name">
+                  <div class="invalid-feedback text-brand-red fw-bold">⚠️ Nama wajib diisi.</div>
                 </div>
 
                 <div class="mb-4">
@@ -729,6 +737,7 @@ CSS;
                   <textarea id="inp_address" name="address"
                     class="form-control bg-dark text-white border-secondary rounded-0" rows="3" required maxlength="300"
                     placeholder="Jalan, Kelurahan, Kecamatan, Kota, Provinsi, Kodepos"><?= h($f_address) ?></textarea>
+                  <div class="invalid-feedback text-brand-red fw-bold">⚠️ Detail alamat domisili wajib disertakan.</div>
                 </div>
 
                 <div class="mb-4">
@@ -736,6 +745,7 @@ CSS;
                   <input id="inp_phone" type="tel" name="phone" value="<?= h($f_phone) ?>"
                     class="form-control bg-dark text-white border-secondary rounded-0 mb-1" required maxlength="20"
                     placeholder="0812xxxxxxx" autocomplete="tel">
+                  <div class="invalid-feedback text-brand-red fw-bold">⚠️ Nomor HP/WhatsApp wajib diisi valid.</div>
                   <div class="form-text text-secondary">(Untuk konfirmasi & pengiriman invoice)</div>
                 </div>
 
@@ -748,6 +758,7 @@ CSS;
                     <option value="Black" <?= $f_design === 'Black' ? 'selected' : '' ?>>Kamen Rider Black</option>
                     <option value="Ichigo + Black (Paket Doble)" <?= $f_design === 'Ichigo + Black (Paket Doble)' ? 'selected' : '' ?>>Paket Doble – Ichigo + Black</option>
                   </select>
+                  <div class="invalid-feedback text-brand-red fw-bold">⚠️ Mohon pilih salah satu desain/paket.</div>
                 </div>
 
                 <div class="row g-3 mb-4">
@@ -765,6 +776,7 @@ CSS;
                       <option value="4XL" <?= $f_size === '4XL' ? 'selected' : '' ?>>4XL (61x82CM) (+20.000)</option>
                       <option value="5XL" <?= $f_size === '5XL' ? 'selected' : '' ?>>5XL (63x84CM) (+20.000)</option>
                     </select>
+                    <div class="invalid-feedback text-brand-red fw-bold">⚠️ Wajib pilih ukuran.</div>
                   </div>
                   <div class="col-md-4">
                     <label for="inp_qty" class="form-label text-white fw-bold">Jumlah</label>
@@ -811,6 +823,10 @@ CSS;
                         <span class="text-white fw-bold mb-1" id="file_name_display">Klik atau Tarik File Kesini</span>
                         <span class="text-secondary small">Format: JPG, PNG, WEBP (Max: 5MB)</span>
                       </label>
+                      <div class="invalid-feedback text-brand-red fw-bold text-center mt-2 d-block" id="proof_feedback"
+                        style="display: none!important;">
+                        ⚠️ Bukti transfer wajib di-upload untuk melanjutkan pesanan.
+                      </div>
                     </div>
 
                     <script>
@@ -826,6 +842,8 @@ CSS;
                             nameDisplay.textContent = 'Klik atau Tarik File Kesini';
                             nameDisplay.classList.remove('text-brand-green');
                           }
+                          const fb = document.getElementById('proof_feedback');
+                          if (fb) fb.style.setProperty('display', this.files.length ? 'none' : 'block', 'important');
                         });
                       }
                     </script>
@@ -1135,8 +1153,13 @@ CSS;
           if (!inpDesign || !inpSize || !inpQty || !uiTotal) return;
           let qty = parseInt(inpQty.value) || 1;
           let totalQty = qty;
-          if (inpDesign.value === 'Ichigo + Black (Paket Doble)') totalQty = qty * 2;
 
+          // Force Paket Doble quantity handling
+          if (inpDesign.value === 'Ichigo + Black (Paket Doble)') {
+            totalQty = qty * 2;
+          }
+
+          // Automatically give promo metric if they requested 2 pieces manually
           let pairs = Math.floor(totalQty / 2);
           let singles = totalQty % 2;
           let basePrice = (pairs * window.__T__.price2) + (singles * window.__T__.price1);
