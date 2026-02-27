@@ -169,13 +169,14 @@ CSS;
     body {
       background-color: var(--bg-dark);
       background-image:
-        radial-gradient(ellipse at 50% 50%, rgba(200, 200, 200, 0.05) 0%, rgba(5, 5, 5, 0.9) 60%),
-        linear-gradient(135deg, rgba(0, 230, 91, 0.15) 0%, rgba(5, 5, 5, 0) 35%, rgba(5, 5, 5, 0) 65%, rgba(255, 30, 39, 0.15) 100%),
+        radial-gradient(circle at 15% 30%, rgba(0, 230, 91, 0.4) 0%, transparent 60%),
+        radial-gradient(circle at 85% 30%, rgba(255, 30, 39, 0.4) 0%, transparent 60%),
+        radial-gradient(ellipse at 50% 100%, rgba(200, 200, 220, 0.3) 0%, transparent 50%),
         url('<?= h(asset('assets/img/hero.webp')) ?>');
-      background-size: cover, cover, cover;
-      background-position: center, center, center;
-      background-attachment: fixed, fixed, fixed;
-      background-blend-mode: overlay, normal, overlay;
+      background-size: 100% 100%, 100% 100%, 100% 100%, cover;
+      background-position: center, center, center, top center;
+      background-attachment: fixed, fixed, fixed, fixed;
+      background-blend-mode: screen, screen, screen, overlay;
       color: var(--text-main);
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       overflow-x: hidden;
@@ -466,7 +467,7 @@ CSS;
           <span class="text-white fs-5">🔥 EARLY ACCESS PRICE</span>
           <span class="badge border border-light rounded-pill px-2 py-1 mt-1"
             style="font-size: 0.70rem; background: rgba(0,0,0,0.3);">
-            Hanya 3 Hari Pertama!
+            Batch 1
           </span>
         </div>
         <div class="d-flex align-items-center gap-2 bg-dark px-3 py-2 rounded">
@@ -542,38 +543,45 @@ CSS;
     <section class="py-5 text-center" id="spesifikasi"
       style="background: rgba(6,6,8,0.4); backdrop-filter: blur(5px); border-top: 1px solid rgba(255,255,255,0.05);">
       <div class="container d-flex flex-column align-items-center">
-        <h2 class="display-6 font-rajdhani fw-bold text-white mb-4">Spesifikasi Jersey</h2>
-        <ul class="list-group list-group-flush border-top border-dark mb-4" style="max-width: 600px;">
-          <li class="list-group-item bg-transparent text-white border-dark d-flex justify-content-between px-0 py-3">
-            <strong>Material Fabric</strong> <span class="text-secondary">Andromax Sublimation</span>
+        <h2 class="display-6 font-rajdhani fw-bold text-white mb-5">Spesifikasi Jersey</h2>
+        <ul class="list-group list-group-flush border-top border-dark mb-4 w-100" style="max-width: 700px;">
+          <li
+            class="list-group-item bg-transparent text-white border-dark d-flex justify-content-between px-0 py-4 fs-5">
+            <strong>Material Fabric</strong> <span class="text-secondary text-end">Andromax Sublimation</span>
           </li>
-          <li class="list-group-item bg-transparent text-white border-dark d-flex justify-content-between px-0 py-3">
-            <strong>Crest</strong> <span class="text-secondary">3D Tatami / Polyflock</span>
+          <li
+            class="list-group-item bg-transparent text-white border-dark d-flex justify-content-between px-0 py-4 fs-5">
+            <strong>Crest</strong> <span class="text-secondary text-end">3D Tatami / Polyflock</span>
           </li>
-          <li class="list-group-item bg-transparent text-white border-dark d-flex justify-content-between px-0 py-3">
-            <strong>Apparel Crest</strong> <span class="text-secondary">3D HD</span>
+          <li
+            class="list-group-item bg-transparent text-white border-dark d-flex justify-content-between px-0 py-4 fs-5">
+            <strong>Apparel Crest</strong> <span class="text-secondary text-end">3D HD</span>
           </li>
-          <li class="list-group-item bg-transparent text-white border-dark d-flex justify-content-between px-0 py-3">
-            <strong>Collar / Cuff</strong> <span class="text-secondary">Rib Knit</span>
+          <li
+            class="list-group-item bg-transparent text-white border-dark d-flex justify-content-between px-0 py-4 fs-5">
+            <strong>Collar / Cuff</strong> <span class="text-secondary text-end">Rib Knit</span>
           </li>
-          <li class="list-group-item bg-transparent text-white border-dark d-flex justify-content-between px-0 py-3">
-            <strong>Size Tag</strong> <span class="text-secondary">DTF</span>
+          <li
+            class="list-group-item bg-transparent text-white border-dark d-flex justify-content-between px-0 py-4 fs-5">
+            <strong>Size Tag</strong> <span class="text-secondary text-end">DTF</span>
           </li>
         </ul>
-        <div class="alert alert-dark bg-transparent border-secondary text-secondary" style="max-width: 600px;"
-          role="alert">
-          Dirancang untuk kenyamanan dan tampilan rapi. Sporty dan relevan — cocok harian maupun riding.
+        <div class="alert alert-dark bg-transparent border-secondary text-secondary p-4 mt-3"
+          style="max-width: 700px; line-height: 1.8;" role="alert">
+          Dirancang khusus untuk kenyamanan maksimal dan tampilan yang rapi. Memiliki fitting sporty yang ergonomis
+          sehingga sangat relevan digunakan — baik untuk aktivitas harian santai maupun kebutuhan riding touring jauh
+          Anda.
         </div>
       </div>
     </section>
 
     <!-- ── HARGA ── -->
-    <section class="py-5 bg-dark border-top border-dark" id="harga">
-      <div class="container text-center text-md-start">
-        <h2 class="display-6 font-rajdhani fw-bold text-white mb-2">Harga &amp; DP</h2>
+    <section class="py-5 bg-dark border-top border-dark" id="harga" style="background: rgba(6,6,8,0.8) !important;">
+      <div class="container text-center">
+        <h2 class="display-6 font-rajdhani fw-bold text-white mb-2 w-100">Harga</h2>
         <p class="lead text-secondary mb-5">Promo terbatas selama periode pre-order.</p>
 
-        <div class="row g-4 justify-content-center justify-content-md-start mb-4">
+        <div class="row g-4 justify-content-center mb-4">
           <!-- 1 pcs (Left - Green) -->
           <div class="col-md-5 col-lg-4">
             <div class="card card-dark h-100 rounded-0 text-center py-5 px-3 glow-green">
@@ -1010,7 +1018,6 @@ CSS;
       <nav class="d-flex gap-3 align-items-center font-rajdhani fw-bold">
         <a href="#order" class="text-decoration-none text-secondary">Pesan</a>
         <a href="#faq" class="text-decoration-none text-secondary">FAQ</a>
-        <a href="<?= h(BASE_PATH) ?>/sitemap.xml" class="text-decoration-none text-secondary">Sitemap</a>
       </nav>
     </div>
   </footer>
@@ -1073,22 +1080,30 @@ CSS;
           }
         }
 
-        // Countdown Timer logic
+        // Countdown Timer logic: 24h Rolling Reset
         const cdWrap = document.getElementById('promo-cd');
-        const endedWrap = document.getElementById('promo-ended');
-        if (!cdWrap || typeof window.__T__.promoDeadline === 'undefined') return;
+        if (!cdWrap) return;
 
-        const end = new Date(window.__T__.promoDeadline).getTime();
+        let end = localStorage.getItem('cd_end');
+        let nowTime = new Date().getTime();
+
+        // If no existing rolling deadline or it has already passed, set it to +24hrs from now
+        if (!end || nowTime > parseInt(end, 10)) {
+          end = nowTime + (24 * 60 * 60 * 1000);
+          localStorage.setItem('cd_end', end);
+        } else {
+          end = parseInt(end, 10);
+        }
 
         const tick = setInterval(() => {
           const now = new Date().getTime();
-          const d = end - now;
+          let d = end - now;
 
-          if (d < 0) {
-            clearInterval(tick);
-            cdWrap.classList.add('d-none');
-            if (endedWrap) endedWrap.classList.remove('d-none');
-            return;
+          if (d <= 0) {
+            // Auto-reset back to 24 hours seamlessly
+            end = now + (24 * 60 * 60 * 1000);
+            localStorage.setItem('cd_end', end);
+            d = end - now;
           }
 
           document.getElementById('cd-h').innerText = String(Math.floor((d % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
