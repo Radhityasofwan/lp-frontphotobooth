@@ -122,8 +122,7 @@ CSS;
   <meta name="twitter:card" content="summary_large_image">
 
   <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
     /* 
@@ -315,17 +314,34 @@ CSS;
       </div>
     </section>
 
-    <!-- ── PROMO COUNTDOWN BAND ── -->
-    <div class="bg-brand-red text-center py-3">
+    <!-- ── PROMO LAUNCH BAND ── -->
+    <div class="bg-brand-red text-center py-3 px-2 shadow-sm">
       <div
         class="container fw-bold font-rajdhani fs-5 d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
-        <div>🔥 Promo Terbatas – Pre-order berakhir dalam:</div>
-        <div id="promo-cd" class="d-flex gap-2">
-          <div class="bg-dark text-white rounded px-2 py-1"><span id="cd-h">--</span> Jam</div>
-          <div class="bg-dark text-white rounded px-2 py-1"><span id="cd-m">--</span> Menit</div>
-          <div class="bg-dark text-white rounded px-2 py-1"><span id="cd-s">--</span> Detik</div>
+        <div class="d-flex flex-column text-md-end lh-1">
+          <span class="text-white fs-5">🔥 EARLY ACCESS PRICE</span>
+          <span class="badge border border-light rounded-pill px-2 py-1 mt-1"
+            style="font-size: 0.70rem; background: rgba(0,0,0,0.3);">
+            Hanya 3 Hari Pertama!
+          </span>
         </div>
-        <div id="promo-ended" class="text-dark bg-warning px-3 py-1 rounded d-none">Pre-order sudah berakhir.</div>
+        <div class="d-flex align-items-center gap-2 bg-dark px-3 py-2 rounded">
+          <span class="price-strike text-secondary fs-6"><?= idr(PRICE_ORIGINAL_1) ?></span>
+          <span class="text-brand-green fs-5">kini <?= idr(PRICE_PROMO_1) ?></span>
+        </div>
+        <div class="d-flex flex-column text-md-start lh-1">
+          <span class="text-white small mb-1" style="font-size: 0.8rem;">Sisa waktu:</span>
+          <div id="promo-cd" class="d-flex gap-1 fs-6">
+            <div class="bg-white text-dark rounded px-2 py-1"><span id="cd-h">--</span><span
+                class="small text-secondary ms-1">J</span></div>
+            <div class="bg-white text-dark rounded px-2 py-1"><span id="cd-m">--</span><span
+                class="small text-secondary ms-1">M</span></div>
+            <div class="bg-white text-dark rounded px-2 py-1"><span id="cd-s">--</span><span
+                class="small text-secondary ms-1">D</span></div>
+          </div>
+          <div id="promo-ended" class="text-dark bg-warning px-2 py-1 rounded d-none" style="font-size:0.85rem">Promo
+            Berakhir</div>
+        </div>
       </div>
     </div>
 
@@ -750,7 +766,8 @@ CSS;
           </p>
           <p class="mb-0">Diproduksi oleh <strong>Ozverligsportwear</strong> berkolaborasi dengan
             <strong>Kemalikart</strong> — mengutamakan tampilan modern, cocok harian, komunitas, maupun riding. Sistem
-            <strong>pre-order</strong> memastikan produksi terjadwal dan kualitas terjaga.</p>
+            <strong>pre-order</strong> memastikan produksi terjadwal dan kualitas terjaga.
+          </p>
         </div>
       </div>
     </section>
@@ -784,9 +801,7 @@ CSS;
   </div>
 
   <!-- Bootstrap JS (bundle includes Popper) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmxc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <!-- Custom logic -->
   <script>
@@ -823,9 +838,9 @@ CSS;
         // Countdown Timer logic
         const cdWrap = document.getElementById('promo-cd');
         const endedWrap = document.getElementById('promo-ended');
-        if (!cdWrap || typeof PROMO_DEADLINE === 'undefined') return;
+        if (!cdWrap || typeof window.__T__.promoDeadline === 'undefined') return;
 
-        const end = new Date(PROMO_DEADLINE).getTime();
+        const end = new Date(window.__T__.promoDeadline).getTime();
 
         function tick() {
           const now = new Date().getTime();
@@ -833,7 +848,7 @@ CSS;
 
           if (diff <= 0) {
             cdWrap.style.display = 'none';
-            if (endedWrap) endedWrap.style.display = 'block';
+            if (endedWrap) endedWrap.classList.remove('d-none');
             return;
           }
 
