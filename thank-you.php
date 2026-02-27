@@ -74,11 +74,11 @@ $autoRedirect = ($order !== null);
 
         <div style="margin-top:1.5rem;display:flex;flex-direction:column;gap:.75rem">
           <a class="btn" href="<?= h($waUrl) ?>" target="_blank" rel="noopener noreferrer" data-track="wa_contact"
-            style="background:#25d366">
-            💬 Konfirmasi via WhatsApp
+            style="background:#25d366; border-color:#25d366; text-shadow:none;">
+            <span>💬 Konfirmasi via WhatsApp</span>
           </a>
           <a class="btn btn--ghost" href="<?= h(BASE_PATH) ?>/" data-track="back_home">
-            ← Kembali ke Halaman Utama
+            <span>← Kembali ke Halaman Utama</span>
           </a>
         </div>
 

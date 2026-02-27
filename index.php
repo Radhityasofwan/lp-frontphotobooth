@@ -77,20 +77,20 @@ $schemaJson = json_encode([
   ],
 ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 
-// ── Inline critical CSS ──────────────────────────────────────────────────────
 $criticalCSS = <<<'CSS'
-:root{--bg:#0b0b0b;--red:#e62429;--text:#f0f0f0;--muted:#8a8a8a;--border:#2a2a2a;--ff-head:'Barlow Condensed',system-ui,sans-serif;--ff-body:'Inter',system-ui,-apple-system,sans-serif}
+:root{--bg:#060608;--red:#f0131e;--text:#f4f4f5;--muted:#9ca3af;--border:#22222a;--ff-head:'Rajdhani',system-ui,sans-serif;--ff-body:'Inter',system-ui,-apple-system,sans-serif;--skew:-8deg}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:var(--ff-body);background:var(--bg);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased}
-.container{width:100%;max-width:1040px;margin-inline:auto;padding-inline:1rem}
-.topbar{background:rgba(0,0,0,.85);backdrop-filter:blur(10px);padding:.6rem 0;position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border)}
-.topbar__inner{display:flex;justify-content:space-between;align-items:center;gap:1rem}
-.brand{display:flex;align-items:center;gap:.6rem}
-.brand__title{font-family:var(--ff-head);font-weight:700;text-transform:uppercase;letter-spacing:1px;line-height:1.1}
-.hero{padding:3.5rem 0 4rem}
-h1{font-family:var(--ff-head);font-weight:700;text-transform:uppercase;line-height:1.15;font-size:clamp(2.2rem,7vw,4rem)}
-.btn{display:inline-flex;align-items:center;justify-content:center;background:var(--red);color:#fff;padding:.85rem 1.75rem;font-family:var(--ff-head);font-size:1.05rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;border:none;border-radius:6px;cursor:pointer;text-decoration:none}
+body{font-family:var(--ff-body);background-color:var(--bg);background-image:linear-gradient(rgba(255,255,255,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.015) 1px,transparent 1px);background-size:40px 40px;color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+.container{width:100%;max-width:1040px;margin-inline:auto;padding-inline:1.25rem}
+.topbar{background:rgba(6,6,8,.9);backdrop-filter:blur(12px);padding:.75rem 0;position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border)}
+.topbar__inner{display:flex;justify-content:space-between;align-items:center}
+.brand{display:flex;align-items:center;gap:.75rem}
+.brand__title{font-family:var(--ff-head);font-weight:700;font-size:1.1rem;text-transform:uppercase;letter-spacing:2px;line-height:1;color:var(--text)}
+.hero{padding:4rem 0 5rem}
+h1{font-family:var(--ff-head);font-weight:700;text-transform:uppercase;line-height:1.1;letter-spacing:1px;font-size:clamp(2.5rem,8vw,4.5rem);text-shadow:0 0 20px rgba(255,255,255,0.1);margin-bottom:0.5rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;background:var(--red);color:#fff;padding:.85rem 2rem;font-family:var(--ff-head);font-size:1.1rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--red);cursor:pointer;transform:skewX(var(--skew));text-decoration:none}
+.btn>span{transform:skewX(calc(var(--skew)*-1));display:inline-block}
 CSS;
 ?>
 <!doctype html>
@@ -155,8 +155,8 @@ CSS;
     <div class="container topbar__inner">
       <div class="brand">
         <img class="brand__img" src="<?= h(BASE_PATH) ?>/assets/img/logo-ozverlig.webp" alt="Logo Ozverligsportwear"
-          width="34" height="34" loading="eager">
-        <div>
+          width="36" height="36" loading="eager">
+        <div class="brand__text">
           <div class="brand__title">Ozverligsportwear</div>
           <div class="brand__sub">x Kemalikart</div>
         </div>
@@ -166,7 +166,7 @@ CSS;
         <a href="#harga">Harga</a>
         <a href="#jadwal">Jadwal</a>
         <a href="#faq">FAQ</a>
-        <a href="#order" class="btn btn--sm" data-track="initiate_checkout" id="btnOrder">Pesan</a>
+        <a href="#order" class="btn btn--sm" data-track="initiate_checkout" id="btnOrder"><span>Pesan</span></a>
       </nav>
     </div>
   </header>
@@ -192,8 +192,8 @@ CSS;
           </p>
 
           <div class="cta-row">
-            <a class="btn" href="#order" data-track="initiate_checkout" id="btnOrder2">Pesan Sekarang</a>
-            <a class="btn btn--ghost" href="#harga">Lihat Harga</a>
+            <a class="btn" href="#order" data-track="initiate_checkout" id="btnOrder2"><span>Pesan Sekarang</span></a>
+            <a class="btn btn--ghost" href="#harga"><span>Lihat Harga</span></a>
           </div>
 
           <div class="micro-trust">
@@ -227,9 +227,11 @@ CSS;
         </div>
 
         <div class="hero__media">
-          <img class="hero__img" src="<?= h(BASE_PATH) ?>/assets/img/hero.webp"
-            alt="Jersey Series Fantasy Kamen Rider Ichigo dan Black Edisi 1 – Ozverligsportwear" width="900"
-            height="900" loading="eager" decoding="async" fetchpriority="high">
+          <div class="hero__img-wrap">
+            <img class="hero__img" src="<?= h(BASE_PATH) ?>/assets/img/hero.webp"
+              alt="Jersey Series Fantasy Kamen Rider Ichigo dan Black Edisi 1 – Ozverligsportwear" width="900"
+              height="900" loading="eager" decoding="async" fetchpriority="high">
+          </div>
         </div>
       </div>
     </section>
@@ -305,11 +307,11 @@ CSS;
       <div class="container">
         <h2>Spesifikasi Jersey</h2>
         <ul class="spec-list">
-          <li><strong>Material Fabric</strong> Andromax Sublimation</li>
-          <li><strong>Crest</strong> 3D Tatami / Polyflock</li>
-          <li><strong>Apparel Crest</strong> 3D HD</li>
-          <li><strong>Collar / Cuff</strong> Rib Knit</li>
-          <li><strong>Size Tag</strong> DTF</li>
+          <li><strong>Material Fabric</strong> <span>Andromax Sublimation</span></li>
+          <li><strong>Crest</strong> <span>3D Tatami / Polyflock</span></li>
+          <li><strong>Apparel Crest</strong> <span>3D HD</span></li>
+          <li><strong>Collar / Cuff</strong> <span>Rib Knit</span></li>
+          <li><strong>Size Tag</strong> <span>DTF</span></li>
         </ul>
         <div class="spec-note">
           <p>Dirancang untuk kenyamanan dan tampilan rapi. Sporty dan relevan — cocok harian maupun riding.</p>
@@ -476,7 +478,7 @@ CSS;
             </div>
 
             <div style="margin-top:1.25rem">
-              <button class="btn btn--block" type="submit" id="btnSubmit">Kirim Pesanan</button>
+              <button class="btn btn--block" type="submit" id="btnSubmit"><span>Kirim Pesanan</span></button>
             </div>
 
             <div class="form-helper">
@@ -555,8 +557,8 @@ CSS;
   <!-- ── Sticky CTA (mobile) ── -->
   <div class="sticky-cta" role="region" aria-label="Quick actions">
     <a class="btn btn--ghost" href="https://wa.me/<?= h(WA_NUMBER) ?>" target="_blank" rel="noopener noreferrer" data-wa
-      data-track="wa_contact">WhatsApp</a>
-    <a class="btn" href="#order" data-track="initiate_checkout">Pesan</a>
+      data-track="wa_contact"><span>WhatsApp</span></a>
+    <a class="btn" href="#order" data-track="initiate_checkout"><span>Pesan</span></a>
   </div>
 
   <!-- Deferred JS -->
