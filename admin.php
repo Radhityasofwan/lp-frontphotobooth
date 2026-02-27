@@ -267,12 +267,19 @@ function formatDuration($seconds)
         }
 
         .topbar {
-            background: #111;
+            background: rgba(17, 17, 17, 0.95);
+            backdrop-filter: blur(10px);
             color: #fff;
-            padding: .75rem 1.25rem;
+            padding: .75rem 1rem;
             display: flex;
+            flex-wrap: wrap;
+            row-gap: .5rem;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .topbar h1 {
@@ -292,9 +299,10 @@ function formatDuration($seconds)
         }
 
         .topbar-links a {
-            color: #aaa;
+            color: #ccc;
             font-size: .85rem;
             text-decoration: none;
+            font-weight: 600;
         }
 
         .topbar-links a.btn {
@@ -313,39 +321,94 @@ function formatDuration($seconds)
         .main {
             max-width: 1400px;
             margin: auto;
-            padding: 1.25rem;
+            padding: .75rem;
+        }
+
+        @media(min-width: 768px) {
+            .main {
+                padding: 1.25rem;
+            }
+
+            .topbar {
+                padding: .75rem 1.25rem;
+                flex-wrap: nowrap;
+            }
         }
 
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: .75rem;
-            margin-bottom: 1.25rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: .5rem;
+            margin-bottom: 1rem;
+        }
+
+        @media(min-width: 768px) {
+            .stats {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: .75rem;
+                margin-bottom: 1.25rem;
+            }
         }
 
         .stat-card {
             background: #111;
             border: 1px solid rgba(255, 30, 39, 0.2);
             border-radius: 6px;
-            padding: 1rem;
+            padding: .85rem;
         }
 
         .stat-card__n {
-            font-size: .72rem;
+            font-size: .68rem;
             color: #8b8f97;
             text-transform: uppercase;
             letter-spacing: .5px;
+            line-height: 1.2;
         }
 
         .stat-card__v {
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            margin-top: .15rem;
+            margin-top: .25rem;
+            line-height: 1;
+        }
+
+        @media(min-width: 768px) {
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-card__n {
+                font-size: .72rem;
+            }
+
+            .stat-card__v {
+                font-size: 2rem;
+            }
         }
 
         .layout {
             display: grid;
-            gap: 1.25rem;
+            gap: 1rem;
+        }
+
+        @media(min-width: 1024px) {
+            .layout {
+                grid-template-columns: 1fr 280px;
+                gap: 1.25rem;
+            }
+        }
+
+        .box {
+            background: #111;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: .75rem;
+        }
+
+        @media(min-width: 768px) {
+            .box {
+                padding: 1.1rem;
+            }
         }
 
         @media(min-width: 1024px) {

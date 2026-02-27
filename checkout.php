@@ -236,11 +236,6 @@ CSS;
       background-color: rgba(14, 14, 18, 0.75);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.05);
-      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .card-dark:hover {
-      transform: translateY(-5px);
     }
 
     /* Custom colored card glows */
@@ -395,24 +390,28 @@ CSS;
 
 <body>
 
-  <!-- ── TOPBAR ── -->
-  <header class="sticky-top bg-dark border-bottom border-dark py-2"
+  <header class="sticky-top bg-dark border-bottom border-dark py-3"
     style="background: rgba(6,6,8,0.95) !important; backdrop-filter: blur(10px);">
     <div class="container d-flex justify-content-between align-items-center">
-      <div class="d-flex align-items-center gap-2">
-        <img src="<?= h(asset('assets/img/logo-ozverlig.webp')) ?>" alt="Logo Ozverligsportwear" width="36" height="36"
-          loading="eager">
-        <div class="lh-1">
-          <div class="font-rajdhani text-white fs-6">Ozverligsportwear</div>
-          <div class="text-secondary" style="font-size:0.75rem;">x Kemalikart</div>
+      <a href="<?= h(BASE_URL) ?>/" class="d-flex align-items-center gap-3 text-decoration-none">
+        <img src="<?= h(asset('assets/img/logo-ozverlig.webp')) ?>" alt="Logo Ozverligsportwear" width="48" height="48"
+          loading="eager" class="rounded-circle border border-secondary shadow-sm">
+        <div class="lh-sm">
+          <div class="font-rajdhani text-white fs-5 fw-bold" style="letter-spacing: 0.5px;">Ozverligsportwear</div>
+          <div class="text-brand-red fw-bold" style="font-size:0.8rem; letter-spacing: 1px;">X KEMALIKART</div>
         </div>
-        <nav class="d-none d-md-flex gap-3 align-items-center font-rajdhani text-secondary fw-bold">
+      </a>
+
+      <div class="d-flex align-items-center gap-4">
+        <nav class="d-none d-md-flex gap-4 align-items-center font-rajdhani text-secondary fw-bold fs-6">
           <a href="<?= h(BASE_URL) ?>/#produk" class="text-decoration-none text-secondary text-hover-white">Produk</a>
           <a href="<?= h(BASE_URL) ?>/#harga" class="text-decoration-none text-secondary text-hover-white">Harga</a>
           <a href="<?= h(BASE_URL) ?>/#faq" class="text-decoration-none text-secondary text-hover-white">FAQ</a>
         </nav>
-        <a href="<?= h(BASE_URL) ?>" class="btn btn-outline-light btn-sm px-3 rounded-0">Kembali</a>
+        <a href="<?= h(BASE_URL) ?>" class="btn btn-outline-light btn-sm px-4 py-2 skew-btn"><span
+            class="fw-bold fs-6">Kembali</span></a>
       </div>
+    </div>
   </header>
 
   <main>
@@ -425,8 +424,20 @@ CSS;
       <div class="container d-flex flex-column align-items-center">
         <div class="text-center mb-5">
           <h2 class="display-6 font-rajdhani fw-bold text-white mb-2">Form Pemesanan</h2>
-          <p class="lead text-secondary">Isi form di bawah. Setelah submit, Anda diarahkan ke WhatsApp untuk konfirmasi.
-          </p>
+          <p class="lead text-secondary mb-3">Isi form di bawah. Setelah submit, Anda diarahkan ke WhatsApp untuk
+            konfirmasi.</p>
+          <div class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-pill mt-2"
+            style="background: rgba(0, 230, 91, 0.1); border: 1px solid rgba(0, 230, 91, 0.3);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--brand-green)"
+              class="bi bi-shield-check" viewBox="0 0 16 16">
+              <path
+                d="M5.338 1.59a61 61 0 0 0-2.837.856.48.48 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.7 10.7 0 0 0 2.287 2.233c.346.244.652.42.893.533.12.057.218.095.293.118a1 1 0 0 0 .101.025 1 1 0 0 0 .1-.025c.076-.023.174-.061.294-.118.24-.113.547-.29.893-.533a10.7 10.7 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.655-.197-1.534-.446-2.837-.856C9.525 1.15 8.36 1 8 1s-1.525.15-2.662.59zM8 14.5c-.066 0-.16-.03-.254-.08a9.8 9.8 0 0 1-2.01-1.667C4.6 11.136 3.4 8.246 3.84 4.54a59 59 0 0 1 2.508-.75C7.23 3.63 7.85 3.5 8 3.5c.15 0 .77.13 1.652.29a59 59 0 0 1 2.508.75c.44 3.706-.76 6.596-1.896 8.213a9.8 9.8 0 0 1-2.01 1.667c-.094.05-.188.08-.254.08z" />
+              <path
+                d="M10.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z" />
+            </svg>
+            <span class="text-brand-green fw-bold" style="font-size: 0.85rem; letter-spacing: 0.5px;">Checkout Aman &
+              Terenkripsi</span>
+          </div>
         </div>
 
         <div class="row justify-content-center w-100 text-start">

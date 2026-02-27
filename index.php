@@ -396,24 +396,28 @@ CSS;
 <body>
 
   <!-- ── TOPBAR ── -->
-  <header class="sticky-top bg-dark border-bottom border-dark py-2"
+  <header class="sticky-top bg-dark border-bottom border-dark py-3"
     style="background: rgba(6,6,8,0.95) !important; backdrop-filter: blur(10px);">
     <div class="container d-flex justify-content-between align-items-center">
-      <div class="d-flex align-items-center gap-2">
-        <img src="<?= h(asset('assets/img/logo-ozverlig.webp')) ?>" alt="Logo Ozverligsportwear" width="36" height="36"
-          loading="eager">
-        <div class="lh-1">
-          <div class="font-rajdhani text-white fs-6">Ozverligsportwear</div>
-          <div class="text-secondary" style="font-size:0.75rem;">x Kemalikart</div>
+      <a href="<?= h(BASE_URL) ?>/" class="d-flex align-items-center gap-3 text-decoration-none">
+        <img src="<?= h(asset('assets/img/logo-ozverlig.webp')) ?>" alt="Logo Ozverligsportwear" width="48" height="48"
+          loading="eager" class="rounded-circle border border-secondary shadow-sm">
+        <div class="lh-sm">
+          <div class="font-rajdhani text-white fs-5 fw-bold" style="letter-spacing: 0.5px;">Ozverligsportwear</div>
+          <div class="text-brand-red fw-bold" style="font-size:0.8rem; letter-spacing: 1px;">X KEMALIKART</div>
         </div>
-        <nav class="d-none d-md-flex gap-3 align-items-center font-rajdhani text-secondary fw-bold">
+      </a>
+
+      <div class="d-flex align-items-center gap-4">
+        <nav class="d-none d-md-flex gap-4 align-items-center font-rajdhani text-secondary fw-bold fs-6">
           <a href="#produk" class="text-decoration-none text-secondary text-hover-white">Produk</a>
           <a href="#harga" class="text-decoration-none text-secondary text-hover-white">Harga</a>
           <a href="#faq" class="text-decoration-none text-secondary text-hover-white">FAQ</a>
         </nav>
-        <a href="<?= h(BASE_URL) ?>/checkout.php" class="btn btn-red btn-sm px-3 skew-btn"
-          data-track="initiate_checkout" id="btnOrder"><span>Pesan</span></a>
+        <a href="<?= h(BASE_URL) ?>/checkout.php" class="btn btn-red btn-sm px-4 py-2 skew-btn"
+          data-track="initiate_checkout" id="btnOrder"><span class="fw-bold fs-6">Pesan</span></a>
       </div>
+    </div>
   </header>
 
   <main>
@@ -1006,7 +1010,7 @@ CSS;
     })();
 
     // ── CUSTOM IN-HOUSE ANALYTICS ENGINE (Batch 20) ──
-    (function() {
+    (function () {
       function getSessionId() {
         let sid = sessionStorage.getItem('__trk_sid');
         if (!sid) {
@@ -1019,7 +1023,7 @@ CSS;
       function pingTracker(type, val = 0) {
         fetch('<?= h(BASE_URL) ?>/track.php', {
           method: 'POST',
-          headers: {'Content-Type': 'application/json'},
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             session_id: getSessionId(),
             event_type: type,
@@ -1031,7 +1035,7 @@ CSS;
 
       pingTracker('view_landing');
 
-      document.addEventListener('click', function(e) {
+      document.addEventListener('click', function (e) {
         const btn = e.target.closest('[data-track]');
         if (btn) pingTracker('click_' + btn.getAttribute('data-track'), 1);
       });
