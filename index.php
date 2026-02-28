@@ -576,15 +576,18 @@ CSS;
 
             <div class="row text-center text-lg-start g-3">
               <div class="col-4">
-                <div class="text-secondary small text-uppercase fw-bold">Pre-Order</div>
-                <div class="text-white fw-medium">27 Feb – 08 Mar</div>
+                <div class="text-secondary small text-uppercase fw-bold"><?= get_setting('hero_label_1', 'Pre-Order') ?>
+                </div>
+                <div class="text-white fw-medium"><?= get_setting('hero_value_1', '27 Feb – 08 Mar') ?></div>
               </div>
               <div class="col-4">
-                <div class="text-secondary small text-uppercase fw-bold">Produksi</div>
-                <div class="text-white fw-medium">09 – 21 Mar</div>
+                <div class="text-secondary small text-uppercase fw-bold"><?= get_setting('hero_label_2', 'Produksi') ?>
+                </div>
+                <div class="text-white fw-medium"><?= get_setting('hero_value_2', '09 – 21 Mar') ?></div>
               </div>
               <div class="col-4">
-                <div class="text-secondary small text-uppercase fw-bold">DP Minimal</div>
+                <div class="text-secondary small text-uppercase fw-bold">
+                  <?= get_setting('hero_label_3', 'DP Minimal') ?></div>
                 <div class="text-white fw-medium"><?= get_setting('hero_dp', 'IDR 100.000') ?></div>
               </div>
             </div>
@@ -608,15 +611,17 @@ CSS;
           <span class="text-white fs-5"><?= get_setting('promo_title', '🔥 EARLY ACCESS PRICE') ?></span>
           <span class="badge border border-light rounded-pill px-2 py-1 mt-1"
             style="font-size: 0.70rem; background: rgba(0,0,0,0.3);">
-            Batch 1
+            <?= get_setting('promo_badge', 'Batch 1') ?>
           </span>
         </div>
         <div class="d-flex align-items-center gap-2 bg-dark px-3 py-2 rounded">
           <span class="price-strike text-secondary fs-6"><?= idr(PRICE_ORIGINAL_1) ?></span>
-          <span class="text-brand-green fs-5">kini <?= idr(PRICE_PROMO_1) ?></span>
+          <span class="text-brand-green fs-5"><?= get_setting('promo_price_label', 'kini') ?>
+            <?= idr(PRICE_PROMO_1) ?></span>
         </div>
         <div class="d-flex flex-column text-md-start lh-1">
-          <span class="text-white small mb-1" style="font-size: 0.8rem;">Sisa waktu:</span>
+          <span class="text-white small mb-1"
+            style="font-size: 0.8rem;"><?= get_setting('promo_timer_label', 'Sisa waktu:') ?></span>
           <div id="promo-cd" class="d-flex gap-1 fs-6">
             <div class="bg-white text-black fw-bold rounded px-2 py-1"><span id="cd-h">--</span><span
                 class="small text-secondary fw-normal ms-1">J</span></div>
@@ -626,8 +631,7 @@ CSS;
                 class="small text-secondary fw-normal ms-1">D</span></div>
           </div>
           <div id="promo-ended" class="text-black fw-bold bg-warning px-2 py-1 rounded d-none"
-            style="font-size:0.85rem">Promo
-            Berakhir</div>
+            style="font-size:0.85rem"><?= get_setting('promo_ended', 'Promo Berakhir') ?></div>
         </div>
       </div>
     </div>
@@ -693,9 +697,11 @@ CSS;
               <img src="<?= h(asset('assets/img/ichigo.webp')) ?>" class="card-img-top rounded-0"
                 alt="Fantasy Kamen Rider Ichigo v.01" loading="lazy" decoding="async">
               <div class="card-body p-4">
-                <h3 class="card-title font-rajdhani text-white fs-4">Fantasy Kamen Rider Ichigo v.01</h3>
-                <p class="card-text text-secondary">Kolaborasi Ozverligsportwear x Kemalikart. Cocok untuk komunitas,
-                  daily wear, dan riding.</p>
+                <h3 class="card-title font-rajdhani text-white fs-4">
+                  <?= get_setting('product1_title', 'Fantasy Kamen Rider Ichigo v.01') ?></h3>
+                <p class="card-text text-secondary">
+                  <?= get_setting('product1_desc', 'Kolaborasi Ozverligsportwear x Kemalikart. Cocok untuk komunitas, daily wear, dan riding.') ?>
+                </p>
               </div>
             </article>
           </div>
@@ -705,8 +711,10 @@ CSS;
               <img src="<?= h(asset('assets/img/black.webp')) ?>" class="card-img-top rounded-0"
                 alt="Fantasy Kamen Rider Black v.01" loading="lazy" decoding="async">
               <div class="card-body p-4">
-                <h3 class="card-title font-rajdhani text-white fs-4">Fantasy Kamen Rider Black v.01</h3>
-                <p class="card-text text-secondary">Karakter kuat, tegas, clean. Limited drop — raih sebelum kehabisan.
+                <h3 class="card-title font-rajdhani text-white fs-4">
+                  <?= get_setting('product2_title', 'Fantasy Kamen Rider Black v.01') ?></h3>
+                <p class="card-text text-secondary">
+                  <?= get_setting('product2_desc', 'Karakter kuat, tegas, clean. Limited drop — raih sebelum kehabisan.') ?>
                 </p>
               </div>
             </article>
@@ -857,8 +865,8 @@ CSS;
     <section class="py-5 text-center" id="size-chart"
       style="background: rgba(10,10,14,0.6); border-top: 1px solid rgba(255,255,255,0.05);">
       <div class="container d-flex flex-column align-items-center">
-        <h2 class="display-6 font-rajdhani fw-bold text-white mb-4">Size Chart</h2>
-        <p class="lead text-secondary mb-5">Panduan ukuran untuk mendapatkan fitting terbaik.</p>
+        <h2 class="display-6 font-rajdhani fw-bold text-white mb-4"><?= get_setting('sizechart_title', 'Size Chart') ?></h2>
+        <p class="lead text-secondary mb-5"><?= get_setting('sizechart_desc', 'Panduan ukuran untuk mendapatkan fitting terbaik.') ?></p>
         <div class="row justify-content-center">
           <div class="col-md-8 col-lg-6">
             <img src="<?= h(asset('assets/img/size-chart.png')) ?>" alt="Size Chart Jersey Kamen Rider"
@@ -886,14 +894,13 @@ CSS;
                   <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none" type="button"
                     data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false"
                     aria-controls="collapseOne">
-                    Berapa harga jersey?
+                    <?= get_setting('faq_q1', 'Berapa harga jersey?') ?>
                   </button>
                 </h2>
                 <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
                   data-bs-parent="#faqAccordion">
                   <div class="accordion-body text-secondary border-top border-secondary">
-                    Harga promo 1 jersey IDR 225.000, paket doble 2 jersey IDR 400.000. DP minimal IDR 100.000 per
-                    jersey. Ongkir ditanggung pemesan.
+                    <?= get_setting('faq_a1', 'Harga promo 1 jersey IDR 225.000, paket doble 2 jersey IDR 400.000. DP minimal IDR 100.000 per jersey. Ongkir ditanggung pemesan.') ?>
                   </div>
                 </div>
               </div>
@@ -904,14 +911,13 @@ CSS;
                   <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none" type="button"
                     data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false"
                     aria-controls="collapseTwo">
-                    Kapan periode pemesanan dan produksi?
+                    <?= get_setting('faq_q2', 'Kapan periode pemesanan dan produksi?') ?>
                   </button>
                 </h2>
                 <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
                   data-bs-parent="#faqAccordion">
                   <div class="accordion-body text-secondary border-top border-secondary">
-                    Pre-order: 27 Februari – 08 Maret 2026. Produksi: 09 – 21 Maret 2026. Pengiriman dilakukan setelah
-                    produksi selesai.
+                    <?= get_setting('faq_a2', 'Pre-order: 27 Februari – 08 Maret 2026. Produksi: 09 – 21 Maret 2026. Pengiriman dilakukan setelah produksi selesai.') ?>
                   </div>
                 </div>
               </div>
@@ -922,14 +928,13 @@ CSS;
                   <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none" type="button"
                     data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false"
                     aria-controls="collapseThree">
-                    Apa saja spesifikasi jersey?
+                    <?= get_setting('faq_q3', 'Apa saja spesifikasi jersey?') ?>
                   </button>
                 </h2>
                 <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
                   data-bs-parent="#faqAccordion">
                   <div class="accordion-body text-secondary border-top border-secondary">
-                    Material Andromax Sublimation; Crest 3D Tatami/Polyflock; Apparel Crest 3D HD; Collar/Cuff Rib Knit;
-                    Size Tag DTF.
+                    <?= get_setting('faq_a3', 'Material Andromax Sublimation; Crest 3D Tatami/Polyflock; Apparel Crest 3D HD; Collar/Cuff Rib Knit; Size Tag DTF.') ?>
                   </div>
                 </div>
               </div>
@@ -940,13 +945,13 @@ CSS;
                   <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none" type="button"
                     data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false"
                     aria-controls="collapseFour">
-                    Bagaimana cara pemesanan?
+                    <?= get_setting('faq_q4', 'Bagaimana cara pemesanan?') ?>
                   </button>
                 </h2>
                 <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
                   data-bs-parent="#faqAccordion">
                   <div class="accordion-body text-secondary border-top border-secondary">
-                    Isi form pemesanan di halaman ini, lalu lanjutkan konfirmasi dan pembayaran DP via WhatsApp.
+                    <?= get_setting('faq_a4', 'Isi form pemesanan di halaman ini, lalu lanjutkan konfirmasi dan pembayaran DP via WhatsApp.') ?>
                   </div>
                 </div>
               </div>
@@ -957,14 +962,13 @@ CSS;
                   <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none" type="button"
                     data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false"
                     aria-controls="collapseFive">
-                    Apakah bisa request ukuran custom?
+                    <?= get_setting('faq_q5', 'Apakah bisa request ukuran custom?') ?>
                   </button>
                 </h2>
                 <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive"
                   data-bs-parent="#faqAccordion">
                   <div class="accordion-body text-secondary border-top border-secondary">
-                    Ukuran yang tersedia S, M, L, XL, XXL, 3XL, 4XL, 5XL. Untuk request khusus, lengkapi catatan (note)
-                    saat mengisi form.
+                    <?= get_setting('faq_a5', 'Ukuran yang tersedia S, M, L, XL, XXL, 3XL, 4XL, 5XL. Untuk request khusus, lengkapi catatan (note) saat mengisi form.') ?>
                   </div>
                 </div>
               </div>
@@ -995,8 +999,8 @@ CSS;
   <footer class="py-4 bg-black border-top border-dark">
     <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
       <div class="text-center text-md-start">
-        <div class="font-rajdhani fw-bold text-white fs-5">Ozverligsportwear x Kemalikart</div>
-        <div class="text-secondary small">Jersey Series Fantasy Kamen Rider — Edisi 1 &copy; 2026</div>
+        <div class="font-rajdhani fw-bold text-white fs-5"><?= get_setting('footer_brand', 'Ozverligsportwear x Kemalikart') ?></div>
+        <div class="text-secondary small"><?= get_setting('footer_copyright', 'Jersey Series Fantasy Kamen Rider — Edisi 1 &copy; 2026') ?></div>
       </div>
       <nav class="d-flex gap-3 align-items-center font-rajdhani fw-bold">
         <a href="#order" class="text-decoration-none text-secondary">Pesan</a>
