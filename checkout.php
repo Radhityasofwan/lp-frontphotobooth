@@ -182,7 +182,11 @@ CSS;
 
     body {
       background-color: var(--bg-dark);
-      background-image: radial-gradient(circle at 50% 0%, rgba(30, 30, 35, 1) 0%, var(--bg-dark) 80%);
+      background-image:
+        radial-gradient(circle at 50% 0%, rgba(30, 30, 35, 1) 0%, var(--bg-dark) 80%),
+        linear-gradient(rgba(0, 234, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 234, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 30px 30px, 30px 30px;
       color: var(--text-main);
       font-family: 'Inter', system-ui, sans-serif;
     }
@@ -270,46 +274,83 @@ CSS;
     .card-dark {
       background-color: rgba(14, 14, 18, 0.75);
       border: 1px solid rgba(255, 255, 255, 0.05);
+      position: relative;
+    }
+
+    /* HUD Corners */
+    .hud-container::before,
+    .hud-container::after {
+      content: '';
+      position: absolute;
+      width: 25px;
+      height: 25px;
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+
+    .hud-container::before {
+      top: -1px;
+      left: -1px;
+      border-top: 2px solid var(--hud-color, var(--text-muted));
+      border-left: 2px solid var(--hud-color, var(--text-muted));
+    }
+
+    .hud-container::after {
+      bottom: -1px;
+      right: -1px;
+      border-bottom: 2px solid var(--hud-color, var(--text-muted));
+      border-right: 2px solid var(--hud-color, var(--text-muted));
+    }
+
+    .hud-container:hover::before,
+    .hud-container:hover::after {
+      width: 40px;
+      height: 40px;
+      border-color: var(--hud-color-hover, var(--brand-red));
     }
 
     /* Custom colored card glows */
     .glow-green {
-      box-shadow: 0 0 25px rgba(0, 230, 91, 0.15);
-      border: 1px solid rgba(0, 230, 91, 0.3);
+      box-shadow: 0 0 25px rgba(0, 230, 91, 0.2);
+      border: 1px solid rgba(0, 230, 91, 0.4);
+      --hud-color: rgba(0, 230, 91, 0.5);
+      --hud-color-hover: rgba(0, 230, 91, 1);
     }
 
     .glow-green:hover {
-      box-shadow: 0 0 35px rgba(0, 230, 91, 0.3);
-      border-color: rgba(0, 230, 91, 0.6);
+      box-shadow: 0 0 45px rgba(0, 230, 91, 0.4);
+      border-color: rgba(0, 230, 91, 0.8);
     }
 
     .glow-red {
-      box-shadow: 0 0 25px rgba(255, 30, 39, 0.15);
-      border: 1px solid rgba(255, 30, 39, 0.3);
+      box-shadow: 0 0 25px rgba(255, 30, 39, 0.2);
+      border: 1px solid rgba(255, 30, 39, 0.4);
+      --hud-color: rgba(255, 30, 39, 0.5);
+      --hud-color-hover: rgba(255, 30, 39, 1);
     }
 
     .glow-red:hover {
-      box-shadow: 0 0 35px rgba(255, 30, 39, 0.3);
-      border-color: rgba(255, 30, 39, 0.6);
+      box-shadow: 0 0 45px rgba(255, 30, 39, 0.4);
+      border-color: rgba(255, 30, 39, 0.8);
     }
 
     /* Custom Btn */
     .btn-red {
-      background: linear-gradient(135deg, #ff1e27 0%, #d00f18 100%);
+      background: linear-gradient(135deg, #ff003c 0%, #d00f18 100%);
       color: #fff;
       border: none;
       font-family: 'Anton', sans-serif;
-      font-weight: 700;
+      font-weight: 400;
       text-transform: uppercase;
       letter-spacing: 1px;
-      box-shadow: 0 4px 15px rgba(255, 30, 39, 0.4);
+      box-shadow: 0 4px 15px rgba(255, 0, 60, 0.4);
       transition: all 0.3s ease;
     }
 
     .btn-red:hover {
       background: linear-gradient(135deg, #ff333b 0%, #e6101a 100%);
       color: #fff;
-      box-shadow: 0 6px 20px rgba(255, 30, 39, 0.6);
+      box-shadow: 0 6px 20px rgba(255, 0, 60, 0.6);
       transform: translateY(-2px);
     }
 
@@ -526,8 +567,8 @@ CSS;
     style="background: rgba(6,6,8,0.95) !important;">
     <div class="container d-flex justify-content-between align-items-center gap-1 gap-md-4">
       <a href="<?= h(BASE_URL) ?>/" class="d-flex align-items-center gap-2 gap-md-3 text-decoration-none">
-        <img src="<?= h(asset('assets/img/logo-ozverlig.webp')) ?>" alt="Logo Ozverligsportwear" loading="eager"
-          class="rounded-circle border border-secondary shadow-sm topbar-logo">
+        <img src="<?= h(asset('assets/img/logo-ozverlig.webp')) ?>" alt="Logo Ozverligsportwear" width="48" height="48"
+          loading="eager" class="rounded-circle border border-secondary shadow-sm topbar-logo">
         <div class="lh-sm">
           <div class="font-headline text-white fw-bold topbar-brand" style="letter-spacing: 0.5px;">Ozverligsportwear
           </div>
@@ -699,7 +740,7 @@ CSS;
                       </div>
                     </div>
 
-                    <script>
+                    <script defer>
                       // Minimal JS to display selected file name
                       const inpProof = document.getElementById('inp_proof');
                       const nameDisplay = document.getElementById('file_name_display');
@@ -899,12 +940,16 @@ CSS;
   </div>
 
   <!-- Bootstrap JS (bundle includes Popper) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <!-- Bootstrap JS Local Fallback -->
-  <script>window.bootstrap || document.write('<script src="<?= h(asset('assets/vendor/bootstrap/bootstrap.bundle.min.js')) ?>"><\/script>');</script>
+  <script
+    defer>window.bootstrap || document.write('<script defer src="<?= h(asset('assets/vendor/bootstrap/bootstrap.bundle.min.js')) ?>"><\/script>');</script>
+
+  <!-- SweetAlert2 JS -->
+  <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <!-- Custom logic -->
-  <script>
+  <script defer>
     /**
      * Runtime Variables from PHP config
      */

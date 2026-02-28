@@ -182,7 +182,11 @@ CSS;
 
     body {
       background-color: var(--bg-dark);
-      background-image: radial-gradient(circle at 50% 0%, rgba(30, 30, 35, 1) 0%, var(--bg-dark) 80%);
+      background-image:
+        radial-gradient(circle at 50% 0%, rgba(30, 30, 35, 1) 0%, var(--bg-dark) 80%),
+        linear-gradient(rgba(0, 234, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 234, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 30px 30px, 30px 30px;
       color: var(--text-main);
       font-family: 'Inter', system-ui, sans-serif;
     }
@@ -271,31 +275,68 @@ CSS;
       background-color: rgba(14, 14, 18, 0.75);
       border: 1px solid rgba(255, 255, 255, 0.05);
       transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
     }
 
     .card-dark:hover {
       transform: translateY(-5px);
     }
 
+    /* HUD Corners */
+    .hud-container::before,
+    .hud-container::after {
+      content: '';
+      position: absolute;
+      width: 25px;
+      height: 25px;
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+
+    .hud-container::before {
+      top: -1px;
+      left: -1px;
+      border-top: 2px solid var(--hud-color, var(--text-muted));
+      border-left: 2px solid var(--hud-color, var(--text-muted));
+    }
+
+    .hud-container::after {
+      bottom: -1px;
+      right: -1px;
+      border-bottom: 2px solid var(--hud-color, var(--text-muted));
+      border-right: 2px solid var(--hud-color, var(--text-muted));
+    }
+
+    .hud-container:hover::before,
+    .hud-container:hover::after {
+      width: 40px;
+      height: 40px;
+      border-color: var(--hud-color-hover, var(--brand-red));
+    }
+
     /* Custom colored card glows */
     .glow-green {
-      box-shadow: 0 0 25px rgba(0, 230, 91, 0.15);
-      border: 1px solid rgba(0, 230, 91, 0.3);
+      box-shadow: 0 0 25px rgba(0, 230, 91, 0.2);
+      border: 1px solid rgba(0, 230, 91, 0.4);
+      --hud-color: rgba(0, 230, 91, 0.5);
+      --hud-color-hover: rgba(0, 230, 91, 1);
     }
 
     .glow-green:hover {
-      box-shadow: 0 0 35px rgba(0, 230, 91, 0.3);
-      border-color: rgba(0, 230, 91, 0.6);
+      box-shadow: 0 0 45px rgba(0, 230, 91, 0.4);
+      border-color: rgba(0, 230, 91, 0.8);
     }
 
     .glow-red {
-      box-shadow: 0 0 25px rgba(255, 30, 39, 0.15);
-      border: 1px solid rgba(255, 30, 39, 0.3);
+      box-shadow: 0 0 25px rgba(255, 30, 39, 0.2);
+      border: 1px solid rgba(255, 30, 39, 0.4);
+      --hud-color: rgba(255, 30, 39, 0.5);
+      --hud-color-hover: rgba(255, 30, 39, 1);
     }
 
     .glow-red:hover {
-      box-shadow: 0 0 35px rgba(255, 30, 39, 0.3);
-      border-color: rgba(255, 30, 39, 0.6);
+      box-shadow: 0 0 45px rgba(255, 30, 39, 0.4);
+      border-color: rgba(255, 30, 39, 0.8);
     }
 
     /* Custom Btn */
@@ -532,7 +573,7 @@ CSS;
     <div class="container d-flex justify-content-between align-items-center gap-1 gap-md-4">
       <a href="<?= h(BASE_URL) ?>/" class="d-flex align-items-center gap-2 gap-md-3 text-decoration-none">
         <img src="<?= h(asset('assets/img/logo-ozverlig.webp')) ?>" alt="Logo Ozverligsportwear" loading="eager"
-          class="rounded-circle border border-secondary shadow-sm topbar-logo">
+          width="48" height="48" class="rounded-circle border border-secondary shadow-sm topbar-logo">
         <div class="lh-sm">
           <div class="font-headline text-white fw-bold topbar-brand" style="letter-spacing: 0.5px;">Ozverligsportwear
           </div>
@@ -605,10 +646,10 @@ CSS;
           </div>
 
           <div class="col-lg-6 order-1 order-lg-2 text-center">
-            <img class="img-fluid drop-shadow"
+            <img class="img-fluid drop-shadow" width="500" height="600"
               src="<?= h(asset(get_setting('hero_bg_image', 'assets/img/hero.webp'))) ?>"
               alt="Jersey Series Fantasy Kamen Rider Ichigo dan Black Edisi 1" loading="eager" fetchpriority="high"
-              style="filter: drop-shadow(0 0 30px rgba(240,19,30,0.3)); max-width:90%">
+              style="filter: drop-shadow(0 0 30px rgba(255,0,60,0.3)); max-width:90%">
           </div>
         </div>
       </div>
@@ -660,37 +701,50 @@ CSS;
         <div class="row g-4 justify-content-center">
           <!-- Ichigo Embed (Green Glow) -->
           <div class="col-md-6 col-lg-5">
-            <div class="card card-dark h-100 rounded text-center p-3 glow-green border border-dark">
+            <div class="card card-dark hud-container h-100 rounded text-center p-3 glow-green border border-dark">
               <h5 class="font-headline fw-bold text-brand-green mb-3">#Ichigo Edition</h5>
-              <!-- Using 4:5 aspect ratio padding for IG portraits (125% = 5/4) -->
-              <div class="w-100 overflow-hidden rounded bg-black d-flex justify-content-center"
-                style="position: relative; padding-top: 125%;">
-                <blockquote
-                  class="instagram-media h-100 w-100 border-0 m-0 bg-transparent position-absolute top-0 start-0"
-                  data-instgrm-permalink="<?= get_setting('showcase_ig_ichigo', 'https://www.instagram.com/p/DVRdmS_E9Kq/') ?>?utm_source=ig_web_button_share_sheet&igsh=MzRlODBiNWFlZA=="
-                  data-instgrm-version="14"></blockquote>
+              <!-- Click-to-load Instagram Embed -->
+              <div
+                class="w-100 overflow-hidden rounded bg-black d-flex justify-content-center align-items-center ig-placeholder"
+                style="position: relative; padding-top: 125%; cursor: pointer;"
+                data-ig="https://www.instagram.com/p/DVRdmS_E9Kq/">
+                <div
+                  class="position-absolute d-flex flex-column align-items-center justify-content-center w-100 h-100 top-0 start-0 text-secondary hover-white transition-all">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor"
+                    class="bi bi-instagram mb-2" viewBox="0 0 16 16">
+                    <path
+                      d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z" />
+                  </svg>
+                  <span class="font-headline tracking-widest">Load Instagram</span>
+                </div>
               </div>
             </div>
           </div>
 
           <!-- Black Embed (Red Glow) -->
           <div class="col-md-6 col-lg-5">
-            <div class="card card-dark h-100 rounded text-center p-3 glow-red border border-dark">
+            <div class="card card-dark hud-container h-100 rounded text-center p-3 glow-red border border-dark">
               <h5 class="font-headline fw-bold text-brand-red mb-3">#Black Edition</h5>
-              <!-- Using 4:5 aspect ratio padding for IG portraits (125% = 5/4) -->
-              <div class="w-100 overflow-hidden rounded bg-black d-flex justify-content-center"
-                style="position: relative; padding-top: 125%;">
-                <blockquote
-                  class="instagram-media h-100 w-100 border-0 m-0 bg-transparent position-absolute top-0 start-0"
-                  data-instgrm-permalink="<?= get_setting('showcase_ig_black', 'https://www.instagram.com/p/DVRd5kNE0B4/') ?>?utm_source=ig_web_button_share_sheet&igsh=MzRlODBiNWFlZA=="
-                  data-instgrm-version="14"></blockquote>
+              <!-- Click-to-load Instagram Embed -->
+              <div
+                class="w-100 overflow-hidden rounded bg-black d-flex justify-content-center align-items-center ig-placeholder"
+                style="position: relative; padding-top: 125%; cursor: pointer;"
+                data-ig="https://www.instagram.com/p/DVRd5kNE0B4/">
+                <div
+                  class="position-absolute d-flex flex-column align-items-center justify-content-center w-100 h-100 top-0 start-0 text-secondary hover-white transition-all">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor"
+                    class="bi bi-instagram mb-2" viewBox="0 0 16 16">
+                    <path
+                      d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z" />
+                  </svg>
+                  <span class="font-headline tracking-widest">Load Instagram</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </section>
-    <script async src="//www.instagram.com/embed.js"></script>
 
     <!-- ── PRODUK ── -->
     <section class="py-5 bg-dark border-bottom border-dark" id="produk">
@@ -704,8 +758,9 @@ CSS;
 
         <div class="row g-4 mb-5">
           <div class="col-md-6">
-            <article class="card card-dark h-100 rounded-0">
-              <img src="<?= h(asset(get_setting('product1_image', 'assets/img/ichigo.webp'))) ?>"
+            <article class="card card-dark hud-container h-100 rounded-0">
+              <img src="<?= h(asset(get_setting('product1_image', 'assets/img/ichigo.webp'))) ?>" width="600"
+                height="600" class="img-fluid"
                 alt="<?= get_setting('product1_title', 'Fantasy Kamen Rider Ichigo v.01') ?>" loading="lazy">
               <div class="product-info p-4">
                 <h3 class="fs-4 font-headline fw-bold mb-2 text-white">
@@ -719,8 +774,9 @@ CSS;
           </div>
 
           <div class="col-md-6">
-            <article class="card card-dark h-100 rounded-0">
-              <img src="<?= h(asset(get_setting('product2_image', 'assets/img/black.webp'))) ?>"
+            <article class="card card-dark hud-container h-100 rounded-0">
+              <img src="<?= h(asset(get_setting('product2_image', 'assets/img/black.webp'))) ?>" width="600"
+                height="600" class="img-fluid"
                 alt="<?= get_setting('product2_title', 'Fantasy Kamen Rider Black v.01') ?>" loading="lazy">
               <div class="product-info p-4">
                 <h3 class="fs-4 font-headline fw-bold mb-2 text-white">
@@ -783,7 +839,7 @@ CSS;
         <div class="row g-4 justify-content-center mb-4">
           <!-- 1 pcs (Left - Green) -->
           <div class="col-md-5 col-lg-4">
-            <div class="card card-dark h-100 rounded-0 text-center py-5 px-3 glow-green">
+            <div class="card card-dark hud-container h-100 rounded-0 text-center py-5 px-3 glow-green">
               <div class="font-headline fs-4 text-white mb-3">HARGA JERSEY</div>
               <div class="price-strike mb-2 font-accent"><?= idr(PRICE_ORIGINAL_1) ?></div>
               <div class="display-5 fw-bold text-brand-green mb-4 font-accent"><?= idr(PRICE_PROMO_1) ?></div>
@@ -793,7 +849,7 @@ CSS;
 
           <!-- 2 pcs (Right - Red) -->
           <div class="col-md-5 col-lg-4">
-            <div class="card card-dark h-100 rounded-0 text-center py-5 px-3 glow-red position-relative"
+            <div class="card card-dark hud-container h-100 rounded-0 text-center py-5 px-3 glow-red position-relative"
               style="transform: scale(1.05); z-index:2;">
               <span
                 class="position-absolute top-0 start-50 translate-middle badge bg-brand-red px-3 py-2 text-uppercase letter-spacing-1 font-accent">Best
@@ -886,8 +942,8 @@ CSS;
         </p>
         <div class="row justify-content-center">
           <div class="col-md-8 col-lg-6">
-            <img src="<?= h(asset('assets/img/size-chart.png')) ?>" alt="Size Chart Jersey Kamen Rider"
-              class="img-fluid rounded border border-secondary drop-shadow"
+            <img src="<?= h(asset('assets/img/size-chart.png')) ?>" alt="Size Chart Jersey Kamen Rider" width="800"
+              height="800" class="img-fluid rounded border border-secondary drop-shadow"
               style="filter: drop-shadow(0 0 15px rgba(255, 30, 39, 0.2));" loading="lazy">
           </div>
         </div>
@@ -1110,12 +1166,13 @@ CSS;
   </div>
 
   <!-- Bootstrap JS (bundle includes Popper) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <!-- Bootstrap JS Local Fallback -->
-  <script>window.bootstrap || document.write('<script src="<?= h(asset('assets/vendor/bootstrap/bootstrap.bundle.min.js')) ?>"><\/script>');</script>
+  <script
+    defer>window.bootstrap || document.write('<script defer src="<?= h(asset('assets/vendor/bootstrap/bootstrap.bundle.min.js')) ?>"><\/script>');</script>
 
   <!-- Custom logic -->
-  <script>
+  <script defer>
     /**
      * Runtime Variables from PHP config
      */
@@ -1155,6 +1212,23 @@ CSS;
             document.getElementById('f_referrer').value = ref;
           }
         }
+
+        // Lazy Load IG Embeds
+        const igPlaceholders = document.querySelectorAll('.ig-placeholder');
+        igPlaceholders.forEach(pl => {
+          pl.addEventListener('click', function () {
+            const url = this.getAttribute('data-ig');
+            this.innerHTML = `<blockquote class="instagram-media h-100 w-100 border-0 m-0 bg-transparent position-absolute top-0 start-0" data-instgrm-permalink="${url}?utm_source=ig_web_button_share_sheet&igsh=MzRlODBiNWFlZA==" data-instgrm-version="14"></blockquote>`;
+            if (!window.instgrm) {
+              const s = document.createElement('script');
+              s.async = true;
+              s.src = "//www.instagram.com/embed.js";
+              document.body.appendChild(s);
+            } else {
+              window.instgrm.Embeds.process();
+            }
+          });
+        });
 
         // Countdown Timer logic: 24h Rolling Reset
         const cdWrap = document.getElementById('promo-cd');
@@ -1259,41 +1333,41 @@ CSS;
 
     // ── CUSTOM IN-HOUSE ANALYTICS ENGINE (Batch 20) ──
     (function () {
-      function getSessionId() {
-        let sid = sessionStorage.getItem('__trk_sid');
-        if (!sid) {
-          sid = 'sid_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
-          sessionStorage.setItem('__trk_sid', sid);
+        function getSessionId() {
+          let sid = sessionStorage.getItem('__trk_sid');
+          if (!sid) {
+            sid = 'sid_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
+            sessionStorage.setItem('__trk_sid', sid);
+          }
+          return sid;
         }
-        return sid;
-      }
 
-      function pingTracker(type, val = 0) {
-        fetch('<?= h(BASE_URL) ?>/track.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            session_id: getSessionId(),
-            event_type: type,
-            event_value: val,
-            page_url: window.location.pathname
-          })
-        }).catch(e => console.warn('Telemetry error', e));
-      }
+        function pingTracker(type, val = 0) {
+          fetch('<?= h(BASE_URL) ?>/track.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              session_id: getSessionId(),
+              event_type: type,
+              event_value: val,
+              page_url: window.location.pathname
+            })
+          }).catch(e => console.warn('Telemetry error', e));
+        }
 
-      pingTracker('view_landing');
+        pingTracker('view_landing');
 
-      document.addEventListener('click', function (e) {
-        const btn = e.target.closest('[data-track]');
-        if (btn) pingTracker('click_' + btn.getAttribute('data-track'), 1);
-      });
+        document.addEventListener('click', function (e) {
+          const btn = e.target.closest('[data-track]');
+          if (btn) pingTracker('click_' + btn.getAttribute('data-track'), 1);
+        });
 
-      let seconds = 0;
-      setInterval(() => {
-        seconds += 10;
-        pingTracker('time_spent', seconds);
-      }, 10000);
-    })();
+        let seconds = 0;
+        setInterval(() => {
+          seconds += 10;
+          pingTracker('time_spent', seconds);
+        }, 10000);
+      })();
   </script>
 
   <style>
