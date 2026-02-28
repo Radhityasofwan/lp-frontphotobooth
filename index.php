@@ -101,21 +101,27 @@ $schemaJson = json_encode([
 ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 
 $criticalCSS = <<<'CSS'
-:root{--bg:#060608;--bg-card:#0e0e12;--red:#f0131e;--red-glow:rgba(240, 19, 30, 0.4);--green:#00ff66;--text:#f4f4f5;--muted:#9ca3af;--border:#22222a;--ff-head:'Rajdhani',system-ui,sans-serif;--ff-body:'Inter',system-ui,-apple-system,sans-serif;--radius:0px;--skew:-8deg}
+:root{--bg:#0a0a0a;--bg-card:#111111;--red:#ff003c;--red-glow:rgba(255, 0, 60, 0.5);--blue:#00eaff;--blue-glow:rgba(0, 234, 255, 0.5);--green:#00ff66;--text:#f4f4f5;--muted:#9ca3af;--border:#22222a;--ff-head:'Anton',sans-serif;--ff-body:'Inter',system-ui,-apple-system,sans-serif;--ff-accent:'Orbitron',monospace;--radius:0px;--skew:-8deg}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:var(--ff-body);background-color:var(--bg);background-image:linear-gradient(rgba(255,255,255,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.015) 1px,transparent 1px);background-size:40px 40px;color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
 .container{width:100%;max-width:1040px;margin-inline:auto;padding-inline:1.25rem}
-.topbar{background:rgba(6,6,8,.9);backdrop-filter:blur(12px);padding:.75rem 0;position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border)}
+.topbar{background:rgba(10,10,10,.9);backdrop-filter:blur(12px);padding:.75rem 0;position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border)}
 .topbar__inner{display:flex;justify-content:space-between;align-items:center}
 .brand{display:flex;align-items:center;gap:.75rem}
-.brand__title{font-family:var(--ff-head);font-weight:700;font-size:1.1rem;text-transform:uppercase;letter-spacing:2px;line-height:1;color:var(--text)}
+.brand__title{font-family:var(--ff-head);font-weight:700;font-size:1.1rem;text-transform:uppercase;letter-spacing:1px;line-height:1;color:var(--text)}
 .hero{padding:4rem 0 5rem}
-h1,h2,h3{font-family:var(--ff-head);font-weight:700;text-transform:uppercase;line-height:1.1;letter-spacing:1px}
+h1,h2,h3{font-family:var(--ff-head);font-weight:400;text-transform:uppercase;line-height:1.1;letter-spacing:1px}
 h1{font-size:clamp(2.5rem,8vw,4.5rem);color:var(--text);text-shadow:0 0 20px rgba(255,255,255,0.1);margin-bottom:0.5rem}
 h2{font-size:clamp(1.8rem,5vw,2.8rem);display:inline-block;margin-bottom:1.5rem;position:relative;padding-bottom:0.5rem;line-height:1.2}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;background:var(--red);color:#fff;padding:.85rem 2rem;font-family:var(--ff-head);font-size:1.1rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--red);cursor:pointer;transform:skewX(var(--skew));text-decoration:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;background:var(--red);color:#fff;padding:.85rem 2rem;font-family:var(--ff-head);font-size:1.1rem;font-weight:400;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--red);cursor:pointer;transform:skewX(var(--skew));text-decoration:none;transition:all 0.3s ease}
+.btn:hover{transform:skewX(var(--skew)) scale(1.05);box-shadow:0 0 15px var(--red-glow)}
 .btn>span{transform:skewX(calc(var(--skew)*-1));display:inline-block}
+
+/* New Typography Classes */
+.font-headline { font-family: var(--ff-head); font-weight: 400; text-transform: uppercase; letter-spacing: 1px; }
+.font-body { font-family: var(--ff-body); font-weight: 400; }
+.font-accent { font-family: var(--ff-accent); font-weight: 700; letter-spacing: 2px; }
 CSS;
 ?>
 <!doctype html>
@@ -147,6 +153,13 @@ CSS;
   <!-- DNS Prefetch / Preconnect -->
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 
+  <!-- Google Fonts: Anton (Headline), Inter (Body), Orbitron (Accent) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600&family=Orbitron:wght@500;700;900&display=swap"
+    rel="stylesheet">
+
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     onerror="this.onerror=null;this.href='<?= h(asset('assets/vendor/bootstrap/bootstrap.min.css')) ?>';">
@@ -154,14 +167,15 @@ CSS;
   <style>
     /* 
     * Minimal Overrides (Bootstrap 5 controls the rest)
-    * Ozverligsportwear x Kemalikart
+    * Ozverligsportwear x Kemalikart Futuristic Theme
     */
 
     :root {
-      --bg-dark: #050505;
-      --bg-card: #0a0a0d;
-      --brand-red: #ff1e27;
-      --brand-green: #00e65b;
+      --bg-dark: #0a0a0a;
+      --bg-card: #111111;
+      --brand-red: #ff003c;
+      --brand-blue: #00eaff;
+      --brand-green: #00ff66;
       --text-main: #f8f9fa;
       --text-muted: #8b8f97;
     }
@@ -170,7 +184,7 @@ CSS;
       background-color: var(--bg-dark);
       background-image: radial-gradient(circle at 50% 0%, rgba(30, 30, 35, 1) 0%, var(--bg-dark) 80%);
       color: var(--text-main);
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
     }
 
     /* Fixed topbar layout for mobile */
@@ -220,16 +234,10 @@ CSS;
       }
     }
 
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6,
-    .font-rajdhani {
-      font-family: 'Rajdhani', system-ui, sans-serif;
+    .font-headline {
+      font-family: 'Anton', system-ui, sans-serif;
       text-transform: uppercase;
-      font-weight: 700;
+      font-weight: 400;
       letter-spacing: 1px;
     }
 
@@ -292,21 +300,21 @@ CSS;
 
     /* Custom Btn */
     .btn-red {
-      background: linear-gradient(135deg, #ff1e27 0%, #d00f18 100%);
+      background: linear-gradient(135deg, #ff003c 0%, #d00f18 100%);
       color: #fff;
       border: none;
-      font-family: 'Rajdhani', sans-serif;
-      font-weight: 700;
+      font-family: 'Anton', sans-serif;
+      font-weight: 400;
       text-transform: uppercase;
       letter-spacing: 1px;
-      box-shadow: 0 4px 15px rgba(255, 30, 39, 0.4);
+      box-shadow: 0 4px 15px rgba(255, 0, 60, 0.4);
       transition: all 0.3s ease;
     }
 
     .btn-red:hover {
       background: linear-gradient(135deg, #ff333b 0%, #e6101a 100%);
       color: #fff;
-      box-shadow: 0 6px 20px rgba(255, 30, 39, 0.6);
+      box-shadow: 0 6px 20px rgba(255, 0, 60, 0.6);
       transform: translateY(-2px);
     }
 
@@ -526,14 +534,14 @@ CSS;
         <img src="<?= h(asset('assets/img/logo-ozverlig.webp')) ?>" alt="Logo Ozverligsportwear" loading="eager"
           class="rounded-circle border border-secondary shadow-sm topbar-logo">
         <div class="lh-sm">
-          <div class="font-rajdhani text-white fw-bold topbar-brand" style="letter-spacing: 0.5px;">Ozverligsportwear
+          <div class="font-headline text-white fw-bold topbar-brand" style="letter-spacing: 0.5px;">Ozverligsportwear
           </div>
           <div class="text-brand-red fw-bold topbar-sub" style="letter-spacing: 1px;">X KEMALIKART</div>
         </div>
       </a>
 
       <div class="d-flex align-items-center gap-2 gap-md-4">
-        <nav class="d-none d-md-flex gap-4 align-items-center font-rajdhani text-secondary fw-bold fs-6">
+        <nav class="d-none d-md-flex gap-4 align-items-center font-headline text-secondary fw-bold fs-6">
           <a href="#produk" class="text-decoration-none text-secondary text-hover-white">Produk</a>
           <a href="#harga" class="text-decoration-none text-secondary text-hover-white">Harga</a>
           <a href="#faq" class="text-decoration-none text-secondary text-hover-white">FAQ</a>
@@ -570,7 +578,7 @@ CSS;
             <div class="d-flex gap-3 mb-5 flex-wrap justify-content-center justify-content-lg-start">
               <a class="btn btn-red px-4 py-2 skew-btn fs-5" href="<?= h(BASE_URL) ?>/checkout.php"
                 data-track="initiate_checkout" id="btnOrder2"><span>Pesan Sekarang</span></a>
-              <a class="btn btn-outline-light px-4 py-2 font-rajdhani fw-bold text-uppercase rounded-0"
+              <a class="btn btn-outline-light px-4 py-2 font-headline fw-bold text-uppercase rounded-0"
                 style="letter-spacing:1px;" href="#harga">Lihat Harga</a>
             </div>
 
@@ -578,18 +586,20 @@ CSS;
               <div class="col-4">
                 <div class="text-secondary small text-uppercase fw-bold"><?= get_setting('hero_label_1', 'Pre-Order') ?>
                 </div>
-                <div class="text-white fw-medium"><?= get_setting('hero_value_1', '27 Feb – 08 Mar') ?></div>
+                <div class="text-white fw-medium font-accent fs-6"><?= get_setting('hero_value_1', '27 Feb – 08 Mar') ?>
+                </div>
               </div>
               <div class="col-4">
                 <div class="text-secondary small text-uppercase fw-bold"><?= get_setting('hero_label_2', 'Produksi') ?>
                 </div>
-                <div class="text-white fw-medium"><?= get_setting('hero_value_2', '09 – 21 Mar') ?></div>
+                <div class="text-white fw-medium font-accent fs-6"><?= get_setting('hero_value_2', '09 – 21 Mar') ?>
+                </div>
               </div>
               <div class="col-4">
                 <div class="text-secondary small text-uppercase fw-bold">
                   <?= get_setting('hero_label_3', 'DP Minimal') ?>
                 </div>
-                <div class="text-white fw-medium"><?= get_setting('hero_dp', 'IDR 100.000') ?></div>
+                <div class="text-brand-red fw-bold font-accent fs-5"><?= get_setting('hero_dp', 'IDR 100.000') ?></div>
               </div>
             </div>
           </div>
@@ -607,7 +617,7 @@ CSS;
     <!-- ── PROMO LAUNCH BAND ── -->
     <div class="bg-brand-red text-center py-3 px-2 shadow-sm">
       <div
-        class="container fw-bold font-rajdhani fs-5 d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
+        class="container fw-bold font-headline fs-5 d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
         <div class="d-flex flex-column text-md-end lh-1">
           <span class="text-white fs-5"><?= get_setting('promo_title', '🔥 EARLY ACCESS PRICE') ?></span>
           <span class="badge border border-light rounded-pill px-2 py-1 mt-1"
@@ -616,20 +626,20 @@ CSS;
           </span>
         </div>
         <div class="d-flex align-items-center gap-2 bg-dark px-3 py-2 rounded">
-          <span class="price-strike text-secondary fs-6"><?= idr(PRICE_ORIGINAL_1) ?></span>
-          <span class="text-brand-green fs-5"><?= get_setting('promo_price_label', 'kini') ?>
+          <span class="price-strike text-secondary fs-6 font-accent"><?= idr(PRICE_ORIGINAL_1) ?></span>
+          <span class="text-brand-green fs-5 font-accent"><?= get_setting('promo_price_label', 'kini') ?>
             <?= idr(PRICE_PROMO_1) ?></span>
         </div>
         <div class="d-flex flex-column text-md-start lh-1">
           <span class="text-white small mb-1"
             style="font-size: 0.8rem;"><?= get_setting('promo_timer_label', 'Sisa waktu:') ?></span>
-          <div id="promo-cd" class="d-flex gap-1 fs-6">
+          <div id="promo-cd" class="d-flex gap-1 fs-6 font-accent">
             <div class="bg-white text-black fw-bold rounded px-2 py-1"><span id="cd-h">--</span><span
-                class="small text-secondary fw-normal ms-1">J</span></div>
+                class="small text-secondary fw-normal ms-1 font-body">H</span></div>
             <div class="bg-white text-black fw-bold rounded px-2 py-1"><span id="cd-m">--</span><span
-                class="small text-secondary fw-normal ms-1">M</span></div>
+                class="small text-secondary fw-normal ms-1 font-body">M</span></div>
             <div class="bg-white text-black fw-bold rounded px-2 py-1"><span id="cd-s">--</span><span
-                class="small text-secondary fw-normal ms-1">D</span></div>
+                class="small text-secondary fw-normal ms-1 font-body">S</span></div>
           </div>
           <div id="promo-ended" class="text-black fw-bold bg-warning px-2 py-1 rounded d-none"
             style="font-size:0.85rem"><?= get_setting('promo_ended', 'Promo Berakhir') ?></div>
@@ -641,7 +651,7 @@ CSS;
     <section class="py-5 border-bottom border-dark position-relative z-1" id="showcase">
       <div class="container">
         <div class="text-center mb-5">
-          <h2 class="display-6 font-rajdhani fw-bold text-white"><?= get_setting('showcase_title', 'Our Showcase') ?>
+          <h2 class="display-6 font-headline fw-bold text-white"><?= get_setting('showcase_title', 'Our Showcase') ?>
           </h2>
           <p class="text-secondary">
             <?= get_setting('showcase_desc', 'Detail dan tampilan nyata karya kami di Instagram.') ?>
@@ -651,7 +661,7 @@ CSS;
           <!-- Ichigo Embed (Green Glow) -->
           <div class="col-md-6 col-lg-5">
             <div class="card card-dark h-100 rounded text-center p-3 glow-green border border-dark">
-              <h5 class="font-rajdhani fw-bold text-brand-green mb-3">#Ichigo Edition</h5>
+              <h5 class="font-headline fw-bold text-brand-green mb-3">#Ichigo Edition</h5>
               <!-- Using 4:5 aspect ratio padding for IG portraits (125% = 5/4) -->
               <div class="w-100 overflow-hidden rounded bg-black d-flex justify-content-center"
                 style="position: relative; padding-top: 125%;">
@@ -666,7 +676,7 @@ CSS;
           <!-- Black Embed (Red Glow) -->
           <div class="col-md-6 col-lg-5">
             <div class="card card-dark h-100 rounded text-center p-3 glow-red border border-dark">
-              <h5 class="font-rajdhani fw-bold text-brand-red mb-3">#Black Edition</h5>
+              <h5 class="font-headline fw-bold text-brand-red mb-3">#Black Edition</h5>
               <!-- Using 4:5 aspect ratio padding for IG portraits (125% = 5/4) -->
               <div class="w-100 overflow-hidden rounded bg-black d-flex justify-content-center"
                 style="position: relative; padding-top: 125%;">
@@ -685,7 +695,7 @@ CSS;
     <!-- ── PRODUK ── -->
     <section class="py-5 bg-dark border-bottom border-dark" id="produk">
       <div class="container">
-        <h2 class="display-6 font-rajdhani fw-bold text-white mb-2">
+        <h2 class="display-6 font-headline fw-bold text-white mb-2">
           <?= get_setting('product_title', '2 Desain Edisi Perdana') ?>
         </h2>
         <p class="lead text-secondary mb-5">
@@ -698,8 +708,9 @@ CSS;
               <img src="<?= h(asset(get_setting('product1_image', 'assets/img/ichigo.webp'))) ?>"
                 alt="<?= get_setting('product1_title', 'Fantasy Kamen Rider Ichigo v.01') ?>" loading="lazy">
               <div class="product-info p-4">
-                <h3 class="fs-4 font-rajdhani fw-bold mb-2 text-white">
-                  <?= get_setting('product1_title', 'Fantasy Kamen Rider Ichigo v.01') ?></h3>
+                <h3 class="fs-4 font-headline fw-bold mb-2 text-white">
+                  <?= get_setting('product1_title', 'Fantasy Kamen Rider Ichigo v.01') ?>
+                </h3>
                 <p class="text-secondary small mb-0">
                   <?= get_setting('product1_desc', 'Kolaborasi Ozverligsportwear x Kemalikart. Cocok untuk komunitas, daily wear, dan riding.') ?>
                 </p>
@@ -712,8 +723,9 @@ CSS;
               <img src="<?= h(asset(get_setting('product2_image', 'assets/img/black.webp'))) ?>"
                 alt="<?= get_setting('product2_title', 'Fantasy Kamen Rider Black v.01') ?>" loading="lazy">
               <div class="product-info p-4">
-                <h3 class="fs-4 font-rajdhani fw-bold mb-2 text-white">
-                  <?= get_setting('product2_title', 'Fantasy Kamen Rider Black v.01') ?></h3>
+                <h3 class="fs-4 font-headline fw-bold mb-2 text-white">
+                  <?= get_setting('product2_title', 'Fantasy Kamen Rider Black v.01') ?>
+                </h3>
                 <p class="text-secondary small mb-0">
                   <?= get_setting('product2_desc', 'Karakter kuat, tegas, clean. Limited drop — raih sebelum kehabisan.') ?>
                 </p>
@@ -728,7 +740,7 @@ CSS;
     <section class="py-5 text-center" id="spesifikasi"
       style="background: rgba(6,6,8,0.4); border-top: 1px solid rgba(255,255,255,0.05);">
       <div class="container d-flex flex-column align-items-center">
-        <h2 class="display-6 font-rajdhani fw-bold text-white mb-5">
+        <h2 class="display-6 font-headline fw-bold text-white mb-5">
           <?= get_setting('spec_title', 'Spesifikasi Jersey') ?>
         </h2>
         <ul class="list-group list-group-flush border-top border-dark mb-4 w-100" style="max-width: 700px;">
@@ -763,7 +775,7 @@ CSS;
     <!-- ── HARGA ── -->
     <section class="py-5 bg-dark border-top border-dark" id="harga" style="background: rgba(6,6,8,0.8) !important;">
       <div class="container text-center">
-        <h2 class="display-6 font-rajdhani fw-bold text-white mb-2 w-100"><?= get_setting('price_title', 'Harga') ?>
+        <h2 class="display-6 font-headline fw-bold text-white mb-2 w-100"><?= get_setting('price_title', 'Harga') ?>
         </h2>
         <p class="lead text-secondary mb-5"><?= get_setting('price_desc', 'Promo terbatas selama periode pre-order.') ?>
         </p>
@@ -772,10 +784,10 @@ CSS;
           <!-- 1 pcs (Left - Green) -->
           <div class="col-md-5 col-lg-4">
             <div class="card card-dark h-100 rounded-0 text-center py-5 px-3 glow-green">
-              <div class="font-rajdhani fs-4 text-white mb-3">HARGA JERSEY</div>
-              <div class="price-strike mb-2"><?= idr(PRICE_ORIGINAL_1) ?></div>
-              <div class="display-5 fw-bold text-brand-green mb-4 font-rajdhani"><?= idr(PRICE_PROMO_1) ?></div>
-              <div class="text-secondary small">DP MINIMAL <?= idr(PRICE_DP) ?> / JERSEY</div>
+              <div class="font-headline fs-4 text-white mb-3">HARGA JERSEY</div>
+              <div class="price-strike mb-2 font-accent"><?= idr(PRICE_ORIGINAL_1) ?></div>
+              <div class="display-5 fw-bold text-brand-green mb-4 font-accent"><?= idr(PRICE_PROMO_1) ?></div>
+              <div class="text-secondary small font-accent">DP MINIMAL <?= idr(PRICE_DP) ?> / JERSEY</div>
             </div>
           </div>
 
@@ -784,12 +796,13 @@ CSS;
             <div class="card card-dark h-100 rounded-0 text-center py-5 px-3 glow-red position-relative"
               style="transform: scale(1.05); z-index:2;">
               <span
-                class="position-absolute top-0 start-50 translate-middle badge bg-brand-red px-3 py-2 text-uppercase letter-spacing-1">Best
+                class="position-absolute top-0 start-50 translate-middle badge bg-brand-red px-3 py-2 text-uppercase letter-spacing-1 font-accent">Best
                 Value</span>
-              <div class="font-rajdhani fs-4 text-white mb-3">HARGA JERSEY PAKET DOBLE</div>
-              <div class="price-strike mb-2"><?= idr(PRICE_ORIGINAL_2) ?></div>
-              <div class="display-5 fw-bold text-brand-green mb-4 font-rajdhani"><?= idr(PRICE_PROMO_2) ?></div>
-              <div class="text-white small fw-bold">Hemat <?= idr(PRICE_ORIGINAL_2 - PRICE_PROMO_2) ?> — koleksi 2
+              <div class="font-headline fs-4 text-white mb-3">HARGA JERSEY PAKET DOBLE</div>
+              <div class="price-strike mb-2 font-accent"><?= idr(PRICE_ORIGINAL_2) ?></div>
+              <div class="display-5 fw-bold text-brand-green mb-4 font-accent"><?= idr(PRICE_PROMO_2) ?></div>
+              <div class="text-white small fw-bold font-accent">Hemat <?= idr(PRICE_ORIGINAL_2 - PRICE_PROMO_2) ?> —
+                koleksi 2
                 desain!</div>
             </div>
           </div>
@@ -803,7 +816,7 @@ CSS;
     <section class="py-5 text-center" id="jadwal"
       style="background: rgba(6,6,8,0.4); border-top: 1px solid rgba(255,255,255,0.05);">
       <div class="container d-flex flex-column align-items-center">
-        <h2 class="display-6 font-rajdhani fw-bold text-white mb-4">
+        <h2 class="display-6 font-headline fw-bold text-white mb-4">
           <?= get_setting('schedule_title', 'Jadwal Pre-Order') ?>
         </h2>
 
@@ -833,28 +846,28 @@ CSS;
     <section class="py-5 bg-dark" id="bukti"
       style="background: rgba(6,6,8,0.8) !important; border-top: 1px solid rgba(255,255,255,0.05);">
       <div class="container text-center">
-        <h2 class="display-6 font-rajdhani fw-bold text-white mb-5">
+        <h2 class="display-6 font-headline fw-bold text-white mb-5">
           <?= get_setting('trust_title', 'Kepercayaan &amp; Kualitas') ?>
         </h2>
         <div class="row g-4 justify-content-center">
           <div class="col-md-4">
             <div class="card bg-transparent border-secondary h-100 p-4 rounded-0">
               <div class="text-secondary small text-uppercase fw-bold mb-2">Produsen</div>
-              <div class="text-white fs-5 font-rajdhani fw-bold mb-2">Ozverligsportwear</div>
+              <div class="text-white fs-5 font-headline fw-bold mb-2">Ozverligsportwear</div>
               <div class="text-secondary small">Produksi jersey custom & komunitas</div>
             </div>
           </div>
           <div class="col-md-4">
             <div class="card bg-transparent border-secondary h-100 p-4 rounded-0">
               <div class="text-secondary small text-uppercase fw-bold mb-2">Kolaborasi</div>
-              <div class="text-white fs-5 font-rajdhani fw-bold mb-2">Kemalikart</div>
+              <div class="text-white fs-5 font-headline fw-bold mb-2">Kemalikart</div>
               <div class="text-secondary small">Konsep visual & artwork</div>
             </div>
           </div>
           <div class="col-md-4">
             <div class="card bg-transparent border-secondary h-100 p-4 rounded-0">
               <div class="text-secondary small text-uppercase fw-bold mb-2">Pemesanan</div>
-              <div class="text-white fs-5 font-rajdhani fw-bold mb-2">Pre-Order</div>
+              <div class="text-white fs-5 font-headline fw-bold mb-2">Pre-Order</div>
               <div class="text-secondary small">Batch produksi terjadwal</div>
             </div>
           </div>
@@ -866,10 +879,11 @@ CSS;
     <section class="py-5 text-center" id="size-chart"
       style="background: rgba(10,10,14,0.6); border-top: 1px solid rgba(255,255,255,0.05);">
       <div class="container d-flex flex-column align-items-center">
-        <h2 class="display-6 font-rajdhani fw-bold text-white mb-4"><?= get_setting('sizechart_title', 'Size Chart') ?>
+        <h2 class="display-6 font-headline fw-bold text-white mb-4"><?= get_setting('sizechart_title', 'Size Chart') ?>
         </h2>
         <p class="lead text-secondary mb-5">
-          <?= get_setting('sizechart_desc', 'Panduan ukuran untuk mendapatkan fitting terbaik.') ?></p>
+          <?= get_setting('sizechart_desc', 'Panduan ukuran untuk mendapatkan fitting terbaik.') ?>
+        </p>
         <div class="row justify-content-center">
           <div class="col-md-8 col-lg-6">
             <img src="<?= h(asset('assets/img/size-chart.png')) ?>" alt="Size Chart Jersey Kamen Rider"
@@ -885,7 +899,7 @@ CSS;
     <!-- ── FAQ ── -->
     <section class="py-5 bg-dark border-top border-dark" id="faq">
       <div class="container">
-        <h2 class="display-6 font-rajdhani fw-bold text-white text-center mb-5">FAQ</h2>
+        <h2 class="display-6 font-headline fw-bold text-white text-center mb-5">FAQ</h2>
 
         <div class="row justify-content-center">
           <div class="col-lg-8">
@@ -987,7 +1001,7 @@ CSS;
     <section class="py-5 border-top border-dark" id="seo-content"
       style="background: linear-gradient(180deg, #0a0a0e 0%, #060608 100%);">
       <div class="container" style="max-width: 800px;">
-        <h2 class="h4 font-rajdhani fw-bold text-secondary mb-4">
+        <h2 class="h4 font-headline fw-bold text-secondary mb-4">
           <?= get_setting('seo_title', 'Jersey Kamen Rider Custom untuk Komunitas Rider Indonesia') ?>
         </h2>
         <div class="text-secondary small" style="line-height: 1.8;">
@@ -1002,12 +1016,14 @@ CSS;
   <footer class="py-4 bg-black border-top border-dark">
     <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
       <div class="text-center text-md-start">
-        <div class="font-rajdhani fw-bold text-white fs-5">
-          <?= get_setting('footer_brand', 'Ozverligsportwear x Kemalikart') ?></div>
+        <div class="font-headline fw-bold text-white fs-5">
+          <?= get_setting('footer_brand', 'Ozverligsportwear x Kemalikart') ?>
+        </div>
         <div class="text-secondary small">
-          <?= get_setting('footer_copyright', 'Jersey Series Fantasy Kamen Rider — Edisi 1 &copy; 2026') ?></div>
+          <?= get_setting('footer_copyright', 'Jersey Series Fantasy Kamen Rider — Edisi 1 &copy; 2026') ?>
+        </div>
       </div>
-      <nav class="d-flex gap-3 align-items-center font-rajdhani fw-bold">
+      <nav class="d-flex gap-3 align-items-center font-headline fw-bold">
         <a href="#order" class="text-decoration-none text-secondary">Pesan</a>
         <a href="#faq" class="text-decoration-none text-secondary">FAQ</a>
       </nav>
@@ -1018,10 +1034,10 @@ CSS;
   <div class="fixed-bottom d-md-none bg-dark border-top border-dark p-2"
     style="z-index: 9998; padding-bottom: max(env(safe-area-inset-bottom), 12px) !important;">
     <div class="container d-flex gap-2">
-      <a class="btn btn-outline-light flex-grow-1 py-2 font-rajdhani fw-bold text-uppercase"
+      <a class="btn btn-outline-light flex-grow-1 py-2 font-headline fw-bold text-uppercase"
         href="https://wa.me/<?= h(WA_NUMBER) ?>" target="_blank" rel="noopener noreferrer"
         data-track="wa_contact">WhatsApp</a>
-      <a class="btn btn-red flex-grow-1 py-2 font-rajdhani fw-bold text-uppercase"
+      <a class="btn btn-red flex-grow-1 py-2 font-headline fw-bold text-uppercase"
         href="<?= h(BASE_URL) ?>/checkout.php" data-track="initiate_checkout">Pesan</a>
     </div>
   </div>
@@ -1048,7 +1064,7 @@ CSS;
                 d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232" />
             </svg>
             <div>
-              <h5 class="modal-title fs-6 font-rajdhani fw-bold" id="waModalLabel">CS Ozverligsportwear</h5>
+              <h5 class="modal-title fs-6 font-headline fw-bold" id="waModalLabel">CS Ozverligsportwear</h5>
               <div class="small" style="font-size: 0.75rem; opacity: 0.8;">Online</div>
             </div>
           </div>

@@ -287,6 +287,13 @@ function formatDuration($seconds)
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin CRM | Kamen Riders</title>
     <meta name="robots" content="noindex, nofollow">
+
+    <!-- Google Fonts: Anton (Headline), Inter (Body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
     <style>
         *,
         *::before,
@@ -297,8 +304,8 @@ function formatDuration($seconds)
         }
 
         body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background: #050505;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #0a0a0a;
             color: #f8f9fa;
         }
 
@@ -319,6 +326,8 @@ function formatDuration($seconds)
         }
 
         .topbar h1 {
+            font-family: 'Anton', sans-serif;
+            font-weight: 400;
             font-size: 1.1rem;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -747,7 +756,7 @@ function formatDuration($seconds)
 
             <div style="background:#111; padding: 1.5rem; border-radius:8px; border: 1px solid rgba(255,255,255,0.1);">
                 <h2
-                    style="font-family:'Rajdhani',sans-serif; color:var(--red); text-transform:uppercase; font-size:1.5rem; margin-bottom:1rem;">
+                    style="font-family:'Anton',sans-serif; color:var(--red); text-transform:uppercase; font-size:1.5rem; margin-bottom:1rem;">
                     Kelola Konten Website</h2>
                 <p style="color:#aaa; font-size:0.9rem; margin-bottom:2rem;">Sesuaikan teks penawaran promosi, gambar
                     background Hero, serta link spesifik Instagram untuk varian produk langsung tanpa menyentuh kode.</p>
@@ -788,18 +797,18 @@ function formatDuration($seconds)
                                 if (empty($items))
                                     continue;
 
-                                echo '<h3 style="grid-column: 1 / -1; margin-top:1.5rem; margin-bottom: 0; padding-bottom: 0.5rem; border-bottom: 2px solid #333; color: var(--red); font-family: Rajdhani, sans-serif; text-transform: uppercase;">' . $catName . '</h3>';
+                                echo '<h3 style="grid-column: 1 / -1; margin-top:1.5rem; margin-bottom: 0; padding-bottom: 0.5rem; border-bottom: 2px solid #333; color: var(--red); font-family: Anton, sans-serif; text-transform: uppercase;">' . $catName . '</h3>';
 
                                 foreach ($items as $s) {
                                     $k = h($s['setting_key']);
                                     $v = $s['setting_value'];
                                     $desc = h($s['description']);
                                     $type = $s['setting_type'];
-    
+
                                     echo '<div style="background:#1a1a1a; padding:1.2rem; border-radius:6px; border:1px solid #333;">';
                                     echo '<label style="display:block; font-weight:700; font-size:0.9rem; color:#fff; margin-bottom:0.3rem;">' . h(ucwords(str_replace('_', ' ', $k))) . '</label>';
                                     echo '<div style="font-size:0.75rem; color:#888; margin-bottom:0.8rem;">' . $desc . '</div>';
-    
+
                                     if ($type === 'text') {
                                         echo '<input type="text" name="setting[' . $k . ']" value="' . htmlspecialchars_decode($v, ENT_QUOTES) . '" style="width:100%; padding:0.6rem; background:#222; border:1px solid #444; color:#fff; border-radius:4px; font-size:0.85rem;" required>';
                                     } elseif ($type === 'html') {
@@ -833,7 +842,7 @@ function formatDuration($seconds)
 
             <!-- Tracking Insights (Batch 20) -->
             <h3 class="mt-2 mb-3"
-                style="color:var(--red); font-family:'Rajdhani',sans-serif; text-transform:uppercase; letter-spacing:1px; border-bottom: 1px solid rgba(255, 30, 39, 0.3); padding-bottom:0.5rem;">
+                style="color:var(--red); font-family:'Anton',sans-serif; text-transform:uppercase; letter-spacing:1px; border-bottom: 1px solid rgba(255, 30, 39, 0.3); padding-bottom:0.5rem;">
                 Traffic & Engagement</h3>
             <div class="stats">
                 <div class="stat-card" style="border-top-color:#00ff66;">
@@ -863,7 +872,7 @@ function formatDuration($seconds)
             </div>
 
             <h3 class="mt-4 mb-3"
-                style="color:#fff; font-family:'Rajdhani',sans-serif; text-transform:uppercase; letter-spacing:1px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom:0.5rem;">
+                style="color:#fff; font-family:'Anton',sans-serif; text-transform:uppercase; letter-spacing:1px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom:0.5rem;">
                 Sales Conversions</h3>
             <div class="stats">
                 <div class="stat-card">
