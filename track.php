@@ -39,6 +39,34 @@ if (empty($session_id) || empty($event_type)) {
     exit;
 }
 
+// Allowlist of tracking events
+$allowed_events = ['view', 'click_cta_booking', 'click_cta_whatsapp', 'click_view_paket', 'scroll_depth', 'time_spent'];
+if (!in_array($event_type, $allowed_events, true)) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Invalid event type']);
+    exit;
+}
+
+// Rate limit: Max 50 requests per session per minute to prevent spam
+session_id($session_id); // Use provided session ID for rate limiting loosely
+session_start(['read_and_close' => false]);
+if (!isset($_SESSION['rate_limit_count'])) {
+    $_SESSION['rate_limit_count'] = 0;
+    $_SESSION['rate_limit_start'] = time();
+}
+if (time() - $_SESSION['rate_limit_start'] > 60) {
+    $_SESSION['rate_limit_count'] = 1;
+    $_SESSION['rate_limit_start'] = time();
+} else {
+    $_SESSION['rate_limit_count']++;
+    if ($_SESSION['rate_limit_count'] > 100) { // Slightly increased since scroll fires often
+        http_response_code(429);
+        echo json_encode(['error' => 'Rate limit exceeded']);
+        exit;
+    }
+}
+session_write_close();
+
 try {
     // If it's a heartbeat (time_spent), we UPDATE the existing record for this session/page instead of spamming inserts
     if ($event_type === 'time_spent') {

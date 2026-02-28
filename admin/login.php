@@ -3,30 +3,43 @@ require_once __DIR__ . '/../config.php';
 session_start();
 
 // Auto-create default admin if users table is empty
-try {
-    $stmt = $pdo->query("SELECT COUNT(*) FROM users");
-    if ($stmt->fetchColumn() == 0) {
-        $hash = password_hash('admin123', PASSWORD_BCRYPT);
-        $pdo->exec("INSERT INTO users (username, password_hash) VALUES ('admin', '$hash')");
+if ($pdo) {
+    try {
+        $stmt = $pdo->query("SELECT COUNT(*) FROM users");
+        if ($stmt->fetchColumn() == 0) {
+            $hash = password_hash('admin123', PASSWORD_BCRYPT);
+            $pdo->exec("INSERT INTO users (username, password_hash) VALUES ('admin', '$hash')");
+        }
+    } catch (PDOException $e) {
+        // Schema probably not created
     }
-} catch (PDOException $e) {
-    // Schema probably not created
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    $stmt = $pdo->prepare("SELECT id, password_hash FROM users WHERE username = ?");
-    $stmt->execute([$username]);
-    $user = $stmt->fetch();
+    if ($pdo) {
+        $stmt = $pdo->prepare("SELECT id, password_hash FROM users WHERE username = ?");
+        $stmt->execute([$username]);
+        $user = $stmt->fetch();
 
-    if ($user && password_verify($password, $user['password_hash'])) {
-        $_SESSION['admin_id'] = $user['id'];
-        header('Location: index.php');
-        exit;
+        if ($user && password_verify($password, $user['password_hash'])) {
+            $_SESSION['admin_id'] = $user['id'];
+            header('Location: index.php');
+            exit;
+        } else {
+            $error = "Username atau password salah.";
+        }
     } else {
-        $error = "Username atau password salah.";
+        // Fallback for local testing without DB
+        if ($username === 'admin' && $password === 'admin123') {
+            $_SESSION['admin_id'] = 1;
+            header('Location: index.php');
+            exit;
+        } else {
+            $error = "DB tidak terkoneksi. Gunakan admin/admin123 untuk test lokal.";
+        }
     }
 }
 ?>
@@ -35,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <head>
     <meta charset="UTF-8">
-    <title>Login Admin | Kamen Riders</title>
+    <title>Login Admin | Front Photobooth</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body {
@@ -69,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         h1 span {
-            color: #e62429;
+            color: #F77B0F;
         }
 
         .form-group {
@@ -99,14 +112,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         input:focus {
-            border-color: #e62429;
+            border-color: #F77B0F;
         }
 
         button {
             width: 100%;
             padding: .85rem;
-            background: #e62429;
-            color: white;
+            background: linear-gradient(135deg, #F77B0F 0%, #FFAF32 100%);
+            color: #111;
             border: none;
             border-radius: 4px;
             font-size: 1rem;
@@ -118,18 +131,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         button:hover {
-            background: #c51b1f;
+            opacity: 0.9;
         }
 
         .error {
             color: #ffadaf;
-            background: rgba(230, 36, 41, 0.2);
+            background: rgba(247, 123, 15, 0.2);
             padding: 0.75rem;
             border-radius: 4px;
             margin-bottom: 1.5rem;
             text-align: center;
             font-size: 0.9rem;
-            border: 1px solid rgba(230, 36, 41, 0.4);
+            border: 1px solid rgba(247, 123, 15, 0.4);
         }
 
         .note {
@@ -143,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <body>
     <div class="login-box">
-        <h1>Admin <span>CRM</span></h1>
+        <h1>Admin <span>Photobooth</span></h1>
         <?php if (!empty($error)): ?>
             <div class="error">
                 <?= htmlspecialchars($error) ?>
