@@ -6,7 +6,7 @@ session_start();
 define('ADMIN_USER', 'admin');
 define('ADMIN_PASS_HASH', '$2y$12$dummyhash.replaceWithRealHash'); // run: password_hash('yourpassword', PASSWORD_BCRYPT)
 
-if (!empty($_SESSION['admin_ok'])) {
+if (!empty($_SESSION['kriders_logged_in'])) {
     header('Location: admin.php');
     exit;
 }
@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($ok) {
-        $_SESSION['admin_ok'] = true;
+        $_SESSION['kriders_logged_in'] = true;
         log_event("Admin login: $user from " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
         header('Location: admin.php');
         exit;
