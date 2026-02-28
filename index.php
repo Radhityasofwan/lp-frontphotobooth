@@ -193,8 +193,9 @@ CSS;
 
     /* Fixed topbar layout for mobile */
     .topbar-logo {
-      width: 36px;
-      height: 36px;
+      width: 120px;
+      height: auto;
+      object-fit: contain;
     }
 
     .topbar-brand {
@@ -216,8 +217,8 @@ CSS;
 
     @media (min-width: 768px) {
       .topbar-logo {
-        width: 48px;
-        height: 48px;
+        width: 150px;
+        height: auto;
       }
 
       .topbar-brand {
@@ -572,8 +573,8 @@ CSS;
     style="background: rgba(6,6,8,0.95) !important;">
     <div class="container d-flex justify-content-between align-items-center gap-1 gap-md-4">
       <a href="<?= h(BASE_URL) ?>/" class="d-flex align-items-center gap-2 gap-md-3 text-decoration-none">
-        <img src="<?= h(asset('assets/img/logo-ozverlig.webp')) ?>" alt="Logo Ozverligsportwear" loading="eager"
-          width="48" height="48" class="rounded-circle border border-secondary shadow-sm topbar-logo">
+        <img src="<?= h(asset('assets/img/logo-ozverlig.webp')) ?>" alt="Logo Ozverligsportwear" width="150"
+          height="150" loading="eager" class="topbar-logo">
         <div class="lh-sm">
           <div class="font-headline text-white fw-bold topbar-brand" style="letter-spacing: 0.5px;">Ozverligsportwear
           </div>
@@ -1333,41 +1334,41 @@ CSS;
 
     // ── CUSTOM IN-HOUSE ANALYTICS ENGINE (Batch 20) ──
     (function () {
-        function getSessionId() {
-          let sid = sessionStorage.getItem('__trk_sid');
-          if (!sid) {
-            sid = 'sid_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
-            sessionStorage.setItem('__trk_sid', sid);
-          }
-          return sid;
+      function getSessionId() {
+        let sid = sessionStorage.getItem('__trk_sid');
+        if (!sid) {
+          sid = 'sid_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
+          sessionStorage.setItem('__trk_sid', sid);
         }
+        return sid;
+      }
 
-        function pingTracker(type, val = 0) {
-          fetch('<?= h(BASE_URL) ?>/track.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              session_id: getSessionId(),
-              event_type: type,
-              event_value: val,
-              page_url: window.location.pathname
-            })
-          }).catch(e => console.warn('Telemetry error', e));
-        }
+      function pingTracker(type, val = 0) {
+        fetch('<?= h(BASE_URL) ?>/track.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            session_id: getSessionId(),
+            event_type: type,
+            event_value: val,
+            page_url: window.location.pathname
+          })
+        }).catch(e => console.warn('Telemetry error', e));
+      }
 
-        pingTracker('view_landing');
+      pingTracker('view_landing');
 
-        document.addEventListener('click', function (e) {
-          const btn = e.target.closest('[data-track]');
-          if (btn) pingTracker('click_' + btn.getAttribute('data-track'), 1);
-        });
+      document.addEventListener('click', function (e) {
+        const btn = e.target.closest('[data-track]');
+        if (btn) pingTracker('click_' + btn.getAttribute('data-track'), 1);
+      });
 
-        let seconds = 0;
-        setInterval(() => {
-          seconds += 10;
-          pingTracker('time_spent', seconds);
-        }, 10000);
-      })();
+      let seconds = 0;
+      setInterval(() => {
+        seconds += 10;
+        pingTracker('time_spent', seconds);
+      }, 10000);
+    })();
   </script>
 
   <style>

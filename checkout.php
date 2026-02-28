@@ -193,8 +193,9 @@ CSS;
 
     /* Fixed topbar layout for mobile */
     .topbar-logo {
-      width: 36px;
-      height: 36px;
+      width: 120px;
+      height: auto;
+      object-fit: contain;
     }
 
     .topbar-brand {
@@ -216,8 +217,8 @@ CSS;
 
     @media (min-width: 768px) {
       .topbar-logo {
-        width: 48px;
-        height: 48px;
+        width: 150px;
+        height: auto;
       }
 
       .topbar-brand {
@@ -567,8 +568,8 @@ CSS;
     style="background: rgba(6,6,8,0.95) !important;">
     <div class="container d-flex justify-content-between align-items-center gap-1 gap-md-4">
       <a href="<?= h(BASE_URL) ?>/" class="d-flex align-items-center gap-2 gap-md-3 text-decoration-none">
-        <img src="<?= h(asset('assets/img/logo-ozverlig.webp')) ?>" alt="Logo Ozverligsportwear" width="48" height="48"
-          loading="eager" class="rounded-circle border border-secondary shadow-sm topbar-logo">
+        <img src="<?= h(asset('assets/img/logo-ozverlig.webp')) ?>" alt="Logo Ozverligsportwear" width="150"
+          height="150" loading="eager" class="shadow-sm topbar-logo">
         <div class="lh-sm">
           <div class="font-headline text-white fw-bold topbar-brand" style="letter-spacing: 0.5px;">Ozverligsportwear
           </div>
