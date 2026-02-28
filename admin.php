@@ -759,27 +759,59 @@ function formatDuration($seconds)
                         <?php
                         if ($pdo) {
                             $settingsRow = get_all_settings();
+                            $categories = [
+                                '🏆 Hero Section' => [],
+                                '🔥 Pita Promosi' => [],
+                                '👕 Produk & Showcase' => [],
+                                '📝 Jadwal & Harga' => [],
+                                '❓ FAQ & Size Chart' => [],
+                                '⚙️ Footer & Lainnya' => []
+                            ];
+
                             foreach ($settingsRow as $s) {
-                                $k = h($s['setting_key']);
-                                $v = h($s['setting_value']);
-                                $desc = h($s['description']);
-                                $type = $s['setting_type'];
+                                $k = $s['setting_key'];
+                                if (str_starts_with($k, 'hero_'))
+                                    $categories['🏆 Hero Section'][] = $s;
+                                elseif (str_starts_with($k, 'promo_'))
+                                    $categories['🔥 Pita Promosi'][] = $s;
+                                elseif (str_starts_with($k, 'product') || str_starts_with($k, 'showcase_'))
+                                    $categories['👕 Produk & Showcase'][] = $s;
+                                elseif (str_starts_with($k, 'schedule_') || str_starts_with($k, 'price_') || str_starts_with($k, 'order_'))
+                                    $categories['📝 Jadwal & Harga'][] = $s;
+                                elseif (str_starts_with($k, 'spec_') || str_starts_with($k, 'faq_') || str_starts_with($k, 'sizechart_'))
+                                    $categories['❓ FAQ & Size Chart'][] = $s;
+                                else
+                                    $categories['⚙️ Footer & Lainnya'][] = $s;
+                            }
 
-                                echo '<div style="background:#1a1a1a; padding:1.2rem; border-radius:6px; border:1px solid #333;">';
-                                echo '<label style="display:block; font-weight:700; font-size:0.9rem; color:#fff; margin-bottom:0.3rem;">' . h(ucwords(str_replace('_', ' ', $k))) . '</label>';
-                                echo '<div style="font-size:0.75rem; color:#888; margin-bottom:0.8rem;">' . $desc . '</div>';
+                            foreach ($categories as $catName => $items) {
+                                if (empty($items))
+                                    continue;
 
-                                if ($type === 'text') {
-                                    echo '<input type="text" name="setting[' . $k . ']" value="' . $v . '" style="width:100%; padding:0.6rem; background:#222; border:1px solid #444; color:#fff; border-radius:4px; font-size:0.85rem;" required>';
-                                } elseif ($type === 'html') {
-                                    echo '<textarea name="setting[' . $k . ']" rows="4" style="width:100%; padding:0.6rem; background:#222; border:1px solid #444; color:#fff; border-radius:4px; font-size:0.85rem;" required>' . $v . '</textarea>';
-                                } elseif ($type === 'image') {
-                                    echo '<div style="display:flex; align-items:center; gap:1rem;">';
-                                    echo '<img src="' . h(asset($v)) . '" alt="Current" style="height:60px; width:auto; border-radius:4px; border:1px solid #444;">';
-                                    echo '<input type="file" name="setting_img[' . $k . ']" accept="image/png, image/jpeg, image/webp" style="color:#aaa; font-size:0.8rem;">';
+                                echo '<h3 style="grid-column: 1 / -1; margin-top:1.5rem; margin-bottom: 0; padding-bottom: 0.5rem; border-bottom: 2px solid #333; color: var(--red); font-family: Rajdhani, sans-serif; text-transform: uppercase;">' . $catName . '</h3>';
+
+                                foreach ($items as $s) {
+                                    $k = h($s['setting_key']);
+                                    $v = h($s['setting_value']);
+                                    $desc = h($s['description']);
+                                    $type = $s['setting_type'];
+
+                                    echo '<div style="background:#1a1a1a; padding:1.2rem; border-radius:6px; border:1px solid #333;">';
+                                    echo '<label style="display:block; font-weight:700; font-size:0.9rem; color:#fff; margin-bottom:0.3rem;">' . h(ucwords(str_replace('_', ' ', $k))) . '</label>';
+                                    echo '<div style="font-size:0.75rem; color:#888; margin-bottom:0.8rem;">' . $desc . '</div>';
+
+                                    if ($type === 'text') {
+                                        echo '<input type="text" name="setting[' . $k . ']" value="' . $v . '" style="width:100%; padding:0.6rem; background:#222; border:1px solid #444; color:#fff; border-radius:4px; font-size:0.85rem;" required>';
+                                    } elseif ($type === 'html') {
+                                        echo '<textarea name="setting[' . $k . ']" rows="4" style="width:100%; padding:0.6rem; background:#222; border:1px solid #444; color:#fff; border-radius:4px; font-size:0.85rem;" required>' . $v . '</textarea>';
+                                    } elseif ($type === 'image') {
+                                        echo '<div style="display:flex; align-items:center; gap:1rem;">';
+                                        echo '<img src="' . h(asset($s['setting_value'])) . '" alt="Current" style="height:60px; width:auto; border-radius:4px; border:1px solid #444;">';
+                                        echo '<input type="file" name="setting_img[' . $k . ']" accept="image/png, image/jpeg, image/webp" style="color:#aaa; font-size:0.8rem;">';
+                                        echo '</div>';
+                                    }
                                     echo '</div>';
                                 }
-                                echo '</div>';
                             }
                         } else {
                             echo "<p style='color:red'>Database terputus. Mode offline tidak mendukung edit referensi konten.</p>";

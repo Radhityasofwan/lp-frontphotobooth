@@ -587,7 +587,8 @@ CSS;
               </div>
               <div class="col-4">
                 <div class="text-secondary small text-uppercase fw-bold">
-                  <?= get_setting('hero_label_3', 'DP Minimal') ?></div>
+                  <?= get_setting('hero_label_3', 'DP Minimal') ?>
+                </div>
                 <div class="text-white fw-medium"><?= get_setting('hero_dp', 'IDR 100.000') ?></div>
               </div>
             </div>
@@ -694,12 +695,12 @@ CSS;
         <div class="row g-4 mb-5">
           <div class="col-md-6">
             <article class="card card-dark h-100 rounded-0">
-              <img src="<?= h(asset('assets/img/ichigo.webp')) ?>" class="card-img-top rounded-0"
-                alt="Fantasy Kamen Rider Ichigo v.01" loading="lazy" decoding="async">
-              <div class="card-body p-4">
-                <h3 class="card-title font-rajdhani text-white fs-4">
+              <img src="<?= h(asset(get_setting('product1_image', 'assets/img/ichigo.webp'))) ?>"
+                alt="<?= get_setting('product1_title', 'Fantasy Kamen Rider Ichigo v.01') ?>" loading="lazy">
+              <div class="product-info p-4">
+                <h3 class="fs-4 font-rajdhani fw-bold mb-2 text-white">
                   <?= get_setting('product1_title', 'Fantasy Kamen Rider Ichigo v.01') ?></h3>
-                <p class="card-text text-secondary">
+                <p class="text-secondary small mb-0">
                   <?= get_setting('product1_desc', 'Kolaborasi Ozverligsportwear x Kemalikart. Cocok untuk komunitas, daily wear, dan riding.') ?>
                 </p>
               </div>
@@ -708,12 +709,12 @@ CSS;
 
           <div class="col-md-6">
             <article class="card card-dark h-100 rounded-0">
-              <img src="<?= h(asset('assets/img/black.webp')) ?>" class="card-img-top rounded-0"
-                alt="Fantasy Kamen Rider Black v.01" loading="lazy" decoding="async">
-              <div class="card-body p-4">
-                <h3 class="card-title font-rajdhani text-white fs-4">
+              <img src="<?= h(asset(get_setting('product2_image', 'assets/img/black.webp'))) ?>"
+                alt="<?= get_setting('product2_title', 'Fantasy Kamen Rider Black v.01') ?>" loading="lazy">
+              <div class="product-info p-4">
+                <h3 class="fs-4 font-rajdhani fw-bold mb-2 text-white">
                   <?= get_setting('product2_title', 'Fantasy Kamen Rider Black v.01') ?></h3>
-                <p class="card-text text-secondary">
+                <p class="text-secondary small mb-0">
                   <?= get_setting('product2_desc', 'Karakter kuat, tegas, clean. Limited drop — raih sebelum kehabisan.') ?>
                 </p>
               </div>
@@ -865,8 +866,10 @@ CSS;
     <section class="py-5 text-center" id="size-chart"
       style="background: rgba(10,10,14,0.6); border-top: 1px solid rgba(255,255,255,0.05);">
       <div class="container d-flex flex-column align-items-center">
-        <h2 class="display-6 font-rajdhani fw-bold text-white mb-4"><?= get_setting('sizechart_title', 'Size Chart') ?></h2>
-        <p class="lead text-secondary mb-5"><?= get_setting('sizechart_desc', 'Panduan ukuran untuk mendapatkan fitting terbaik.') ?></p>
+        <h2 class="display-6 font-rajdhani fw-bold text-white mb-4"><?= get_setting('sizechart_title', 'Size Chart') ?>
+        </h2>
+        <p class="lead text-secondary mb-5">
+          <?= get_setting('sizechart_desc', 'Panduan ukuran untuk mendapatkan fitting terbaik.') ?></p>
         <div class="row justify-content-center">
           <div class="col-md-8 col-lg-6">
             <img src="<?= h(asset('assets/img/size-chart.png')) ?>" alt="Size Chart Jersey Kamen Rider"
@@ -999,8 +1002,10 @@ CSS;
   <footer class="py-4 bg-black border-top border-dark">
     <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
       <div class="text-center text-md-start">
-        <div class="font-rajdhani fw-bold text-white fs-5"><?= get_setting('footer_brand', 'Ozverligsportwear x Kemalikart') ?></div>
-        <div class="text-secondary small"><?= get_setting('footer_copyright', 'Jersey Series Fantasy Kamen Rider — Edisi 1 &copy; 2026') ?></div>
+        <div class="font-rajdhani fw-bold text-white fs-5">
+          <?= get_setting('footer_brand', 'Ozverligsportwear x Kemalikart') ?></div>
+        <div class="text-secondary small">
+          <?= get_setting('footer_copyright', 'Jersey Series Fantasy Kamen Rider — Edisi 1 &copy; 2026') ?></div>
       </div>
       <nav class="d-flex gap-3 align-items-center font-rajdhani fw-bold">
         <a href="#order" class="text-decoration-none text-secondary">Pesan</a>
