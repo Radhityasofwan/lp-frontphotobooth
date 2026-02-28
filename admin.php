@@ -6,8 +6,44 @@
 require_once __DIR__ . '/config.php';
 session_start();
 
-if (empty($_SESSION['admin_ok'])) {
+if (empty($_SESSION['kriders_logged_in'])) {
     header('Location: ' . BASE_URL . '/login.php');
+    exit;
+}
+
+// ─── Settings POST Handler ───────────────────────────────────────────
+if (($_SERVER['REQUEST_METHOD'] === 'POST') && ($_POST['action'] ?? '') === 'save_settings') {
+    if (!$pdo)
+        die('Database required for settings.');
+
+    // Save standard text/html settings
+    if (!empty($_POST['setting']) && is_array($_POST['setting'])) {
+        $stmt = $pdo->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = ?");
+        foreach ($_POST['setting'] as $k => $v) {
+            $stmt->execute([$v, $k]);
+        }
+    }
+
+    // Save image uploads
+    if (!empty($_FILES['setting_img'])) {
+        $uploadDir = __DIR__ . '/storage/uploads/';
+        if (!is_dir($uploadDir))
+            mkdir($uploadDir, 0755, true);
+
+        $stmt = $pdo->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = ?");
+        foreach ($_FILES['setting_img']['tmp_name'] as $k => $tmpPath) {
+            if (is_uploaded_file($tmpPath)) {
+                $ext = pathinfo($_FILES['setting_img']['name'][$k], PATHINFO_EXTENSION);
+                $newName = 'img_' . preg_replace('/[^a-zA-Z0-9_]/', '', $k) . '_' . time() . '.' . $ext;
+                if (move_uploaded_file($tmpPath, $uploadDir . $newName)) {
+                    $dbPath = 'storage/uploads/' . $newName;
+                    $stmt->execute([$dbPath, $k]);
+                }
+            }
+        }
+    }
+
+    header('Location: admin.php?tab=settings&saved=1');
     exit;
 }
 
@@ -298,7 +334,39 @@ function formatDuration($seconds)
             align-items: center;
         }
 
-        .topbar-links a {
+        .topbar-links {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .topbar-nav {
+            display: flex;
+            background: #222;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-right: 1rem;
+        }
+
+        .topbar-nav a {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            text-decoration: none;
+            color: #aaa;
+            font-weight: 700;
+        }
+
+        .topbar-nav a:hover {
+            background: #333;
+            color: #fff;
+        }
+
+        .topbar-nav a.active {
+            background: #e62429;
+            color: #fff;
+        }
+
+        .topbar-links a.link-out {
             color: #ccc;
             font-size: .85rem;
             text-decoration: none;
@@ -642,256 +710,342 @@ function formatDuration($seconds)
     <div class="topbar">
         <h1>Kamen Riders <span>CRM</span></h1>
         <div class="topbar-links">
-            <a href="<?= h(BASE_URL) ?>/" target="_blank">← Landing Page</a>
-            <a href="?export=1" class="btn" style="background:#059669">↓ Export CSV</a>
+            <?php $activeTab = $_GET['tab'] ?? 'leads'; ?>
+            <div class="topbar-nav d-none d-md-flex">
+                <a href="?tab=leads" class="<?= $activeTab !== 'settings' ? 'active' : '' ?>">📦 Data Leads</a>
+                <a href="?tab=settings" class="<?= $activeTab === 'settings' ? 'active' : '' ?>">⚙️ Pengaturan
+                    Konten</a>
+            </div>
+            <a href="<?= h(BASE_URL) ?>/" target="_blank" class="link-out">← Landing Page</a>
+            <?php if ($activeTab !== 'settings'): ?>
+                <a href="?export=1" class="btn" style="background:#059669">↓ Export CSV</a>
+            <?php endif; ?>
             <a href="logout.php" class="btn">Logout</a>
         </div>
     </div>
 
+    <!-- Mobile Tab Nav -->
+    <div class="topbar-nav d-md-none" style="margin: 10px; border-radius: 4px; border: 1px solid #333;">
+        <a href="?tab=leads" style="flex:1; text-align:center"
+            class="<?= $activeTab !== 'settings' ? 'active' : '' ?>">Data Leads</a>
+        <a href="?tab=settings" style="flex:1; text-align:center"
+            class="<?= $activeTab === 'settings' ? 'active' : '' ?>">Pengaturan</a>
+    </div>
+
     <div class="main">
 
-        <!-- Tracking Insights (Batch 20) -->
-        <h3 class="mt-2 mb-3"
-            style="color:var(--red); font-family:'Rajdhani',sans-serif; text-transform:uppercase; letter-spacing:1px; border-bottom: 1px solid rgba(255, 30, 39, 0.3); padding-bottom:0.5rem;">
-            Traffic & Engagement</h3>
-        <div class="stats">
-            <div class="stat-card" style="border-top-color:#00ff66;">
-                <div class="stat-card__n">Impressions</div>
-                <div class="stat-card__v" style="color:#00ff66">
-                    <?= number_format($stat_views) ?>
-                </div>
-            </div>
-            <div class="stat-card" style="border-top-color:#38bdf8;">
-                <div class="stat-card__n">Unique Reach</div>
-                <div class="stat-card__v" style="color:#38bdf8">
-                    <?= number_format($stat_reach) ?>
-                </div>
-            </div>
-            <div class="stat-card" style="border-top-color:#fbbf24;">
-                <div class="stat-card__n">CTA Clicks</div>
-                <div class="stat-card__v" style="color:#fbbf24">
-                    <?= number_format($stat_clicks) ?>
-                </div>
-            </div>
-            <div class="stat-card" style="border-top-color:#a855f7;">
-                <div class="stat-card__n">Avg. Duration</div>
-                <div class="stat-card__v" style="color:#a855f7">
-                    <?= formatDuration($stat_duration) ?>
-                </div>
-            </div>
-        </div>
+        <?php if ($activeTab === 'settings'): ?>
 
-        <h3 class="mt-4 mb-3"
-            style="color:#fff; font-family:'Rajdhani',sans-serif; text-transform:uppercase; letter-spacing:1px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom:0.5rem;">
-            Sales Conversions</h3>
-        <div class="stats">
-            <div class="stat-card">
-                <div class="stat-card__n">Total Leads</div>
-                <div class="stat-card__v">
-                    <?= $total ?>
+            <!-- =================== PENGATURAN KONTEN (SETTINGS) ================== -->
+            <?php if (!empty($_GET['saved'])): ?>
+                <div
+                    style="background:#059669; color:#fff; padding:1rem; border-radius:6px; margin-bottom:1.5rem; font-weight:700;">
+                    ✅ Pengaturan berhasil disimpan! Periksa <a href="<?= h(BASE_URL) ?>/" target="_blank"
+                        style="color:#fff; text-decoration:underline;">halaman depan situs</a> untuk melihat perubahannya.
                 </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-card__n">Pending</div>
-                <div class="stat-card__v" style="color:#d97706">
-                    <?= $totalPending ?>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-card__n">Paid</div>
-                <div class="stat-card__v" style="color:#059669">
-                    <?= $totalPaid ?>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-card__n">Conversion</div>
-                <div class="stat-card__v">
-                    <?= $total > 0 ? round($totalPaid / $total * 100) : 0 ?>%
-                </div>
-            </div>
-        </div>
+            <?php endif; ?>
 
-        <div class="layout">
-            <!-- Main leads table -->
-            <div class="box">
-                <!-- Toolbar -->
-                <div class="toolbar">
-                    <div class="pill-row">
-                        <a href="admin.php" class="pill <?= $filterStatus === '' ? 'active' : '' ?>">Semua</a>
-                        <a href="admin.php?status=pending"
-                            class="pill <?= $filterStatus === 'pending' ? 'active' : '' ?>">Pending</a>
-                        <a href="admin.php?status=contacted"
-                            class="pill <?= $filterStatus === 'contacted' ? 'active' : '' ?>">Contacted</a>
-                        <a href="admin.php?status=paid"
-                            class="pill pill-green <?= $filterStatus === 'paid' ? 'active' : '' ?>">Paid</a>
-                        <a href="admin.php?status=cancelled"
-                            class="pill <?= $filterStatus === 'cancelled' ? 'active' : '' ?>">Cancelled</a>
+            <div style="background:#111; padding: 1.5rem; border-radius:8px; border: 1px solid rgba(255,255,255,0.1);">
+                <h2
+                    style="font-family:'Rajdhani',sans-serif; color:var(--red); text-transform:uppercase; font-size:1.5rem; margin-bottom:1rem;">
+                    Kelola Konten Website</h2>
+                <p style="color:#aaa; font-size:0.9rem; margin-bottom:2rem;">Sesuaikan teks penawaran promosi, gambar
+                    background Hero, serta link spesifik Instagram untuk varian produk langsung tanpa menyentuh kode.</p>
+
+                <form action="admin.php" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="action" value="save_settings">
+
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                        <?php
+                        if ($pdo) {
+                            $settingsRow = get_all_settings();
+                            foreach ($settingsRow as $s) {
+                                $k = h($s['setting_key']);
+                                $v = h($s['setting_value']);
+                                $desc = h($s['description']);
+                                $type = $s['setting_type'];
+
+                                echo '<div style="background:#1a1a1a; padding:1.2rem; border-radius:6px; border:1px solid #333;">';
+                                echo '<label style="display:block; font-weight:700; font-size:0.9rem; color:#fff; margin-bottom:0.3rem;">' . h(ucwords(str_replace('_', ' ', $k))) . '</label>';
+                                echo '<div style="font-size:0.75rem; color:#888; margin-bottom:0.8rem;">' . $desc . '</div>';
+
+                                if ($type === 'text') {
+                                    echo '<input type="text" name="setting[' . $k . ']" value="' . $v . '" style="width:100%; padding:0.6rem; background:#222; border:1px solid #444; color:#fff; border-radius:4px; font-size:0.85rem;" required>';
+                                } elseif ($type === 'html') {
+                                    echo '<textarea name="setting[' . $k . ']" rows="4" style="width:100%; padding:0.6rem; background:#222; border:1px solid #444; color:#fff; border-radius:4px; font-size:0.85rem;" required>' . $v . '</textarea>';
+                                } elseif ($type === 'image') {
+                                    echo '<div style="display:flex; align-items:center; gap:1rem;">';
+                                    echo '<img src="' . h(asset($v)) . '" alt="Current" style="height:60px; width:auto; border-radius:4px; border:1px solid #444;">';
+                                    echo '<input type="file" name="setting_img[' . $k . ']" accept="image/png, image/jpeg, image/webp" style="color:#aaa; font-size:0.8rem;">';
+                                    echo '</div>';
+                                }
+                                echo '</div>';
+                            }
+                        } else {
+                            echo "<p style='color:red'>Database terputus. Mode offline tidak mendukung edit referensi konten.</p>";
+                        }
+                        ?>
                     </div>
-                    <form method="get">
-                        <?php if ($filterStatus): ?>
-                            <input type="hidden" name="status" value="<?= h($filterStatus) ?>">
-                        <?php endif; ?>
-                        <input type="text" name="q" value="<?= h($search) ?>" placeholder="Cari nama / WA…">
-                        <button type="submit"
-                            style="padding:.5rem .85rem;background:#111;color:#fff;border:none;border-radius:4px;font-weight:700;cursor:pointer">Cari</button>
-                    </form>
-                </div>
 
-                <div class="ov">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Tanggal</th>
-                                <th>Nama</th>
-                                <th>WA / Alamat</th>
-                                <th>Pesanan</th>
-                                <th>Bukti TF</th>
-                                <th>Status</th>
-                                <th>UTM</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (empty($leads)): ?>
+                    <div style="margin-top: 2rem; border-top: 1px solid #333; padding-top: 1.5rem; text-align:right;">
+                        <button class="btn btn-red" type="submit"
+                            style="background:#e62429; color:#fff; padding:0.8rem 2rem; border:none; border-radius:4px; font-weight:700; font-size:1rem; cursor:pointer;">Simpan
+                            Perubahan Konten</button>
+                    </div>
+                </form>
+            </div>
+
+        <?php else: ?>
+
+            <!-- =================== DATA LEADS CRM ================== -->
+
+            <!-- Tracking Insights (Batch 20) -->
+            <h3 class="mt-2 mb-3"
+                style="color:var(--red); font-family:'Rajdhani',sans-serif; text-transform:uppercase; letter-spacing:1px; border-bottom: 1px solid rgba(255, 30, 39, 0.3); padding-bottom:0.5rem;">
+                Traffic & Engagement</h3>
+            <div class="stats">
+                <div class="stat-card" style="border-top-color:#00ff66;">
+                    <div class="stat-card__n">Impressions</div>
+                    <div class="stat-card__v" style="color:#00ff66">
+                        <?= number_format($stat_views) ?>
+                    </div>
+                </div>
+                <div class="stat-card" style="border-top-color:#38bdf8;">
+                    <div class="stat-card__n">Unique Reach</div>
+                    <div class="stat-card__v" style="color:#38bdf8">
+                        <?= number_format($stat_reach) ?>
+                    </div>
+                </div>
+                <div class="stat-card" style="border-top-color:#fbbf24;">
+                    <div class="stat-card__n">CTA Clicks</div>
+                    <div class="stat-card__v" style="color:#fbbf24">
+                        <?= number_format($stat_clicks) ?>
+                    </div>
+                </div>
+                <div class="stat-card" style="border-top-color:#a855f7;">
+                    <div class="stat-card__n">Avg. Duration</div>
+                    <div class="stat-card__v" style="color:#a855f7">
+                        <?= formatDuration($stat_duration) ?>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="mt-4 mb-3"
+                style="color:#fff; font-family:'Rajdhani',sans-serif; text-transform:uppercase; letter-spacing:1px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom:0.5rem;">
+                Sales Conversions</h3>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-card__n">Total Leads</div>
+                    <div class="stat-card__v">
+                        <?= $total ?>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card__n">Pending</div>
+                    <div class="stat-card__v" style="color:#d97706">
+                        <?= $totalPending ?>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card__n">Paid</div>
+                    <div class="stat-card__v" style="color:#059669">
+                        <?= $totalPaid ?>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card__n">Conversion</div>
+                    <div class="stat-card__v">
+                        <?= $total > 0 ? round($totalPaid / $total * 100) : 0 ?>%
+                    </div>
+                </div>
+            </div>
+
+            <div class="layout">
+                <!-- Main leads table -->
+                <div class="box">
+                    <!-- Toolbar -->
+                    <div class="toolbar">
+                        <div class="pill-row">
+                            <a href="admin.php" class="pill <?= $filterStatus === '' ? 'active' : '' ?>">Semua</a>
+                            <a href="admin.php?status=pending"
+                                class="pill <?= $filterStatus === 'pending' ? 'active' : '' ?>">Pending</a>
+                            <a href="admin.php?status=contacted"
+                                class="pill <?= $filterStatus === 'contacted' ? 'active' : '' ?>">Contacted</a>
+                            <a href="admin.php?status=paid"
+                                class="pill pill-green <?= $filterStatus === 'paid' ? 'active' : '' ?>">Paid</a>
+                            <a href="admin.php?status=cancelled"
+                                class="pill <?= $filterStatus === 'cancelled' ? 'active' : '' ?>">Cancelled</a>
+                        </div>
+                        <form method="get">
+                            <?php if ($filterStatus): ?>
+                                <input type="hidden" name="status" value="<?= h($filterStatus) ?>">
+                            <?php endif; ?>
+                            <input type="text" name="q" value="<?= h($search) ?>" placeholder="Cari nama / WA…">
+                            <button type="submit"
+                                style="padding:.5rem .85rem;background:#111;color:#fff;border:none;border-radius:4px;font-weight:700;cursor:pointer">Cari</button>
+                        </form>
+                    </div>
+
+                    <div class="ov">
+                        <table>
+                            <thead>
                                 <tr>
-                                    <td class="st-bad" colspan="7">Tidak ada lead ditemukan.</td>
+                                    <th>#</th>
+                                    <th>Tanggal</th>
+                                    <th>Nama</th>
+                                    <th>WA / Alamat</th>
+                                    <th>Pesanan</th>
+                                    <th>Bukti TF</th>
+                                    <th>Status</th>
+                                    <th>UTM</th>
                                 </tr>
-                            <?php else:
-                                foreach ($leads as $l):
-                                    $ts = $l['created_at'] ?? ($l['timestamp'] ?? '');
-                                    $id = $l['id'] ?? 0;
-                                    $name = $l['name'] ?? '-';
-                                    $ph = $l['phone'] ?? '-';
-                                    $addr = $l['address'] ?? '-';
-                                    $des = $l['design'] ?? '-';
-                                    $sz = $l['size'] ?? '-';
-                                    $qty = $l['quantity'] ?? $l['qty'] ?? '-';
-                                    $tot = $l['total_price'] ?? 0;
-                                    $proof = $l['payment_proof'] ?? '-';
-                                    $st = $l['status'] ?? 'pending';
-                                    $src = $l['utm_source'] ?? '-';
-                                    $camp = $l['utm_campaign'] ?? '-';
-                                    $fbc = $l['fbclid'] ?? '';
-                                    ?>
+                            </thead>
+                            <tbody>
+                                <?php if (empty($leads)): ?>
                                     <tr>
-                                        <td class="text-muted">
-                                            <?= (int) $id ?>
-                                        </td>
-                                        <td class="text-muted" style="white-space:nowrap">
-                                            <?= $ts ? date('d M Y', strtotime($ts)) : '-' ?><br>
-                                            <?= $ts ? date('H:i', strtotime($ts)) : '' ?>
-                                        </td>
-                                        <td><strong>
-                                                <?= h($name) ?>
-                                            </strong></td>
-                                        <td>
-                                            <a class="wa-link" href="https://wa.me/<?= h($ph) ?>" target="_blank"
-                                                rel="noopener">
-                                                <?= h($ph) ?>
-                                            </a><br>
-                                            <span class="text-muted"
-                                                style="max-width:160px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"
-                                                title="<?= h($addr) ?>">
-                                                <?= h($addr) ?>
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <strong>
-                                                <?= h($des) ?>
-                                            </strong><br>
-                                            <span class="text-muted">
-                                                <?= h($sz) ?> ×
-                                                <?= h((string) $qty) ?>
-                                            </span><br>
-                                            <span class="text-muted" style="color:var(--green)">
-                                                <?= idr((int) $tot) ?>
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <?php if ($proof && $proof !== '-'): ?>
-                                                <a href="<?= h(BASE_URL) ?>/storage/uploads/<?= h($proof) ?>" target="_blank"
-                                                    style="color:var(--red); text-decoration:underline;">Lihat Bukti</a>
-                                            <?php else: ?>
-                                                <span class="text-muted">-</span>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td>
-                                            <span class="<?= statusClass($st) ?>">
-                                                <?= h($st) ?>
-                                            </span>
-                                            <?php if ($pdo): ?>
-                                                <form method="post" style="margin-top:.35rem">
-                                                    <input type="hidden" name="update_status" value="1">
-                                                    <input type="hidden" name="lead_id" value="<?= (int) $id ?>">
-                                                    <input type="hidden" name="timestamp" value="<?= h($ts) ?>">
-                                                    <select name="new_status" class="st-sel" onchange="this.form.submit()">
-                                                        <option value="pending" <?= $st === 'pending' ? 'selected' : '' ?>>Pending
-                                                        </option>
-                                                        <option value="contacted" <?= $st === 'contacted' ? 'selected' : '' ?>>
-                                                            Contacted
-                                                        </option>
-                                                        <option value="paid" <?= $st === 'paid' ? 'selected' : '' ?>>Paid</option>
-                                                        <option value="cancelled" <?= $st === 'cancelled' ? 'selected' : '' ?>>
-                                                            Cancelled
-                                                        </option>
-                                                    </select>
-                                                </form>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td class="text-muted">
-                                            <?= h($src) ?><br>
-                                            <span style="font-size:.72rem">
-                                                <?= h(mb_substr($camp, 0, 20)) ?>
-                                            </span><br>
-                                            <?php if ($fbc): ?>
-                                                <span title="<?= h($fbc) ?>" style="font-size:.7rem;color:#059669">fbclid ✓</span>
-                                            <?php endif; ?>
-                                        </td>
+                                        <td class="st-bad" colspan="7">Tidak ada lead ditemukan.</td>
                                     </tr>
-                                <?php endforeach; endif; ?>
-                        </tbody>
-                    </table>
+                                <?php else:
+                                    foreach ($leads as $l):
+                                        $ts = $l['created_at'] ?? ($l['timestamp'] ?? '');
+                                        $id = $l['id'] ?? 0;
+                                        $name = $l['name'] ?? '-';
+                                        $ph = $l['phone'] ?? '-';
+                                        $addr = $l['address'] ?? '-';
+                                        $des = $l['design'] ?? '-';
+                                        $sz = $l['size'] ?? '-';
+                                        $qty = $l['quantity'] ?? $l['qty'] ?? '-';
+                                        $tot = $l['total_price'] ?? 0;
+                                        $proof = $l['payment_proof'] ?? '-';
+                                        $st = $l['status'] ?? 'pending';
+                                        $src = $l['utm_source'] ?? '-';
+                                        $camp = $l['utm_campaign'] ?? '-';
+                                        $fbc = $l['fbclid'] ?? '';
+                                        ?>
+                                        <tr>
+                                            <td class="text-muted">
+                                                <?= (int) $id ?>
+                                            </td>
+                                            <td class="text-muted" style="white-space:nowrap">
+                                                <?= $ts ? date('d M Y', strtotime($ts)) : '-' ?><br>
+                                                <?= $ts ? date('H:i', strtotime($ts)) : '' ?>
+                                            </td>
+                                            <td><strong>
+                                                    <?= h($name) ?>
+                                                </strong></td>
+                                            <td>
+                                                <a class="wa-link" href="https://wa.me/<?= h($ph) ?>" target="_blank"
+                                                    rel="noopener">
+                                                    <?= h($ph) ?>
+                                                </a><br>
+                                                <span class="text-muted"
+                                                    style="max-width:160px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"
+                                                    title="<?= h($addr) ?>">
+                                                    <?= h($addr) ?>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <strong>
+                                                    <?= h($des) ?>
+                                                </strong><br>
+                                                <span class="text-muted">
+                                                    <?= h($sz) ?> ×
+                                                    <?= h((string) $qty) ?>
+                                                </span><br>
+                                                <span class="text-muted" style="color:var(--green)">
+                                                    <?= idr((int) $tot) ?>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <?php if ($proof && $proof !== '-'): ?>
+                                                    <a href="<?= h(BASE_URL) ?>/storage/uploads/<?= h($proof) ?>" target="_blank"
+                                                        style="color:var(--red); text-decoration:underline;">Lihat Bukti</a>
+                                                <?php else: ?>
+                                                    <span class="text-muted">-</span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td>
+                                                <span class="<?= statusClass($st) ?>">
+                                                    <?= h($st) ?>
+                                                </span>
+                                                <?php if ($pdo): ?>
+                                                    <form method="post" style="margin-top:.35rem">
+                                                        <input type="hidden" name="update_status" value="1">
+                                                        <input type="hidden" name="lead_id" value="<?= (int) $id ?>">
+                                                        <input type="hidden" name="timestamp" value="<?= h($ts) ?>">
+                                                        <select name="new_status" class="st-sel" onchange="this.form.submit()">
+                                                            <option value="pending" <?= $st === 'pending' ? 'selected' : '' ?>>Pending
+                                                            </option>
+                                                            <option value="contacted" <?= $st === 'contacted' ? 'selected' : '' ?>>
+                                                                Contacted
+                                                            </option>
+                                                            <option value="paid" <?= $st === 'paid' ? 'selected' : '' ?>>Paid</option>
+                                                            <option value="cancelled" <?= $st === 'cancelled' ? 'selected' : '' ?>>
+                                                                Cancelled
+                                                            </option>
+                                                        </select>
+                                                    </form>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td class="text-muted">
+                                                <?= h($src) ?><br>
+                                                <span style="font-size:.72rem">
+                                                    <?= h(mb_substr($camp, 0, 20)) ?>
+                                                </span><br>
+                                                <?php if ($fbc): ?>
+                                                    <span title="<?= h($fbc) ?>" style="font-size:.7rem;color:#059669">fbclid ✓</span>
+                                                <?php endif; ?>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Sidebar -->
-            <div>
-                <div class="box" style="margin-bottom:1rem">
-                    <h3>UTM Performance</h3>
-                    <?php if (empty($utmStats)): ?>
-                        <p class="text-muted">Belum ada data UTM.</p>
-                    <?php else: ?>
-                        <?php foreach ($utmStats as $u): ?>
-                            <div class="utm-row">
-                                <div>
+                <!-- Sidebar -->
+                <div>
+                    <div class="box" style="margin-bottom:1rem">
+                        <h3>UTM Performance</h3>
+                        <?php if (empty($utmStats)): ?>
+                            <p class="text-muted">Belum ada data UTM.</p>
+                        <?php else: ?>
+                            <?php foreach ($utmStats as $u): ?>
+                                <div class="utm-row">
+                                    <div>
+                                        <strong>
+                                            <?= h($u['utm_source'] ?? '') ?>
+                                        </strong><br>
+                                        <span class="text-muted">
+                                            <?= h($u['utm_campaign'] ?? '') ?>
+                                        </span>
+                                    </div>
                                     <strong>
-                                        <?= h($u['utm_source'] ?? '') ?>
-                                    </strong><br>
-                                    <span class="text-muted">
-                                        <?= h($u['utm_campaign'] ?? '') ?>
-                                    </span>
+                                        <?= (int) $u['total'] ?>
+                                    </strong>
                                 </div>
-                                <strong>
-                                    <?= (int) $u['total'] ?>
-                                </strong>
-                            </div>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="box guide">
+                        <h3>Panduan Status</h3>
+                        <ul>
+                            <li><strong>Pending</strong> — Lead baru masuk, belum dibalas.</li>
+                            <li><strong>Contacted</strong> — Sudah balas WA / follow up.</li>
+                            <li><strong>Paid</strong> — DP / lunas sudah diterima.</li>
+                            <li><strong>Cancelled</strong> — Batal / tidak respons.</li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div class="box guide">
-                    <h3>Panduan Status</h3>
-                    <ul>
-                        <li><strong>Pending</strong> — Lead baru masuk, belum dibalas.</li>
-                        <li><strong>Contacted</strong> — Sudah balas WA / follow up.</li>
-                        <li><strong>Paid</strong> — DP / lunas sudah diterima.</li>
-                        <li><strong>Cancelled</strong> — Batal / tidak respons.</li>
-                    </ul>
-                </div>
-            </div>
-
-        </div><!-- /layout -->
+            </div><!-- /layout -->
+        <?php endif; // End Tab Toggle ?>
     </div><!-- /main -->
+
+    <script>
+        // Any required admin JS
+    </script>
 </body>
 
 </html>

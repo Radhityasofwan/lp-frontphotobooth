@@ -525,18 +525,16 @@ CSS;
         <div class="row align-items-center gy-5">
           <div class="col-lg-6 order-2 order-lg-1">
             <div class="d-flex gap-2 mb-3 flex-wrap justify-content-center justify-content-lg-start">
-              <span class="badge bg-brand-red">Open Pre-Order</span>
-              <span class="badge bg-warning text-dark">Limited Edition</span>
-              <span class="badge bg-dark border border-secondary">Edisi 1</span>
+              <span class="badge bg-brand-red"><?= get_setting('hero_badge_1', 'Open Pre-Order') ?></span>
+              <span class="badge bg-warning text-black fw-bold"><?= get_setting('hero_badge_2', 'Limited Edition') ?></span>
+              <span class="badge bg-dark border border-secondary"><?= get_setting('hero_badge_3', 'Edisi 1') ?></span>
             </div>
 
-            <h1 class="display-4 fw-bold mb-3 text-white text-center text-lg-start">Jersey <span
-                class="text-gradient">Kamen Rider</span><br>Ichigo &amp; Black</h1>
+            <h1 class="display-4 fw-bold mb-3 text-white text-center text-lg-start"><?= get_setting('hero_title_1', 'Jersey ') ?><span
+                class="text-gradient"><?= get_setting('hero_title_2', 'Kamen Rider') ?></span><br><?= get_setting('hero_title_3', 'Ichigo &amp; Black') ?></h1>
 
             <p class="lead text-secondary mb-4 text-center text-lg-start">
-              Nostalgia di tahun 90an, terinspirasi dari film <strong>Satria Baja Hitam</strong>. Jersey sporty premium
-              bergaya jagoan masa kecil kita.<br>
-              Diproduksi oleh <strong>Ozverligsportwear</strong> berkolaborasi dengan <strong>Kemalikart</strong>.
+              <?= get_setting('hero_desc', 'Nostalgia di tahun 90an, terinspirasi dari film <strong>Satria Baja Hitam</strong>. Jersey sporty premium bergaya jagoan masa kecil kita.<br>Diproduksi oleh <strong>Ozverligsportwear</strong> berkolaborasi dengan <strong>Kemalikart</strong>.') ?>
             </p>
 
             <div class="d-flex gap-3 mb-5 flex-wrap justify-content-center justify-content-lg-start">
@@ -557,13 +555,13 @@ CSS;
               </div>
               <div class="col-4">
                 <div class="text-secondary small text-uppercase fw-bold">DP Minimal</div>
-                <div class="text-white fw-medium">IDR 100.000</div>
+                <div class="text-white fw-medium"><?= get_setting('hero_dp', 'IDR 100.000') ?></div>
               </div>
             </div>
           </div>
 
           <div class="col-lg-6 order-1 order-lg-2 text-center">
-            <img class="img-fluid drop-shadow" src="<?= h(asset('assets/img/hero.webp')) ?>"
+            <img class="img-fluid drop-shadow" src="<?= h(asset(get_setting('hero_bg_image', 'assets/img/hero.webp'))) ?>"
               alt="Jersey Series Fantasy Kamen Rider Ichigo dan Black Edisi 1" loading="eager" fetchpriority="high"
               style="filter: drop-shadow(0 0 30px rgba(240,19,30,0.3)); max-width:90%">
           </div>
@@ -576,7 +574,7 @@ CSS;
       <div
         class="container fw-bold font-rajdhani fs-5 d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
         <div class="d-flex flex-column text-md-end lh-1">
-          <span class="text-white fs-5">🔥 EARLY ACCESS PRICE</span>
+          <span class="text-white fs-5"><?= get_setting('promo_title', '🔥 EARLY ACCESS PRICE') ?></span>
           <span class="badge border border-light rounded-pill px-2 py-1 mt-1"
             style="font-size: 0.70rem; background: rgba(0,0,0,0.3);">
             Batch 1
@@ -606,8 +604,8 @@ CSS;
     <section class="py-5 border-bottom border-dark position-relative z-1" id="showcase">
       <div class="container">
         <div class="text-center mb-5">
-          <h2 class="display-6 font-rajdhani fw-bold text-white">Our Showcase</h2>
-          <p class="text-secondary">Detail dan tampilan nyata karya kami di Instagram.</p>
+          <h2 class="display-6 font-rajdhani fw-bold text-white"><?= get_setting('showcase_title', 'Our Showcase') ?></h2>
+          <p class="text-secondary"><?= get_setting('showcase_desc', 'Detail dan tampilan nyata karya kami di Instagram.') ?></p>
         </div>
         <div class="row g-4 justify-content-center">
           <!-- Ichigo Embed (Green Glow) -->
@@ -616,7 +614,7 @@ CSS;
               <h5 class="font-rajdhani fw-bold text-brand-green mb-3">#Ichigo Edition</h5>
               <!-- Using 4:5 aspect ratio padding for IG portraits (125% = 5/4) -->
               <div class="w-100 overflow-hidden rounded bg-black d-flex justify-content-center" style="position: relative; padding-top: 125%;">
-                <blockquote class="instagram-media h-100 w-100 border-0 m-0 bg-transparent position-absolute top-0 start-0" data-instgrm-permalink="https://www.instagram.com/p/DVRdmS_E9Kq/?utm_source=ig_web_button_share_sheet&igsh=MzRlODBiNWFlZA==" data-instgrm-version="14"></blockquote>
+                <blockquote class="instagram-media h-100 w-100 border-0 m-0 bg-transparent position-absolute top-0 start-0" data-instgrm-permalink="<?= get_setting('showcase_ig_ichigo', 'https://www.instagram.com/p/DVRdmS_E9Kq/') ?>?utm_source=ig_web_button_share_sheet&igsh=MzRlODBiNWFlZA==" data-instgrm-version="14"></blockquote>
               </div>
             </div>
           </div>
@@ -627,7 +625,7 @@ CSS;
               <h5 class="font-rajdhani fw-bold text-brand-red mb-3">#Black Edition</h5>
               <!-- Using 4:5 aspect ratio padding for IG portraits (125% = 5/4) -->
               <div class="w-100 overflow-hidden rounded bg-black d-flex justify-content-center" style="position: relative; padding-top: 125%;">
-                <blockquote class="instagram-media h-100 w-100 border-0 m-0 bg-transparent position-absolute top-0 start-0" data-instgrm-permalink="https://www.instagram.com/p/DVRd5kNE0B4/?utm_source=ig_web_button_share_sheet&igsh=MzRlODBiNWFlZA==" data-instgrm-version="14"></blockquote>
+                <blockquote class="instagram-media h-100 w-100 border-0 m-0 bg-transparent position-absolute top-0 start-0" data-instgrm-permalink="<?= get_setting('showcase_ig_black', 'https://www.instagram.com/p/DVRd5kNE0B4/') ?>?utm_source=ig_web_button_share_sheet&igsh=MzRlODBiNWFlZA==" data-instgrm-version="14"></blockquote>
               </div>
             </div>
           </div>

@@ -46,3 +46,29 @@ CREATE TABLE IF NOT EXISTS analytics (
     INDEX (event_type),
     INDEX (session_id)
 );
+
+CREATE TABLE IF NOT EXISTS settings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    setting_key VARCHAR(100) NOT NULL UNIQUE,
+    setting_value TEXT,
+    setting_type ENUM('text', 'image', 'html') DEFAULT 'text',
+    description VARCHAR(255),
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Seed initial static values to preserve existing frontend
+INSERT IGNORE INTO settings (setting_key, setting_value, setting_type, description) VALUES
+('hero_badge_1', 'Open Pre-Order', 'text', 'Badge 1 di atas Judul Utama'),
+('hero_badge_2', 'Limited Edition', 'text', 'Badge 2 di atas Judul Utama'),
+('hero_badge_3', 'Edisi 1', 'text', 'Badge 3 di atas Judul Utama'),
+('hero_title_1', 'Jersey ', 'text', 'Baris 1 Judul Utama'),
+('hero_title_2', 'Kamen Rider', 'text', 'Warna Gradasi Judul Utama'),
+('hero_title_3', 'Ichigo &amp; Black', 'text', 'Baris 2 Judul Utama'),
+('hero_desc', 'Nostalgia di tahun 90an, terinspirasi dari film <strong>Satria Baja Hitam</strong>. Jersey sporty premium bergaya jagoan masa kecil kita.<br>Diproduksi oleh <strong>Ozverligsportwear</strong> berkolaborasi dengan <strong>Kemalikart</strong>.', 'html', 'Teks deskripsi di bawah Judul Utama'),
+('hero_dp', 'IDR 100.000', 'text', 'Nilai DP Minimal Hero Section'),
+('hero_bg_image', 'assets/img/hero.webp', 'image', 'Gambar utama Hero (Kanan)'),
+('promo_title', '🔥 EARLY ACCESS PRICE', 'text', 'Judul Pita Promo Banner'),
+('showcase_title', 'Our Showcase', 'text', 'Judul Bagian Showcase Instagram'),
+('showcase_desc', 'Detail dan tampilan nyata karya kami di Instagram.', 'text', 'Deskripsi Bagian Showcase Instagram'),
+('showcase_ig_ichigo', 'https://www.instagram.com/p/DVRdmS_E9Kq/', 'text', 'Link Embed Instagram Ichigo'),
+('showcase_ig_black', 'https://www.instagram.com/p/DVRd5kNE0B4/', 'text', 'Link Embed Instagram Black');
