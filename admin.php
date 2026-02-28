@@ -792,18 +792,18 @@ function formatDuration($seconds)
 
                                 foreach ($items as $s) {
                                     $k = h($s['setting_key']);
-                                    $v = h($s['setting_value']);
+                                    $v = $s['setting_value'];
                                     $desc = h($s['description']);
                                     $type = $s['setting_type'];
-
+    
                                     echo '<div style="background:#1a1a1a; padding:1.2rem; border-radius:6px; border:1px solid #333;">';
                                     echo '<label style="display:block; font-weight:700; font-size:0.9rem; color:#fff; margin-bottom:0.3rem;">' . h(ucwords(str_replace('_', ' ', $k))) . '</label>';
                                     echo '<div style="font-size:0.75rem; color:#888; margin-bottom:0.8rem;">' . $desc . '</div>';
-
+    
                                     if ($type === 'text') {
-                                        echo '<input type="text" name="setting[' . $k . ']" value="' . $v . '" style="width:100%; padding:0.6rem; background:#222; border:1px solid #444; color:#fff; border-radius:4px; font-size:0.85rem;" required>';
+                                        echo '<input type="text" name="setting[' . $k . ']" value="' . htmlspecialchars_decode($v, ENT_QUOTES) . '" style="width:100%; padding:0.6rem; background:#222; border:1px solid #444; color:#fff; border-radius:4px; font-size:0.85rem;" required>';
                                     } elseif ($type === 'html') {
-                                        echo '<textarea name="setting[' . $k . ']" rows="4" style="width:100%; padding:0.6rem; background:#222; border:1px solid #444; color:#fff; border-radius:4px; font-size:0.85rem;" required>' . $v . '</textarea>';
+                                        echo '<textarea name="setting[' . $k . ']" rows="4" style="width:100%; padding:0.6rem; background:#222; border:1px solid #444; color:#fff; border-radius:4px; font-size:0.85rem;" required>' . htmlspecialchars_decode($v, ENT_QUOTES) . '</textarea>';
                                     } elseif ($type === 'image') {
                                         echo '<div style="display:flex; align-items:center; gap:1rem;">';
                                         echo '<img src="' . h(asset($s['setting_value'])) . '" alt="Current" style="height:60px; width:auto; border-radius:4px; border:1px solid #444;">';
