@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../config.php';
+session_start();
 
 // Auto-create default admin if users table is empty
 try {

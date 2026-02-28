@@ -168,28 +168,57 @@ CSS;
 
     body {
       background-color: var(--bg-dark);
+      background-image: radial-gradient(circle at 50% 0%, rgba(30, 30, 35, 1) 0%, var(--bg-dark) 80%);
+      background-attachment: fixed;
       color: var(--text-main);
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
     }
 
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: -1;
-      background-image:
-        linear-gradient(rgba(5, 5, 5, 0.75), rgba(5, 5, 5, 0.85)),
-        radial-gradient(circle at 15% 30%, rgba(0, 230, 91, 0.4) 0%, transparent 60%),
-        radial-gradient(circle at 85% 30%, rgba(255, 30, 39, 0.4) 0%, transparent 60%),
-        radial-gradient(ellipse at 50% 100%, rgba(200, 200, 220, 0.3) 0%, transparent 50%),
-        url('<?= h(asset('assets/img/hero.webp')) ?>');
-      background-size: cover, 100% 100%, 100% 100%, 100% 100%, cover;
-      background-position: center, center, center, center, top center;
-      background-blend-mode: normal, screen, screen, screen, overlay;
-      pointer-events: none;
+    /* Fixed topbar layout for mobile */
+    .topbar-logo {
+      width: 36px;
+      height: 36px;
+    }
+
+    .topbar-brand {
+      font-size: 1rem;
+    }
+
+    .topbar-sub {
+      font-size: 0.65rem;
+    }
+
+    .topbar-btn {
+      padding: 0.4rem 0.8rem !important;
+      font-size: 0.85rem !important;
+    }
+
+    .topbar-btn span {
+      font-size: 0.85rem !important;
+    }
+
+    @media (min-width: 768px) {
+      .topbar-logo {
+        width: 48px;
+        height: 48px;
+      }
+
+      .topbar-brand {
+        font-size: 1.1rem;
+      }
+
+      .topbar-sub {
+        font-size: 0.8rem;
+      }
+
+      .topbar-btn {
+        padding: 0.85rem 2rem !important;
+        font-size: 1.1rem !important;
+      }
+
+      .topbar-btn span {
+        font-size: 1.1rem !important;
+      }
     }
 
     h1,
@@ -487,26 +516,28 @@ CSS;
 
 <body>
 
-  <header class="sticky-top bg-dark border-bottom border-dark py-3"
+  <!-- ── TOPBAR ── -->
+  <header class="sticky-top bg-dark border-bottom border-dark py-2 py-md-4"
     style="background: rgba(6,6,8,0.95) !important; backdrop-filter: blur(10px);">
-    <div class="container d-flex justify-content-between align-items-center">
-      <a href="<?= h(BASE_URL) ?>/" class="d-flex align-items-center gap-3 text-decoration-none">
-        <img src="<?= h(asset('assets/img/logo-ozverlig.webp')) ?>" alt="Logo Ozverligsportwear" width="48" height="48"
-          loading="eager" class="rounded-circle border border-secondary shadow-sm">
+    <div class="container d-flex justify-content-between align-items-center gap-1 gap-md-4">
+      <a href="<?= h(BASE_URL) ?>/" class="d-flex align-items-center gap-2 gap-md-3 text-decoration-none">
+        <img src="<?= h(asset('assets/img/logo-ozverlig.webp')) ?>" alt="Logo Ozverligsportwear" loading="eager"
+          class="rounded-circle border border-secondary shadow-sm topbar-logo">
         <div class="lh-sm">
-          <div class="font-rajdhani text-white fs-5 fw-bold" style="letter-spacing: 0.5px;">Ozverligsportwear</div>
-          <div class="text-brand-red fw-bold" style="font-size:0.8rem; letter-spacing: 1px;">X KEMALIKART</div>
+          <div class="font-rajdhani text-white fw-bold topbar-brand" style="letter-spacing: 0.5px;">Ozverligsportwear
+          </div>
+          <div class="text-brand-red fw-bold topbar-sub" style="letter-spacing: 1px;">X KEMALIKART</div>
         </div>
       </a>
 
-      <div class="d-flex align-items-center gap-4">
+      <div class="d-flex align-items-center gap-2 gap-md-4">
         <nav class="d-none d-md-flex gap-4 align-items-center font-rajdhani text-secondary fw-bold fs-6">
           <a href="<?= h(BASE_URL) ?>/#produk" class="text-decoration-none text-secondary text-hover-white">Produk</a>
           <a href="<?= h(BASE_URL) ?>/#harga" class="text-decoration-none text-secondary text-hover-white">Harga</a>
           <a href="<?= h(BASE_URL) ?>/#faq" class="text-decoration-none text-secondary text-hover-white">FAQ</a>
         </nav>
-        <a href="<?= h(BASE_URL) ?>" class="btn btn-outline-light btn-sm px-4 py-2 skew-btn"><span
-            class="fw-bold fs-6">Kembali</span></a>
+        <a href="<?= h(BASE_URL) ?>" class="btn btn-outline-light skew-btn topbar-btn"><span
+            class="fw-bold">Kembali</span></a>
       </div>
     </div>
   </header>
@@ -520,9 +551,11 @@ CSS;
       style="background: rgba(6,6,8,0.6); backdrop-filter: blur(10px);">
       <div class="container d-flex flex-column align-items-center">
         <div class="text-center mb-5">
-          <h2 class="display-6 font-rajdhani fw-bold text-white mb-2">Form Pemesanan</h2>
-          <p class="lead text-secondary mb-3">Isi form di bawah. Setelah submit, Anda diarahkan ke WhatsApp untuk
-            konfirmasi.</p>
+          <h2 class="display-6 font-rajdhani fw-bold text-white mb-2">
+            <?= get_setting('order_title', 'Form Pemesanan') ?></h2>
+          <p class="lead text-secondary mb-3">
+            <?= get_setting('order_desc', 'Isi form di bawah. Setelah submit, Anda diarahkan ke WhatsApp untuk konfirmasi.') ?>
+          </p>
           <div class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-pill mt-2"
             style="background: rgba(0, 230, 91, 0.1); border: 1px solid rgba(0, 230, 91, 0.3);">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--brand-green)"

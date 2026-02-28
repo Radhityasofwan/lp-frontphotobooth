@@ -168,28 +168,57 @@ CSS;
 
     body {
       background-color: var(--bg-dark);
+      background-image: radial-gradient(circle at 50% 0%, rgba(30, 30, 35, 1) 0%, var(--bg-dark) 80%);
+      background-attachment: fixed;
       color: var(--text-main);
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
     }
 
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: -1;
-      background-image:
-        linear-gradient(rgba(5, 5, 5, 0.75), rgba(5, 5, 5, 0.85)),
-        radial-gradient(circle at 15% 30%, rgba(0, 230, 91, 0.4) 0%, transparent 60%),
-        radial-gradient(circle at 85% 30%, rgba(255, 30, 39, 0.4) 0%, transparent 60%),
-        radial-gradient(ellipse at 50% 100%, rgba(200, 200, 220, 0.3) 0%, transparent 50%),
-        url('<?= h(asset('assets/img/hero.webp')) ?>');
-      background-size: cover, 100% 100%, 100% 100%, 100% 100%, cover;
-      background-position: center, center, center, center, top center;
-      background-blend-mode: normal, screen, screen, screen, overlay;
-      pointer-events: none;
+    /* Fixed topbar layout for mobile */
+    .topbar-logo {
+      width: 36px;
+      height: 36px;
+    }
+
+    .topbar-brand {
+      font-size: 1rem;
+    }
+
+    .topbar-sub {
+      font-size: 0.65rem;
+    }
+
+    .topbar-btn {
+      padding: 0.4rem 0.8rem !important;
+      font-size: 0.85rem !important;
+    }
+
+    .topbar-btn span {
+      font-size: 0.85rem !important;
+    }
+
+    @media (min-width: 768px) {
+      .topbar-logo {
+        width: 48px;
+        height: 48px;
+      }
+
+      .topbar-brand {
+        font-size: 1.1rem;
+      }
+
+      .topbar-sub {
+        font-size: 0.8rem;
+      }
+
+      .topbar-btn {
+        padding: 0.85rem 2rem !important;
+        font-size: 1.1rem !important;
+      }
+
+      .topbar-btn span {
+        font-size: 1.1rem !important;
+      }
     }
 
     h1,
@@ -493,26 +522,27 @@ CSS;
 <body>
 
   <!-- ── TOPBAR ── -->
-  <header class="sticky-top bg-dark border-bottom border-dark py-3 py-md-4"
+  <header class="sticky-top bg-dark border-bottom border-dark py-2 py-md-4"
     style="background: rgba(6,6,8,0.95) !important; backdrop-filter: blur(10px);">
-    <div class="container d-flex justify-content-between align-items-center gap-2 gap-md-4">
+    <div class="container d-flex justify-content-between align-items-center gap-1 gap-md-4">
       <a href="<?= h(BASE_URL) ?>/" class="d-flex align-items-center gap-2 gap-md-3 text-decoration-none">
-        <img src="<?= h(asset('assets/img/logo-ozverlig.webp')) ?>" alt="Logo Ozverligsportwear" width="48" height="48"
-          loading="eager" class="rounded-circle border border-secondary shadow-sm">
+        <img src="<?= h(asset('assets/img/logo-ozverlig.webp')) ?>" alt="Logo Ozverligsportwear" loading="eager"
+          class="rounded-circle border border-secondary shadow-sm topbar-logo">
         <div class="lh-sm">
-          <div class="font-rajdhani text-white fs-5 fw-bold" style="letter-spacing: 0.5px;">Ozverligsportwear</div>
-          <div class="text-brand-red fw-bold" style="font-size:0.8rem; letter-spacing: 1px;">X KEMALIKART</div>
+          <div class="font-rajdhani text-white fw-bold topbar-brand" style="letter-spacing: 0.5px;">Ozverligsportwear
+          </div>
+          <div class="text-brand-red fw-bold topbar-sub" style="letter-spacing: 1px;">X KEMALIKART</div>
         </div>
       </a>
 
-      <div class="d-flex align-items-center gap-4">
+      <div class="d-flex align-items-center gap-2 gap-md-4">
         <nav class="d-none d-md-flex gap-4 align-items-center font-rajdhani text-secondary fw-bold fs-6">
           <a href="#produk" class="text-decoration-none text-secondary text-hover-white">Produk</a>
           <a href="#harga" class="text-decoration-none text-secondary text-hover-white">Harga</a>
           <a href="#faq" class="text-decoration-none text-secondary text-hover-white">FAQ</a>
         </nav>
-        <a href="<?= h(BASE_URL) ?>/checkout.php" class="btn btn-red btn-sm px-4 py-2 skew-btn"
-          data-track="initiate_checkout" id="btnOrder"><span class="fw-bold fs-6">Pesan</span></a>
+        <a href="<?= h(BASE_URL) ?>/checkout.php" class="btn btn-red skew-btn topbar-btn" data-track="initiate_checkout"
+          id="btnOrder"><span class="fw-bold">Pesan</span></a>
       </div>
     </div>
   </header>
@@ -526,12 +556,15 @@ CSS;
           <div class="col-lg-6 order-2 order-lg-1">
             <div class="d-flex gap-2 mb-3 flex-wrap justify-content-center justify-content-lg-start">
               <span class="badge bg-brand-red"><?= get_setting('hero_badge_1', 'Open Pre-Order') ?></span>
-              <span class="badge bg-warning text-black fw-bold"><?= get_setting('hero_badge_2', 'Limited Edition') ?></span>
+              <span
+                class="badge bg-warning text-black fw-bold"><?= get_setting('hero_badge_2', 'Limited Edition') ?></span>
               <span class="badge bg-dark border border-secondary"><?= get_setting('hero_badge_3', 'Edisi 1') ?></span>
             </div>
 
-            <h1 class="display-4 fw-bold mb-3 text-white text-center text-lg-start"><?= get_setting('hero_title_1', 'Jersey ') ?><span
-                class="text-gradient"><?= get_setting('hero_title_2', 'Kamen Rider') ?></span><br><?= get_setting('hero_title_3', 'Ichigo &amp; Black') ?></h1>
+            <h1 class="display-4 fw-bold mb-3 text-white text-center text-lg-start">
+              <?= get_setting('hero_title_1', 'Jersey ') ?><span
+                class="text-gradient"><?= get_setting('hero_title_2', 'Kamen Rider') ?></span><br><?= get_setting('hero_title_3', 'Ichigo &amp; Black') ?>
+            </h1>
 
             <p class="lead text-secondary mb-4 text-center text-lg-start">
               <?= get_setting('hero_desc', 'Nostalgia di tahun 90an, terinspirasi dari film <strong>Satria Baja Hitam</strong>. Jersey sporty premium bergaya jagoan masa kecil kita.<br>Diproduksi oleh <strong>Ozverligsportwear</strong> berkolaborasi dengan <strong>Kemalikart</strong>.') ?>
@@ -561,7 +594,8 @@ CSS;
           </div>
 
           <div class="col-lg-6 order-1 order-lg-2 text-center">
-            <img class="img-fluid drop-shadow" src="<?= h(asset(get_setting('hero_bg_image', 'assets/img/hero.webp'))) ?>"
+            <img class="img-fluid drop-shadow"
+              src="<?= h(asset(get_setting('hero_bg_image', 'assets/img/hero.webp'))) ?>"
               alt="Jersey Series Fantasy Kamen Rider Ichigo dan Black Edisi 1" loading="eager" fetchpriority="high"
               style="filter: drop-shadow(0 0 30px rgba(240,19,30,0.3)); max-width:90%">
           </div>
@@ -594,7 +628,8 @@ CSS;
             <div class="bg-white text-black fw-bold rounded px-2 py-1"><span id="cd-s">--</span><span
                 class="small text-secondary fw-normal ms-1">D</span></div>
           </div>
-          <div id="promo-ended" class="text-black fw-bold bg-warning px-2 py-1 rounded d-none" style="font-size:0.85rem">Promo
+          <div id="promo-ended" class="text-black fw-bold bg-warning px-2 py-1 rounded d-none"
+            style="font-size:0.85rem">Promo
             Berakhir</div>
         </div>
       </div>
@@ -604,8 +639,11 @@ CSS;
     <section class="py-5 border-bottom border-dark position-relative z-1" id="showcase">
       <div class="container">
         <div class="text-center mb-5">
-          <h2 class="display-6 font-rajdhani fw-bold text-white"><?= get_setting('showcase_title', 'Our Showcase') ?></h2>
-          <p class="text-secondary"><?= get_setting('showcase_desc', 'Detail dan tampilan nyata karya kami di Instagram.') ?></p>
+          <h2 class="display-6 font-rajdhani fw-bold text-white"><?= get_setting('showcase_title', 'Our Showcase') ?>
+          </h2>
+          <p class="text-secondary">
+            <?= get_setting('showcase_desc', 'Detail dan tampilan nyata karya kami di Instagram.') ?>
+          </p>
         </div>
         <div class="row g-4 justify-content-center">
           <!-- Ichigo Embed (Green Glow) -->
@@ -613,8 +651,12 @@ CSS;
             <div class="card card-dark h-100 rounded text-center p-3 glow-green border border-dark">
               <h5 class="font-rajdhani fw-bold text-brand-green mb-3">#Ichigo Edition</h5>
               <!-- Using 4:5 aspect ratio padding for IG portraits (125% = 5/4) -->
-              <div class="w-100 overflow-hidden rounded bg-black d-flex justify-content-center" style="position: relative; padding-top: 125%;">
-                <blockquote class="instagram-media h-100 w-100 border-0 m-0 bg-transparent position-absolute top-0 start-0" data-instgrm-permalink="<?= get_setting('showcase_ig_ichigo', 'https://www.instagram.com/p/DVRdmS_E9Kq/') ?>?utm_source=ig_web_button_share_sheet&igsh=MzRlODBiNWFlZA==" data-instgrm-version="14"></blockquote>
+              <div class="w-100 overflow-hidden rounded bg-black d-flex justify-content-center"
+                style="position: relative; padding-top: 125%;">
+                <blockquote
+                  class="instagram-media h-100 w-100 border-0 m-0 bg-transparent position-absolute top-0 start-0"
+                  data-instgrm-permalink="<?= get_setting('showcase_ig_ichigo', 'https://www.instagram.com/p/DVRdmS_E9Kq/') ?>?utm_source=ig_web_button_share_sheet&igsh=MzRlODBiNWFlZA=="
+                  data-instgrm-version="14"></blockquote>
               </div>
             </div>
           </div>
@@ -624,8 +666,12 @@ CSS;
             <div class="card card-dark h-100 rounded text-center p-3 glow-red border border-dark">
               <h5 class="font-rajdhani fw-bold text-brand-red mb-3">#Black Edition</h5>
               <!-- Using 4:5 aspect ratio padding for IG portraits (125% = 5/4) -->
-              <div class="w-100 overflow-hidden rounded bg-black d-flex justify-content-center" style="position: relative; padding-top: 125%;">
-                <blockquote class="instagram-media h-100 w-100 border-0 m-0 bg-transparent position-absolute top-0 start-0" data-instgrm-permalink="<?= get_setting('showcase_ig_black', 'https://www.instagram.com/p/DVRd5kNE0B4/') ?>?utm_source=ig_web_button_share_sheet&igsh=MzRlODBiNWFlZA==" data-instgrm-version="14"></blockquote>
+              <div class="w-100 overflow-hidden rounded bg-black d-flex justify-content-center"
+                style="position: relative; padding-top: 125%;">
+                <blockquote
+                  class="instagram-media h-100 w-100 border-0 m-0 bg-transparent position-absolute top-0 start-0"
+                  data-instgrm-permalink="<?= get_setting('showcase_ig_black', 'https://www.instagram.com/p/DVRd5kNE0B4/') ?>?utm_source=ig_web_button_share_sheet&igsh=MzRlODBiNWFlZA=="
+                  data-instgrm-version="14"></blockquote>
               </div>
             </div>
           </div>
@@ -637,8 +683,10 @@ CSS;
     <!-- ── PRODUK ── -->
     <section class="py-5 bg-dark border-bottom border-dark" id="produk">
       <div class="container">
-        <h2 class="display-6 font-rajdhani fw-bold text-white mb-2">2 Desain Edisi Perdana</h2>
-        <p class="lead text-secondary mb-5">Jersey Series Fantasy – nuansa sporty premium, nostalgia 90an.</p>
+        <h2 class="display-6 font-rajdhani fw-bold text-white mb-2">
+          <?= get_setting('product_title', '2 Desain Edisi Perdana') ?></h2>
+        <p class="lead text-secondary mb-5">
+          <?= get_setting('product_desc', 'Jersey Series Fantasy – nuansa sporty premium, nostalgia 90an.') ?></p>
 
         <div class="row g-4 mb-5">
           <div class="col-md-6">
@@ -687,7 +735,8 @@ CSS;
     <section class="py-5 text-center" id="spesifikasi"
       style="background: rgba(6,6,8,0.4); backdrop-filter: blur(5px); border-top: 1px solid rgba(255,255,255,0.05);">
       <div class="container d-flex flex-column align-items-center">
-        <h2 class="display-6 font-rajdhani fw-bold text-white mb-5">Spesifikasi Jersey</h2>
+        <h2 class="display-6 font-rajdhani fw-bold text-white mb-5">
+          <?= get_setting('spec_title', 'Spesifikasi Jersey') ?></h2>
         <ul class="list-group list-group-flush border-top border-dark mb-4 w-100" style="max-width: 700px;">
           <li
             class="list-group-item bg-transparent text-white border-dark d-flex justify-content-between px-0 py-4 fs-5">
@@ -712,9 +761,7 @@ CSS;
         </ul>
         <div class="alert alert-dark bg-transparent border-secondary text-secondary p-4 mt-3"
           style="max-width: 700px; line-height: 1.8;" role="alert">
-          Dirancang khusus untuk kenyamanan maksimal dan tampilan yang rapi. Memiliki fitting sporty yang ergonomis
-          sehingga sangat relevan digunakan — baik untuk aktivitas harian santai maupun kebutuhan riding touring jauh
-          Anda.
+          <?= get_setting('spec_alert', 'Dirancang khusus untuk kenyamanan maksimal dan tampilan yang rapi. Memiliki fitting sporty yang ergonomis sehingga sangat relevan digunakan — baik untuk aktivitas harian santai maupun kebutuhan riding touring jauh Anda.') ?>
         </div>
       </div>
     </section>
@@ -722,8 +769,10 @@ CSS;
     <!-- ── HARGA ── -->
     <section class="py-5 bg-dark border-top border-dark" id="harga" style="background: rgba(6,6,8,0.8) !important;">
       <div class="container text-center">
-        <h2 class="display-6 font-rajdhani fw-bold text-white mb-2 w-100">Harga</h2>
-        <p class="lead text-secondary mb-5">Promo terbatas selama periode pre-order.</p>
+        <h2 class="display-6 font-rajdhani fw-bold text-white mb-2 w-100"><?= get_setting('price_title', 'Harga') ?>
+        </h2>
+        <p class="lead text-secondary mb-5"><?= get_setting('price_desc', 'Promo terbatas selama periode pre-order.') ?>
+        </p>
 
         <div class="row g-4 justify-content-center mb-4">
           <!-- 1 pcs (Left - Green) -->
@@ -760,17 +809,18 @@ CSS;
     <section class="py-5 text-center" id="jadwal"
       style="background: rgba(6,6,8,0.4); backdrop-filter: blur(5px); border-top: 1px solid rgba(255,255,255,0.05);">
       <div class="container d-flex flex-column align-items-center">
-        <h2 class="display-6 font-rajdhani fw-bold text-white mb-4">Jadwal Pre-Order</h2>
+        <h2 class="display-6 font-rajdhani fw-bold text-white mb-4">
+          <?= get_setting('schedule_title', 'Jadwal Pre-Order') ?></h2>
 
         <div class="row w-100 g-0 border-start border-end border-brand-red border-3 mx-auto mb-4"
           style="max-width: 600px; text-align: center;">
           <div class="col-12 ps-4 py-3 border-bottom border-dark position-relative">
             <div class="text-secondary small text-uppercase fw-bold mb-1">Periode Pemesanan</div>
-            <div class="text-white fs-5">27 Februari – 08 Maret 2026</div>
+            <div class="text-white fs-5"><?= get_setting('schedule_period_1', '27 Februari – 08 Maret 2026') ?></div>
           </div>
           <div class="col-12 ps-4 py-3 border-bottom border-dark position-relative">
             <div class="text-secondary small text-uppercase fw-bold mb-1">Periode Produksi</div>
-            <div class="text-white fs-5">09 – 21 Maret 2026</div>
+            <div class="text-white fs-5"><?= get_setting('schedule_period_2', '09 – 21 Maret 2026') ?></div>
           </div>
           <div class="col-12 py-3 position-relative">
             <div class="text-secondary small text-uppercase fw-bold mb-1">Pengiriman</div>
@@ -779,8 +829,7 @@ CSS;
         </div>
 
         <div class="alert alert-danger bg-dark border-brand-red text-white" role="alert">
-          <strong class="text-brand-red">Pre-order ditutup sesuai periode.</strong> Amankan slot segera — jumlah
-          produksi terbatas.
+          <?= get_setting('schedule_alert', '<strong class="text-brand-red">Pre-order ditutup sesuai periode.</strong> Amankan slot segera — jumlah produksi terbatas.') ?>
         </div>
       </div>
     </section>
@@ -789,7 +838,8 @@ CSS;
     <section class="py-5 bg-dark" id="bukti"
       style="background: rgba(6,6,8,0.8) !important; border-top: 1px solid rgba(255,255,255,0.05);">
       <div class="container text-center">
-        <h2 class="display-6 font-rajdhani fw-bold text-white mb-5">Kepercayaan &amp; Kualitas</h2>
+        <h2 class="display-6 font-rajdhani fw-bold text-white mb-5">
+          <?= get_setting('trust_title', 'Kepercayaan &amp; Kualitas') ?></h2>
         <div class="row g-4 justify-content-center">
           <div class="col-md-4">
             <div class="card bg-transparent border-secondary h-100 p-4 rounded-0">
@@ -943,22 +993,10 @@ CSS;
     <section class="py-5 border-top border-dark" id="seo-content"
       style="background: linear-gradient(180deg, #0a0a0e 0%, #060608 100%);">
       <div class="container" style="max-width: 800px;">
-        <h2 class="h4 font-rajdhani fw-bold text-secondary mb-4">Jersey Kamen Rider Custom untuk Komunitas Rider
-          Indonesia</h2>
+        <h2 class="h4 font-rajdhani fw-bold text-secondary mb-4">
+          <?= get_setting('seo_title', 'Jersey Kamen Rider Custom untuk Komunitas Rider Indonesia') ?></h2>
         <div class="text-secondary small" style="line-height: 1.8;">
-          <p class="mb-3">Desain <strong>jersey kamen rider custom</strong> yang sedang booming kini telah hadir untuk
-            pencinta tokusatsu tanah air! Bernostalgia bersama <strong>jersey satria baja hitam</strong> dan pahlawan
-            abad ke-90an kini terasa lebih autentik dan eksklusif dengan rilisan limited edition ini.</p>
-          <p class="mb-3">Diproduksi secara matang oleh <em>Ozverligsportwear</em> berkolaborasi dengan komunitas seni
-            <em>Kemalikart</em>, setiap balutan <strong>jersey fantasy kamen rider</strong> kami dirancang untuk
-            menemani gaya hidup aktif Anda. Dari <strong>jersey anime custom indonesia</strong> hingga kebutuhan apparel
-            harian saat riding akhir pekan, kualitas material premium (Andromax Sublimasi) kami dijamin tahan terhadap
-            cuaca.
-          </p>
-          <p class="mb-0">Bagi para die-hard fans, sebuah <strong>jersey komunitas rider</strong> tak lengkap tanpa
-            detil sempurna layaknya pahlawan itu sendiri. Jadikan <strong>jersey tokusatsu indonesia</strong> ini
-            pelengkap koleksi utama Anda. Tunggu apa lagi? Lengkapi hari-harimu dengan gaya nostalgia <strong>jersey
-              kamen rider indonesia</strong> yang membalut karakter gagah jagoan idola.</p>
+          <?= get_setting('seo_content', '<p class="mb-3">Desain <strong>jersey kamen rider custom</strong> yang sedang booming kini telah hadir untuk pencinta tokusatsu tanah air! Bernostalgia bersama <strong>jersey satria baja hitam</strong> dan pahlawan abad ke-90an kini terasa lebih autentik dan eksklusif dengan rilisan limited edition ini.</p><p class="mb-3">Diproduksi secara matang oleh <em>Ozverligsportwear</em> berkolaborasi dengan komunitas seni <em>Kemalikart</em>, setiap balutan <strong>jersey fantasy kamen rider</strong> kami dirancang untuk menemani gaya hidup aktif Anda. Dari <strong>jersey anime custom indonesia</strong> hingga kebutuhan apparel harian saat riding akhir pekan, kualitas material premium (Andromax Sublimasi) kami dijamin tahan terhadap cuaca.</p><p class="mb-0">Bagi para die-hard fans, sebuah <strong>jersey komunitas rider</strong> tak lengkap tanpa detil sempurna layaknya pahlawan itu sendiri. Jadikan <strong>jersey tokusatsu indonesia</strong> ini pelengkap koleksi utama Anda. Tunggu apa lagi? Lengkapi hari-harimu dengan gaya nostalgia <strong>jersey kamen rider indonesia</strong> yang membalut karakter gagah jagoan idola.</p>') ?>
         </div>
       </div>
     </section>
