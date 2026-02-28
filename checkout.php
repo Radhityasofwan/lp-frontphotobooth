@@ -106,7 +106,7 @@ $criticalCSS = <<<'CSS'
 html{scroll-behavior:smooth}
 body{font-family:var(--ff-body);background-color:var(--bg);background-image:linear-gradient(rgba(255,255,255,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.015) 1px,transparent 1px);background-size:40px 40px;color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
 .container{width:100%;max-width:1040px;margin-inline:auto;padding-inline:1.25rem}
-.topbar{background:rgba(6,6,8,.9);backdrop-filter:blur(12px);padding:.75rem 0;position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border)}
+.topbar{background:rgba(6,6,8,.9);padding:.75rem 0;position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border)}
 .topbar__inner{display:flex;justify-content:space-between;align-items:center}
 .brand{display:flex;align-items:center;gap:.75rem}
 .brand__title{font-family:var(--ff-head);font-weight:700;font-size:1.1rem;text-transform:uppercase;letter-spacing:2px;line-height:1;color:var(--text)}
@@ -169,7 +169,6 @@ CSS;
     body {
       background-color: var(--bg-dark);
       background-image: radial-gradient(circle at 50% 0%, rgba(30, 30, 35, 1) 0%, var(--bg-dark) 80%);
-      background-attachment: fixed;
       color: var(--text-main);
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
     }
@@ -262,7 +261,6 @@ CSS;
     /* Dark cards with glassy touch */
     .card-dark {
       background-color: rgba(14, 14, 18, 0.75);
-      backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
@@ -309,7 +307,6 @@ CSS;
 
     .btn-outline-light {
       border: 1px solid rgba(255, 255, 255, 0.2) !important;
-      backdrop-filter: blur(5px);
       transition: all 0.3s ease;
     }
 
@@ -518,7 +515,7 @@ CSS;
 
   <!-- ── TOPBAR ── -->
   <header class="sticky-top bg-dark border-bottom border-dark py-2 py-md-4"
-    style="background: rgba(6,6,8,0.95) !important; backdrop-filter: blur(10px);">
+    style="background: rgba(6,6,8,0.95) !important;">
     <div class="container d-flex justify-content-between align-items-center gap-1 gap-md-4">
       <a href="<?= h(BASE_URL) ?>/" class="d-flex align-items-center gap-2 gap-md-3 text-decoration-none">
         <img src="<?= h(asset('assets/img/logo-ozverlig.webp')) ?>" alt="Logo Ozverligsportwear" loading="eager"
@@ -547,12 +544,12 @@ CSS;
     <!-- Sections Removed for Privacy Container -->
 
     <!-- ── ORDER FORM ── -->
-    <section class="py-5 border-top border-dark text-center" id="order"
-      style="background: rgba(6,6,8,0.6); backdrop-filter: blur(10px);">
+    <section class="py-5 border-top border-dark text-center" id="order" style="background: rgba(6,6,8,0.6);">
       <div class="container d-flex flex-column align-items-center">
         <div class="text-center mb-5">
           <h2 class="display-6 font-rajdhani fw-bold text-white mb-2">
-            <?= get_setting('order_title', 'Form Pemesanan') ?></h2>
+            <?= get_setting('order_title', 'Form Pemesanan') ?>
+          </h2>
           <p class="lead text-secondary mb-3">
             <?= get_setting('order_desc', 'Isi form di bawah. Setelah submit, Anda diarahkan ke WhatsApp untuk konfirmasi.') ?>
           </p>
@@ -827,8 +824,8 @@ CSS;
   </div>
 
   <!-- ── Floating WhatsApp Button & Modal ── -->
-  <button type="button" class="float-wa border-0" data-bs-toggle="modal" data-bs-target="#waModal"
-    aria-label="Chat WhatsApp">
+  <button type="button" class="float-wa border-0 d-none d-md-flex align-items-center justify-content-center"
+    data-bs-toggle="modal" data-bs-target="#waModal" aria-label="Chat WhatsApp">
     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-whatsapp"
       viewBox="0 0 16 16">
       <path

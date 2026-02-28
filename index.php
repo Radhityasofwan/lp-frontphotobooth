@@ -169,7 +169,6 @@ CSS;
     body {
       background-color: var(--bg-dark);
       background-image: radial-gradient(circle at 50% 0%, rgba(30, 30, 35, 1) 0%, var(--bg-dark) 80%);
-      background-attachment: fixed;
       color: var(--text-main);
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
     }
@@ -262,7 +261,6 @@ CSS;
     /* Dark cards with glassy touch */
     .card-dark {
       background-color: rgba(14, 14, 18, 0.75);
-      backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.05);
       transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     }
@@ -314,7 +312,6 @@ CSS;
 
     .btn-outline-light {
       border: 1px solid rgba(255, 255, 255, 0.2) !important;
-      backdrop-filter: blur(5px);
       transition: all 0.3s ease;
     }
 
@@ -523,7 +520,7 @@ CSS;
 
   <!-- ── TOPBAR ── -->
   <header class="sticky-top bg-dark border-bottom border-dark py-2 py-md-4"
-    style="background: rgba(6,6,8,0.95) !important; backdrop-filter: blur(10px);">
+    style="background: rgba(6,6,8,0.95) !important;">
     <div class="container d-flex justify-content-between align-items-center gap-1 gap-md-4">
       <a href="<?= h(BASE_URL) ?>/" class="d-flex align-items-center gap-2 gap-md-3 text-decoration-none">
         <img src="<?= h(asset('assets/img/logo-ozverlig.webp')) ?>" alt="Logo Ozverligsportwear" loading="eager"
@@ -684,9 +681,11 @@ CSS;
     <section class="py-5 bg-dark border-bottom border-dark" id="produk">
       <div class="container">
         <h2 class="display-6 font-rajdhani fw-bold text-white mb-2">
-          <?= get_setting('product_title', '2 Desain Edisi Perdana') ?></h2>
+          <?= get_setting('product_title', '2 Desain Edisi Perdana') ?>
+        </h2>
         <p class="lead text-secondary mb-5">
-          <?= get_setting('product_desc', 'Jersey Series Fantasy – nuansa sporty premium, nostalgia 90an.') ?></p>
+          <?= get_setting('product_desc', 'Jersey Series Fantasy – nuansa sporty premium, nostalgia 90an.') ?>
+        </p>
 
         <div class="row g-4 mb-5">
           <div class="col-md-6">
@@ -713,30 +712,16 @@ CSS;
             </article>
           </div>
         </div>
-
-        <div class="row g-3 text-center border-top border-dark pt-4">
-          <div class="col-md-4">
-            <div class="text-secondary small text-uppercase fw-bold">Diproduksi oleh</div>
-            <div class="text-white fw-medium">Ozverligsportwear</div>
-          </div>
-          <div class="col-md-4 border-start border-end border-dark">
-            <div class="text-secondary small text-uppercase fw-bold">Kolaborasi desain</div>
-            <div class="text-white fw-medium">Kemalikart</div>
-          </div>
-          <div class="col-md-4">
-            <div class="text-secondary small text-uppercase fw-bold">Model pemesanan</div>
-            <div class="text-white fw-medium">Pre-Order</div>
-          </div>
-        </div>
       </div>
     </section>
 
     <!-- ── SPESIFIKASI ── -->
     <section class="py-5 text-center" id="spesifikasi"
-      style="background: rgba(6,6,8,0.4); backdrop-filter: blur(5px); border-top: 1px solid rgba(255,255,255,0.05);">
+      style="background: rgba(6,6,8,0.4); border-top: 1px solid rgba(255,255,255,0.05);">
       <div class="container d-flex flex-column align-items-center">
         <h2 class="display-6 font-rajdhani fw-bold text-white mb-5">
-          <?= get_setting('spec_title', 'Spesifikasi Jersey') ?></h2>
+          <?= get_setting('spec_title', 'Spesifikasi Jersey') ?>
+        </h2>
         <ul class="list-group list-group-flush border-top border-dark mb-4 w-100" style="max-width: 700px;">
           <li
             class="list-group-item bg-transparent text-white border-dark d-flex justify-content-between px-0 py-4 fs-5">
@@ -807,10 +792,11 @@ CSS;
 
     <!-- ── JADWAL ── -->
     <section class="py-5 text-center" id="jadwal"
-      style="background: rgba(6,6,8,0.4); backdrop-filter: blur(5px); border-top: 1px solid rgba(255,255,255,0.05);">
+      style="background: rgba(6,6,8,0.4); border-top: 1px solid rgba(255,255,255,0.05);">
       <div class="container d-flex flex-column align-items-center">
         <h2 class="display-6 font-rajdhani fw-bold text-white mb-4">
-          <?= get_setting('schedule_title', 'Jadwal Pre-Order') ?></h2>
+          <?= get_setting('schedule_title', 'Jadwal Pre-Order') ?>
+        </h2>
 
         <div class="row w-100 g-0 border-start border-end border-brand-red border-3 mx-auto mb-4"
           style="max-width: 600px; text-align: center;">
@@ -839,7 +825,8 @@ CSS;
       style="background: rgba(6,6,8,0.8) !important; border-top: 1px solid rgba(255,255,255,0.05);">
       <div class="container text-center">
         <h2 class="display-6 font-rajdhani fw-bold text-white mb-5">
-          <?= get_setting('trust_title', 'Kepercayaan &amp; Kualitas') ?></h2>
+          <?= get_setting('trust_title', 'Kepercayaan &amp; Kualitas') ?>
+        </h2>
         <div class="row g-4 justify-content-center">
           <div class="col-md-4">
             <div class="card bg-transparent border-secondary h-100 p-4 rounded-0">
@@ -868,7 +855,7 @@ CSS;
 
     <!-- ── SIZE CHART ── -->
     <section class="py-5 text-center" id="size-chart"
-      style="background: rgba(10,10,14,0.6); backdrop-filter: blur(5px); border-top: 1px solid rgba(255,255,255,0.05);">
+      style="background: rgba(10,10,14,0.6); border-top: 1px solid rgba(255,255,255,0.05);">
       <div class="container d-flex flex-column align-items-center">
         <h2 class="display-6 font-rajdhani fw-bold text-white mb-4">Size Chart</h2>
         <p class="lead text-secondary mb-5">Panduan ukuran untuk mendapatkan fitting terbaik.</p>
@@ -994,7 +981,8 @@ CSS;
       style="background: linear-gradient(180deg, #0a0a0e 0%, #060608 100%);">
       <div class="container" style="max-width: 800px;">
         <h2 class="h4 font-rajdhani fw-bold text-secondary mb-4">
-          <?= get_setting('seo_title', 'Jersey Kamen Rider Custom untuk Komunitas Rider Indonesia') ?></h2>
+          <?= get_setting('seo_title', 'Jersey Kamen Rider Custom untuk Komunitas Rider Indonesia') ?>
+        </h2>
         <div class="text-secondary small" style="line-height: 1.8;">
           <?= get_setting('seo_content', '<p class="mb-3">Desain <strong>jersey kamen rider custom</strong> yang sedang booming kini telah hadir untuk pencinta tokusatsu tanah air! Bernostalgia bersama <strong>jersey satria baja hitam</strong> dan pahlawan abad ke-90an kini terasa lebih autentik dan eksklusif dengan rilisan limited edition ini.</p><p class="mb-3">Diproduksi secara matang oleh <em>Ozverligsportwear</em> berkolaborasi dengan komunitas seni <em>Kemalikart</em>, setiap balutan <strong>jersey fantasy kamen rider</strong> kami dirancang untuk menemani gaya hidup aktif Anda. Dari <strong>jersey anime custom indonesia</strong> hingga kebutuhan apparel harian saat riding akhir pekan, kualitas material premium (Andromax Sublimasi) kami dijamin tahan terhadap cuaca.</p><p class="mb-0">Bagi para die-hard fans, sebuah <strong>jersey komunitas rider</strong> tak lengkap tanpa detil sempurna layaknya pahlawan itu sendiri. Jadikan <strong>jersey tokusatsu indonesia</strong> ini pelengkap koleksi utama Anda. Tunggu apa lagi? Lengkapi hari-harimu dengan gaya nostalgia <strong>jersey kamen rider indonesia</strong> yang membalut karakter gagah jagoan idola.</p>') ?>
         </div>
@@ -1022,15 +1010,15 @@ CSS;
     style="z-index: 9998; padding-bottom: max(env(safe-area-inset-bottom), 12px) !important;">
     <div class="container d-flex gap-2">
       <a class="btn btn-outline-light flex-grow-1 py-2 font-rajdhani fw-bold text-uppercase"
-        href="https://wa.me/<?= h(WA_NUMBER) ?>" target="_blank" rel="noopener noreferrer" data-wa
+        href="https://wa.me/<?= h(WA_NUMBER) ?>" target="_blank" rel="noopener noreferrer"
         data-track="wa_contact">WhatsApp</a>
-      <a class="btn btn-red flex-grow-1 py-2 font-rajdhani fw-bold text-uppercase" href="#order"
-        data-track="initiate_checkout">Pesan</a>
+      <a class="btn btn-red flex-grow-1 py-2 font-rajdhani fw-bold text-uppercase"
+        href="<?= h(BASE_URL) ?>/checkout.php" data-track="initiate_checkout">Pesan</a>
     </div>
   </div>
 
   <!-- ── Floating WhatsApp Button & Modal ── -->
-  <button type="button" class="float-wa border-0" data-bs-toggle="modal" data-bs-target="#waModal"
+  <button type="button" class="float-wa border-0 d-none d-md-flex" data-bs-toggle="modal" data-bs-target="#waModal"
     aria-label="Chat WhatsApp">
     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-whatsapp"
       viewBox="0 0 16 16">
