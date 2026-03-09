@@ -64,10 +64,17 @@ require_once __DIR__ . '/header.php';
     </div>
   </div>
 
+  <!-- Wave Bottom (White) -->
+  <div class="wave-divider">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none" style="display: block;">
+      <path fill="#ffffff" d="M0,64L80,69.3C160,75,320,85,480,74.7C640,64,800,32,960,26.7C1120,21,1280,43,1360,53.3L1440,64V120H0Z">
+      </path>
+    </svg>
+  </div>
 </section>
 
-<!-- 2. PROBLEM & 3. CORE IDEA -->
-<section class="section-padding-bottom-0 pt-5 position-relative">
+<!-- 2. PROBLEM & 3. CORE IDEA (White Background) -->
+<section class="section-padding-bottom-0 pt-5 bg-white position-relative">
   <div class="container text-center">
 
     <!-- Background decorative shape -->
@@ -85,7 +92,7 @@ require_once __DIR__ . '/header.php';
           <?= h(get_setting('home_prob_quote', 'Datang. Makan. Pulang.')) ?>
         </h4>
       </div>
-      <p class="h4 text-orange mb-3 mt-4 fw-bold font-handwritten">
+      <p class="h4 text-orange mb-3 mt-4 fw-bold">
         <?= h(get_setting('home_prob_sub', 'Front Photobooth siap merubah suasana!')) ?>
       </p>
     </div>
@@ -129,11 +136,19 @@ require_once __DIR__ . '/header.php';
   </div>
 
   <!-- Padding before wave -->
-  <div style="height: 150px;"></div>
+  <div style="height: 120px;"></div>
+
+  <!-- Wave Bottom (Light Soft Orange) -->
+  <div class="wave-divider">
+    <svg viewBox="0 0 1440 60" preserveAspectRatio="none" style="display: block;">
+      <path fill="var(--fp-bg-alt)" d="M0,32L60,37.3C120,43,240,53,360,53.3C480,53,600,43,720,37.3C840,32,960,32,1080,37.3C1200,43,1320,53,1380,58.7L1440,64V120H0Z">
+      </path>
+    </svg>
+  </div>
 </section>
 
-<!-- 4. SIGNATURE EXPERIENCE & 5. SERVICE BREAKDOWN -->
-<section class="section-padding position-relative">
+<!-- 4. SIGNATURE EXPERIENCE & 5. SERVICE BREAKDOWN (Light Orange Bg) -->
+<section class="section-padding bg-alt position-relative">
   <div class="container">
     <!-- Floating decor -->
     <i class="ph-duotone ph-film-strip text-orange position-absolute float-anim" style="font-size: 8rem; top: 10%; right: 5%; opacity: 0.05;"></i>
@@ -204,8 +219,13 @@ require_once __DIR__ . '/header.php';
   </div>
 </section>
 
+<!-- Diagonal Transition -->
+<div class="position-relative" style="height: 100px; background: #FFFFFF; clip-path: polygon(0 0, 100% 100%, 100% 0);">
+  <div style="background: var(--fp-bg-alt); width: 100%; height: 100%;"></div>
+</div>
+
 <!-- 6. PACKAGE -->
-<section id="paket" class="section-padding pb-5" style="padding-top: 0;">
+<section id="paket" class="section-padding bg-white pb-5">
   <div class="container">
 
     <div class="shape-blob" style="width:400px; height:400px; background:var(--fp-primary); left:-150px; top:50px; opacity:0.04;"></div>
@@ -310,8 +330,14 @@ require_once __DIR__ . '/header.php';
 </section>
 
 <!-- 7. PROOF / GALLERY (SCRAPBOOK STYLE) -->
-<section id="galeri" class="section-padding overflow-hidden position-relative">
-  
+<section class="section-padding bg-alt overflow-hidden position-relative border-top border-bottom border-light">
+  <!-- Top Curve Divider -->
+  <div class="wave-divider-top" style="top: -2px;">
+    <svg viewBox="0 0 1440 40" preserveAspectRatio="none" style="display: block;">
+      <path fill="#ffffff" d="M0,0L1440,20L1440,40L0,40Z"></path>
+    </svg>
+  </div>
+
   <div class="container text-center position-relative mt-4" style="z-index: 10;">
     <h2 class="display-5 mb-3 text-dark js-scroll"><?= h(get_setting('home_scrap_title', 'Scrapbook Momen Seru')) ?>
     </h2>
@@ -369,7 +395,7 @@ require_once __DIR__ . '/header.php';
 </section>
 
 <!-- 8. TRUST BUILDER & 9. SCARCITY -->
-<section class="section-padding position-relative" style="padding-top: 0;">
+<section class="section-padding bg-white position-relative">
   <div class="container position-relative" style="z-index: 10;">
 
     <div class="card-playful shadow-sm p-4 p-md-5 text-center mx-auto js-scroll mb-5" style="max-width: 950px; border-radius: 30px;">
@@ -434,7 +460,14 @@ require_once __DIR__ . '/header.php';
 </section>
 
 <!-- 10. FINAL CLOSE -->
-<section id="kontak" class="section-padding bg-orange-gradient text-center position-relative overflow-hidden" style="padding: 8rem 0;">
+<section class="section-padding bg-orange-gradient text-center position-relative overflow-hidden" style="padding: 8rem 0;">
+  <!-- Top Curve Wave White -> Orange -->
+  <div class="wave-divider-top" style="top: -1px;">
+    <svg viewBox="0 0 1440 60" preserveAspectRatio="none" style="display: block;">
+      <path fill="#ffffff" d="M0,32L80,37.3C160,43,320,53,480,53.3C640,53,800,43,960,32C1120,21,1280,11,1360,5.3L1440,0V60H0Z"></path>
+    </svg>
+  </div>
+
   <div class="hero-overlay"></div>
   <div class="container js-scroll position-relative mt-4" style="z-index: 10;">
     <h2 class="display-4 fw-bold mb-4 text-white text-shadow-sm">

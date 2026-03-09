@@ -64,6 +64,13 @@ require_once __DIR__ . '/header.php';
     </div>
   </div>
 
+  <!-- Wave Bottom (White) -->
+  <div class="wave-divider">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none" style="display: block;">
+      <path fill="#ffffff" d="M0,64L80,69.3C160,75,320,85,480,74.7C640,64,800,32,960,26.7C1120,21,1280,43,1360,53.3L1440,64V120H0Z">
+      </path>
+    </svg>
+  </div>
 </section>
 
 <!-- 2. PROBLEM & 3. CORE IDEA -->

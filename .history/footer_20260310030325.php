@@ -10,7 +10,7 @@
 <script src="<?= asset('assets/vendor/bootstrap/bootstrap.bundle.min.js') ?>"></script>
 
 <!-- Anda bisa membuat file JS kustom di sini -->
-<script src="<?= asset('assets/js/frontphotobooth.js') ?>"></script>
+<script src="<?= asset('assets/js/main.js') ?>"></script>
 
 </body>
 </html>

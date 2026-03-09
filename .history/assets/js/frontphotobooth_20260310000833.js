@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const displayScrollElement = (element) => {
-        element.classList.add('is-visible');
+        element.classList.add('scrolled');
     };
 
     const handleScrollAnimation = () => {
@@ -27,11 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => handleScrollAnimation(), 100);
     window.addEventListener('scroll', () => {
         handleScrollAnimation();
-    }, {
-        passive: true
-    });
+    }, { passive: true });
 
-    // ---- 2. Navbar Scroll Effect ----
+    // ---- 1.5 Navbar Scroll Effect ----
     const mainNav = document.getElementById('mainNav');
     if (mainNav) {
         window.addEventListener('scroll', () => {
@@ -42,9 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 mainNav.classList.remove('floating-nav', 'shadow-sm');
                 mainNav.classList.add('py-3', 'bg-transparent');
             }
-        }, {
-            passive: true
-        });
+        }, { passive: true });
         // Initial state
         if (window.scrollY > 50) {
             mainNav.classList.add('floating-nav', 'shadow-sm');
@@ -55,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // ---- 3. Flash Effect Interaction ----
+    // ---- 2. Flash Effect Interaction ----
     const flashElement = document.createElement('div');
     flashElement.className = 'screen-flash';
     document.body.appendChild(flashElement);
@@ -67,7 +63,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 100);
     };
 
-    // ---- 4. Tracking System ----
+    // Trigger flash randomly on CTA hover (just once per hover to not annoy)
+    const ctas = document.querySelectorAll('.btn-playful');
+    ctas.forEach(cta => {
+        cta.addEventListener('mouseenter', () => {
+            if (Math.random() > 0.5) triggerFlash(); // 50% chance to flash on hover
+        });
+    });
+
+
+    // ---- 3. Tracking System ----
     let sessionId = sessionStorage.getItem('fp_session_id');
     if (!sessionId) {
         sessionId = crypto.randomUUID ? crypto.randomUUID() : 'sess_' + Math.random().toString(36).substr(2, 9) + Date.now();
@@ -104,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
         el.addEventListener('click', (e) => {
             const trackName = el.getAttribute('data-track');
             sendEvent(trackName);
-            if (trackName.includes('cta')) triggerFlash(); // Flash on main CTA clicks
+            triggerFlash(); // flash on click!
         });
     });
 

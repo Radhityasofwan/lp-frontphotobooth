@@ -17,7 +17,6 @@
 
     <!-- Google Fonts (dari index.php) -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&display=swap" rel="stylesheet">
 
     <!-- Anda bisa membuat file CSS kustom di sini -->
     <link rel="stylesheet" href="<?= asset('assets/css/frontphotobooth.css') ?>">
