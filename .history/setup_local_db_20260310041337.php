@@ -37,11 +37,6 @@ if (!is_dir($storage_dir)) {
     }
 }
 
-// Add a check to ensure the directory is writable
-if (!is_writable($storage_dir)) {
-    die("✗ The 'storage' directory exists but is not writable. Please run `chmod -R 775 storage` in your terminal.\n");
-}
-
 if (!$pdo) {
     die("✗ FAILED to initialize PDO connection. Check your config.php.\n");
 }
@@ -53,7 +48,7 @@ try {
     if ($stmt->fetchColumn()) {
         echo "Database appears to be already set up (table 'users' found).\n";
         echo "No action taken.\n\n";
-        echo "If you want to reset the database, add `?reset=true` to the URL.\n";
+        echo "If you want to reset, please delete the file 'storage/local.sqlite' manually and run this script again.\n";
         exit;
     }
 } catch (PDOException $e) {
@@ -162,7 +157,5 @@ try {
 } catch (PDOException $e) {
     echo "✗ An error occurred during table creation: " . $e->getMessage() . "\n";
     // Hapus file db jika gagal agar bisa diulang
-    if (file_exists($db_path)) {
-        @unlink($db_path);
-    }
+    unlink($db_path);
 }

@@ -16,30 +16,12 @@ $storage_dir = __DIR__ . '/storage';
 
 header('Content-Type: text/plain');
 
-// Handle reset request
-if (isset($_GET['reset']) && $_GET['reset'] === 'true') {
-    if (file_exists($db_path)) {
-        if (unlink($db_path)) {
-            echo "✓ Database file 'storage/local.sqlite' has been deleted for reset.\n\n";
-        } else {
-            die("✗ FAILED to delete 'storage/local.sqlite'. Please check file permissions and delete it manually.");
-        }
-    } else {
-        echo "✓ No existing database file found. Proceeding with fresh setup.\n\n";
-    }
-}
-
 if (!is_dir($storage_dir)) {
     if (mkdir($storage_dir, 0755, true)) {
         echo "✓ Directory 'storage' created.\n";
     } else {
         die("✗ FAILED to create 'storage' directory. Please check permissions.\n");
     }
-}
-
-// Add a check to ensure the directory is writable
-if (!is_writable($storage_dir)) {
-    die("✗ The 'storage' directory exists but is not writable. Please run `chmod -R 775 storage` in your terminal.\n");
 }
 
 if (!$pdo) {
@@ -53,7 +35,7 @@ try {
     if ($stmt->fetchColumn()) {
         echo "Database appears to be already set up (table 'users' found).\n";
         echo "No action taken.\n\n";
-        echo "If you want to reset the database, add `?reset=true` to the URL.\n";
+        echo "If you want to reset, please delete the file 'storage/local.sqlite' manually and run this script again.\n";
         exit;
     }
 } catch (PDOException $e) {
@@ -162,7 +144,5 @@ try {
 } catch (PDOException $e) {
     echo "✗ An error occurred during table creation: " . $e->getMessage() . "\n";
     // Hapus file db jika gagal agar bisa diulang
-    if (file_exists($db_path)) {
-        @unlink($db_path);
-    }
+    unlink($db_path);
 }

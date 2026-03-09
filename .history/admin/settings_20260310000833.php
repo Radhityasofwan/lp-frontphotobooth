@@ -120,25 +120,6 @@ if (empty($settings_raw)) {
         'home_close_cta2_text' => ['type' => 'text', 'desc' => 'Teks Tombol CTA Akhir 2'],
         'home_close_cta2_link' => ['type' => 'text', 'desc' => 'Link Tombol CTA Akhir 2'],
 
-        'home_clients_title' => ['type' => 'text', 'desc' => 'Judul Section Klien'],
-        'home_clients_desc' => ['type' => 'text', 'desc' => 'Deskripsi Section Klien'],
-        'client_logo_1' => ['type' => 'image', 'desc' => 'Logo Klien 1'],
-        'client_name_1' => ['type' => 'text', 'desc' => 'Nama Klien 1'],
-        'client_logo_2' => ['type' => 'image', 'desc' => 'Logo Klien 2'],
-        'client_name_2' => ['type' => 'text', 'desc' => 'Nama Klien 2'],
-        'client_logo_3' => ['type' => 'image', 'desc' => 'Logo Klien 3'],
-        'client_name_3' => ['type' => 'text', 'desc' => 'Nama Klien 3'],
-        'client_logo_4' => ['type' => 'image', 'desc' => 'Logo Klien 4'],
-        'client_name_4' => ['type' => 'text', 'desc' => 'Nama Klien 4'],
-        'client_logo_5' => ['type' => 'image', 'desc' => 'Logo Klien 5'],
-        'client_name_5' => ['type' => 'text', 'desc' => 'Nama Klien 5'],
-        'client_logo_6' => ['type' => 'image', 'desc' => 'Logo Klien 6'],
-        'client_name_6' => ['type' => 'text', 'desc' => 'Nama Klien 6'],
-        'client_logo_7' => ['type' => 'image', 'desc' => 'Logo Klien 7'],
-        'client_name_7' => ['type' => 'text', 'desc' => 'Nama Klien 7'],
-        'client_logo_8' => ['type' => 'image', 'desc' => 'Logo Klien 8'],
-        'client_name_8' => ['type' => 'text', 'desc' => 'Nama Klien 8'],
-
         'footer_title' => ['type' => 'text', 'desc' => 'Judul Footer Brands'],
         'footer_copyright' => ['type' => 'text', 'desc' => 'Teks Hak Cipta Footer'],
 
@@ -185,8 +166,6 @@ function getGroup($key)
         return 'Home - Scarcity';
     if (strpos($key, 'home_close') === 0)
         return 'Home - Close CTA';
-    if (strpos($key, 'home_clients') === 0 || strpos($key, 'client_') === 0)
-        return 'Home - Our Clients';
     if (strpos($key, 'footer_') === 0)
         return 'Footer';
     if (strpos($key, 'gallery_') === 0)
@@ -388,7 +367,7 @@ foreach ($settings as $key => $s) {
         <form action="actions.php" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="action" value="save_settings">
 
-            <?php foreach (['General', 'Home - Hero', 'Home - Problem', 'Home - Core Ideas', 'Home - Signature Exp', 'Home - Services', 'Home - Package', 'Home - Scrapbook', 'Home - Our Clients', 'Home - Trust', 'Home - Scarcity', 'Home - Close CTA', 'Footer', 'Gallery Page', 'Template Page', 'Inspirasi Page'] as $groupName): ?>
+            <?php foreach (['General', 'Home - Hero', 'Home - Problem', 'Home - Core Ideas', 'Home - Signature Exp', 'Home - Services', 'Home - Package', 'Home - Scrapbook', 'Home - Trust', 'Home - Scarcity', 'Home - Close CTA', 'Footer', 'Gallery Page', 'Template Page', 'Inspirasi Page'] as $groupName): ?>
                 <?php if (empty($grouped_settings[$groupName]))
                     continue; ?>
 

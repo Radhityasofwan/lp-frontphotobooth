@@ -53,7 +53,7 @@ try {
     if ($stmt->fetchColumn()) {
         echo "Database appears to be already set up (table 'users' found).\n";
         echo "No action taken.\n\n";
-        echo "If you want to reset the database, add `?reset=true` to the URL.\n";
+        echo "If you want to reset, please delete the file 'storage/local.sqlite' manually and run this script again.\n";
         exit;
     }
 } catch (PDOException $e) {
