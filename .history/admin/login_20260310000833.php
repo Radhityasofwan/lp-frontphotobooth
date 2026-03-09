@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($user && password_verify($password, $user['password_hash'])) {
             $_SESSION['admin_id'] = $user['id'];
-            header('Location: settings.php'); // Arahkan ke halaman pengaturan yang benar
+            header('Location: index.php');
             exit;
         } else {
             $error = "Username atau password salah.";
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Fallback for local testing without DB
         if ($username === 'admin' && $password === 'admin123') {
             $_SESSION['admin_id'] = 1;
-            header('Location: settings.php'); // Arahkan ke halaman pengaturan yang benar
+            header('Location: index.php');
             exit;
         } else {
             $error = "DB tidak terkoneksi. Gunakan admin/admin123 untuk test lokal.";
