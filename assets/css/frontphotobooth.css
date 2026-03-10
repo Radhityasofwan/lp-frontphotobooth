@@ -338,6 +338,39 @@ hr {
     z-index: 2;
 }
 
+.testimonial-ig-card {
+    padding: clamp(1rem, 2.2vw, 1.25rem);
+    border-radius: 22px;
+}
+
+.instagram-embed-frame {
+    width: 100%;
+    min-height: 420px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #ffffff;
+}
+
+.instagram-embed-frame .instagram-media {
+    min-width: 0 !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+}
+
+.testimonial-ig-caption {
+    margin: 0;
+    color: var(--fp-text-muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.45;
+}
+
+@media (max-width: 767.98px) {
+    .instagram-embed-frame {
+        min-height: 360px;
+    }
+}
+
 .card-playful:hover {
     transform: translateY(-6px) scale(1.01);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);

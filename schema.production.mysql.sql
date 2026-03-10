@@ -49,6 +49,17 @@ CREATE TABLE IF NOT EXISTS blog_posts (
     INDEX idx_blog_posts_slug (slug)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE IF NOT EXISTS testimonials (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    instagram_url VARCHAR(500) NOT NULL,
+    caption VARCHAR(255) NULL,
+    sort_order INT NOT NULL DEFAULT 0,
+    is_active TINYINT(1) NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_testimonials_active (is_active, sort_order, id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- Cleanup arsitektur lama
 DROP TABLE IF EXISTS leads;
 

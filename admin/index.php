@@ -10,6 +10,7 @@ $summary = [
     'settings_total' => 0,
     'blog_total' => 0,
     'blog_published' => 0,
+    'testimonials_total' => 0,
     'analytics_total' => 0,
     'analytics_today' => 0,
 ];
@@ -26,6 +27,12 @@ if ($pdo) {
         $summary['blog_published'] = (int) $pdo->query('SELECT COUNT(*) FROM blog_posts WHERE is_published = 1')->fetchColumn();
     } catch (Throwable $e) {
         ensure_blog_table_exists($pdo);
+    }
+
+    try {
+        ensure_testimonials_table_exists($pdo);
+        $summary['testimonials_total'] = (int) $pdo->query('SELECT COUNT(*) FROM testimonials')->fetchColumn();
+    } catch (Throwable $e) {
     }
 
     try {
@@ -66,6 +73,7 @@ if ($pdo) {
                 <a href="index.php" class="active">Analytics</a>
                 <a href="settings.php">Website Content</a>
                 <a href="blog.php">Blog</a>
+                <a href="testimonials.php">Testimoni</a>
             </nav>
 
             <section class="stats-grid" aria-label="Ringkasan metrik">
@@ -80,6 +88,10 @@ if ($pdo) {
                 <article class="stat-card">
                     <div class="stat-label">Blog Published</div>
                     <div class="stat-value"><?= (int) $summary['blog_published'] ?></div>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-label">Total Testimoni</div>
+                    <div class="stat-value"><?= (int) $summary['testimonials_total'] ?></div>
                 </article>
                 <article class="stat-card">
                     <div class="stat-label">Event Hari Ini</div>

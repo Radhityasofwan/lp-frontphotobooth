@@ -183,6 +183,11 @@ function get_cms_setting_definitions(): array
         'home_clients_title' => ['Telah Dipercaya Oleh', 'text', 'Judul section klien'],
         'home_clients_desc' => ['Kami bangga telah menjadi bagian dari momen spesial berbagai brand ternama dan acara personal yang tak terlupakan.', 'text', 'Deskripsi section klien'],
 
+        // Home - Testimonials (Instagram Embed)
+        'home_testi_badge' => ['Social Proof', 'text', 'Badge section testimoni'],
+        'home_testi_title' => ['Testimoni Real dari Instagram', 'text', 'Judul section testimoni'],
+        'home_testi_desc' => ['Postingan langsung dari Instagram client kami, tanpa edit, tanpa rekayasa.', 'text', 'Deskripsi section testimoni'],
+
         // Home - Trust + Scarcity + Close
         'home_trust_title' => ['Kenapa Banyak Client <span class="text-orange">Repeat Order?</span>', 'html', 'Judul trust'],
         'home_trust_1_title' => ['Always On-Time', 'text', 'Trust 1 judul'],
@@ -388,6 +393,38 @@ function h($string)
     return htmlspecialchars($string ?? '', ENT_QUOTES, 'UTF-8');
 }
 
+function normalize_instagram_permalink(string $url): string
+{
+    $url = trim($url);
+    if ($url === '') {
+        return '';
+    }
+
+    if (!preg_match('/^https?:\/\//i', $url)) {
+        $url = 'https://' . ltrim($url, '/');
+    }
+
+    $parts = parse_url($url);
+    if (!$parts || empty($parts['host'])) {
+        return '';
+    }
+
+    $host = strtolower((string) $parts['host']);
+    if (substr($host, 0, 4) === 'www.') {
+        $host = substr($host, 4);
+    }
+    if ($host !== 'instagram.com') {
+        return '';
+    }
+
+    $path = '/' . trim((string) ($parts['path'] ?? ''), '/');
+    if (!preg_match('#^/(p|reel|tv)/[A-Za-z0-9_-]+/?$#', $path)) {
+        return '';
+    }
+
+    return 'https://www.instagram.com' . rtrim($path, '/') . '/';
+}
+
 function asset($path, bool $versioned = true)
 {
     if (strpos((string) $path, 'http') === 0) {
@@ -480,4 +517,91 @@ function ensure_blog_table_exists(?PDO $pdo): void
     }
 
     $checked = true;
+}
+
+function ensure_testimonials_table_exists(?PDO $pdo): void
+{
+    if (!$pdo) {
+        return;
+    }
+
+    static $checked = false;
+    if ($checked) {
+        return;
+    }
+
+    try {
+        $driver = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+        if ($driver === 'sqlite') {
+            $pdo->exec('
+                CREATE TABLE IF NOT EXISTS testimonials (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    instagram_url TEXT NOT NULL,
+                    caption TEXT,
+                    sort_order INTEGER NOT NULL DEFAULT 0,
+                    is_active INTEGER NOT NULL DEFAULT 1,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            ');
+            $pdo->exec('CREATE INDEX IF NOT EXISTS idx_testimonials_active ON testimonials (is_active, sort_order, id)');
+        } else {
+            $pdo->exec('
+                CREATE TABLE IF NOT EXISTS testimonials (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    instagram_url VARCHAR(500) NOT NULL,
+                    caption VARCHAR(255) NULL,
+                    sort_order INT NOT NULL DEFAULT 0,
+                    is_active TINYINT(1) NOT NULL DEFAULT 1,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    INDEX idx_testimonials_active (is_active, sort_order, id)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+            ');
+        }
+    } catch (Throwable $e) {
+        // Silent fail to avoid crashing frontend in constrained environments.
+    }
+
+    $checked = true;
+}
+
+function get_active_testimonials(?PDO $pdo, int $limit = 6): array
+{
+    if (!$pdo) {
+        return [];
+    }
+
+    ensure_testimonials_table_exists($pdo);
+
+    $limit = max(1, min($limit, 24));
+    try {
+        $stmt = $pdo->query("
+            SELECT id, instagram_url, caption, sort_order
+            FROM testimonials
+            WHERE is_active = 1
+            ORDER BY sort_order ASC, id DESC
+            LIMIT {$limit}
+        ");
+        $rows = $stmt->fetchAll();
+    } catch (Throwable $e) {
+        return [];
+    }
+
+    $result = [];
+    foreach ($rows as $row) {
+        $url = normalize_instagram_permalink((string) ($row['instagram_url'] ?? ''));
+        if ($url === '') {
+            continue;
+        }
+
+        $result[] = [
+            'id' => (int) ($row['id'] ?? 0),
+            'instagram_url' => $url,
+            'caption' => trim((string) ($row['caption'] ?? '')),
+            'sort_order' => (int) ($row['sort_order'] ?? 0),
+        ];
+    }
+
+    return $result;
 }

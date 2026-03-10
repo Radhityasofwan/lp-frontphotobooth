@@ -70,6 +70,10 @@ try {
     $pdo->exec('CREATE INDEX IF NOT EXISTS idx_blog_posts_slug ON blog_posts (slug)');
     echo "✓ Table 'blog_posts' created.\n";
 
+    $pdo->exec("\n        CREATE TABLE IF NOT EXISTS testimonials (\n            id INTEGER PRIMARY KEY AUTOINCREMENT,\n            instagram_url TEXT NOT NULL,\n            caption TEXT,\n            sort_order INTEGER NOT NULL DEFAULT 0,\n            is_active INTEGER NOT NULL DEFAULT 1,\n            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,\n            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP\n        )\n    ");
+    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_testimonials_active ON testimonials (is_active, sort_order, id)');
+    echo "✓ Table 'testimonials' created.\n";
+
     // Hapus arsitektur lama
     $pdo->exec('DROP TABLE IF EXISTS leads');
     echo "✓ Legacy table 'leads' removed (if existed).\n";

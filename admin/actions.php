@@ -222,5 +222,66 @@ if ($action === 'delete_blog_post') {
     exit;
 }
 
+if ($action === 'save_testimonial') {
+    ensure_testimonials_table_exists($pdo);
+    if (!$pdo) {
+        $_SESSION['msg_err'] = 'Database tidak tersedia.';
+        header('Location: testimonials.php');
+        exit;
+    }
+
+    $id = (int) ($_POST['id'] ?? 0);
+    $instagramUrlRaw = trim((string) ($_POST['instagram_url'] ?? ''));
+    $instagramUrl = normalize_instagram_permalink($instagramUrlRaw);
+    $caption = trim((string) ($_POST['caption'] ?? ''));
+    $sortOrder = (int) ($_POST['sort_order'] ?? 0);
+    $isActive = isset($_POST['is_active']) ? 1 : 0;
+
+    if ($instagramUrl === '') {
+        $_SESSION['msg_err'] = 'URL Instagram tidak valid. Gunakan URL post seperti /p/..., /reel/... atau /tv/....';
+        header('Location: testimonials.php' . ($id > 0 ? '?edit=' . $id : ''));
+        exit;
+    }
+
+    $sortOrder = max(-999, min($sortOrder, 999));
+    if (strlen($caption) > 255) {
+        $caption = substr($caption, 0, 255);
+    }
+
+    if ($id > 0) {
+        $stmt = $pdo->prepare("
+            UPDATE testimonials
+            SET instagram_url = ?, caption = ?, sort_order = ?, is_active = ?
+            WHERE id = ?
+        ");
+        $stmt->execute([$instagramUrl, $caption, $sortOrder, $isActive, $id]);
+        $_SESSION['msg'] = 'Testimoni berhasil diperbarui.';
+    } else {
+        $stmt = $pdo->prepare("
+            INSERT INTO testimonials (instagram_url, caption, sort_order, is_active)
+            VALUES (?, ?, ?, ?)
+        ");
+        $stmt->execute([$instagramUrl, $caption, $sortOrder, $isActive]);
+        $_SESSION['msg'] = 'Testimoni berhasil ditambahkan.';
+    }
+
+    header('Location: testimonials.php');
+    exit;
+}
+
+if ($action === 'delete_testimonial') {
+    ensure_testimonials_table_exists($pdo);
+    if ($pdo) {
+        $id = (int) ($_POST['id'] ?? 0);
+        if ($id > 0) {
+            $stmt = $pdo->prepare('DELETE FROM testimonials WHERE id = ?');
+            $stmt->execute([$id]);
+            $_SESSION['msg'] = 'Testimoni berhasil dihapus.';
+        }
+    }
+    header('Location: testimonials.php');
+    exit;
+}
+
 header('Location: settings.php');
 exit;

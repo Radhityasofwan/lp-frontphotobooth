@@ -41,6 +41,18 @@ CREATE TABLE IF NOT EXISTS blog_posts (
 CREATE INDEX IF NOT EXISTS idx_blog_posts_published ON blog_posts (is_published, published_at);
 CREATE INDEX IF NOT EXISTS idx_blog_posts_slug ON blog_posts (slug);
 
+CREATE TABLE IF NOT EXISTS testimonials (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    instagram_url TEXT NOT NULL,
+    caption TEXT,
+    sort_order INTEGER NOT NULL DEFAULT 0,
+    is_active INTEGER NOT NULL DEFAULT 1,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_testimonials_active ON testimonials (is_active, sort_order, id);
+
 DROP TABLE IF EXISTS leads;
 
 INSERT OR IGNORE INTO settings (setting_key, setting_value, setting_type, description) VALUES

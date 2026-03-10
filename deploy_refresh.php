@@ -51,6 +51,13 @@ try {
     echo "[ERR] Blog table verify: " . $e->getMessage() . "\n";
 }
 
+try {
+    ensure_testimonials_table_exists($pdo);
+    echo "[OK] Testimonials table verified\n";
+} catch (Throwable $e) {
+    echo "[ERR] Testimonials table verify: " . $e->getMessage() . "\n";
+}
+
 $deployVersionPath = __DIR__ . '/storage/deploy.version';
 $version = date('YmdHis');
 if (@file_put_contents($deployVersionPath, $version) !== false) {

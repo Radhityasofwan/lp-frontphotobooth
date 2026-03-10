@@ -62,6 +62,8 @@ function getGroup($key)
         return 'Home - Package';
     if (strpos($key, 'home_scrap') === 0)
         return 'Home - Scrapbook';
+    if (strpos($key, 'home_testi') === 0)
+        return 'Home - Testimonials';
     if (strpos($key, 'home_trust') === 0)
         return 'Home - Trust';
     if (strpos($key, 'home_scarcity') === 0)
@@ -115,6 +117,7 @@ foreach ($settings as $key => $s) {
             <nav class="admin-tabs" aria-label="Navigasi admin">
                 <a href="settings.php" class="active">Website Content</a>
                 <a href="blog.php">Blog</a>
+                <a href="testimonials.php">Testimoni</a>
                 <a href="index.php">Analytics</a>
             </nav>
 
@@ -128,7 +131,7 @@ foreach ($settings as $key => $s) {
             <form action="actions.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="action" value="save_settings">
 
-                <?php foreach (['General', 'Navigation', 'Home - Hero', 'Home - Problem', 'Home - Core Ideas', 'Home - Signature Exp', 'Home - Services', 'Home - Package', 'Home - Scrapbook', 'Home - Our Clients', 'Home - Trust', 'Home - Scarcity', 'Home - Close CTA', 'Pricelist Page', 'Gallery Page', 'Template Page', 'Inspirasi Page', 'Blog Page', 'Footer'] as $groupName): ?>
+                <?php foreach (['General', 'Navigation', 'Home - Hero', 'Home - Problem', 'Home - Core Ideas', 'Home - Signature Exp', 'Home - Services', 'Home - Package', 'Home - Scrapbook', 'Home - Our Clients', 'Home - Testimonials', 'Home - Trust', 'Home - Scarcity', 'Home - Close CTA', 'Pricelist Page', 'Gallery Page', 'Template Page', 'Inspirasi Page', 'Blog Page', 'Footer'] as $groupName): ?>
                     <?php if (empty($grouped_settings[$groupName]))
                         continue; ?>
 

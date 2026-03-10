@@ -55,6 +55,7 @@ if ($pdo) {
                 <a href="index.php">Analytics</a>
                 <a href="settings.php">Website Content</a>
                 <a href="blog.php" class="active">Blog</a>
+                <a href="testimonials.php">Testimoni</a>
             </nav>
 
             <?php if (isset($_SESSION['msg'])): ?>

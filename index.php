@@ -2,6 +2,7 @@
 <?php
 $page_title = 'Home';
 require_once __DIR__ . '/header.php';
+$testimonials = get_active_testimonials($pdo, 6);
 ?>
 
 <!-- 1. HERO SECTION -->
@@ -371,6 +372,41 @@ require_once __DIR__ . '/header.php';
     </div>
   </div>
 </section>
+
+<?php if (!empty($testimonials)): ?>
+  <section class="section-padding pt-0">
+    <div class="container">
+      <div class="text-center mb-5 js-scroll">
+        <span class="badge bg-white text-dark mb-3 px-4 py-2 rounded-pill letter-spacing-1 fw-bold text-uppercase shadow-sm">
+          <i class="ph-fill ph-instagram-logo align-middle me-1 text-orange"></i>
+          <?= h(get_setting('home_testi_badge', 'Social Proof')) ?>
+        </span>
+        <h2 class="display-6 mb-3"><?= h(get_setting('home_testi_title', 'Testimoni Real dari Instagram')) ?></h2>
+        <p class="text-muted-custom mx-auto" style="max-width: 680px;">
+          <?= h(get_setting('home_testi_desc', 'Postingan langsung dari Instagram client kami, tanpa edit, tanpa rekayasa.')) ?>
+        </p>
+      </div>
+
+      <div class="row g-4 justify-content-center">
+        <?php foreach ($testimonials as $item): ?>
+          <div class="col-12 col-md-6 col-xl-4 js-scroll">
+            <article class="card-playful testimonial-ig-card h-100">
+              <div class="instagram-embed-frame">
+                <blockquote class="instagram-media" data-instgrm-permalink="<?= h($item['instagram_url']) ?>" data-instgrm-version="14">
+                  <a href="<?= h($item['instagram_url']) ?>" target="_blank" rel="noopener noreferrer">Lihat post Instagram</a>
+                </blockquote>
+              </div>
+              <?php if ($item['caption'] !== ''): ?>
+                <p class="testimonial-ig-caption"><?= h($item['caption']) ?></p>
+              <?php endif; ?>
+            </article>
+          </div>
+        <?php endforeach; ?>
+      </div>
+    </div>
+  </section>
+  <script async src="https://www.instagram.com/embed.js"></script>
+<?php endif; ?>
 
 <!-- 8. TRUST BUILDER & 9. SCARCITY -->
 <section class="section-padding position-relative" style="padding-top: 0;">
