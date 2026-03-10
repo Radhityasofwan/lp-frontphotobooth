@@ -14,7 +14,6 @@ if ($pdo) {
             $insertStmt->execute(['admin', $hash]);
         }
     } catch (PDOException $e) {
-        // Table 'users' likely doesn't exist.
         $error = "Database table 'users' not found. Please run <code>setup_local_db.php</code> first.";
     }
 }
@@ -30,20 +29,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($user && password_verify($password, $user['password_hash'])) {
             $_SESSION['admin_id'] = $user['id'];
-            header('Location: settings.php'); // Arahkan ke halaman pengaturan yang benar
+            header('Location: settings.php');
             exit;
-        } else {
-            $error = "Username atau password salah.";
         }
+
+        $error = 'Username atau password salah.';
     } elseif (!$pdo) {
-        // Fallback for local testing without DB
         if ($username === 'admin' && $password === 'admin123') {
             $_SESSION['admin_id'] = 1;
-            header('Location: settings.php'); // Arahkan ke halaman pengaturan yang benar
+            header('Location: settings.php');
             exit;
-        } else {
-            $error = "DB tidak terkoneksi. Gunakan admin/admin123 untuk test lokal.";
         }
+
+        $error = 'DB tidak terkoneksi. Gunakan admin/admin123 untuk test lokal.';
     }
 }
 ?>
@@ -54,131 +52,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <title>Login Admin | Front Photobooth</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: #111;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            color: #fff;
-        }
-
-        .login-box {
-            background: #1a1a1a;
-            padding: 2.5rem 2rem;
-            border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            width: 100%;
-            max-width: 400px;
-            border: 1px solid #333;
-        }
-
-        h1 {
-            margin-top: 0;
-            font-size: 1.5rem;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 1.5rem;
-        }
-
-        h1 span {
-            color: #F77B0F;
-        }
-
-        .form-group {
-            margin-bottom: 1.2rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: .5rem;
-            font-weight: bold;
-            font-size: 0.85rem;
-            color: #aaa;
-            text-transform: uppercase;
-        }
-
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: .85rem;
-            background: #000;
-            border: 1px solid #333;
-            color: #fff;
-            border-radius: 4px;
-            box-sizing: border-box;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        input:focus {
-            border-color: #F77B0F;
-        }
-
-        button {
-            width: 100%;
-            padding: .85rem;
-            background: linear-gradient(135deg, #F77B0F 0%, #FFAF32 100%);
-            color: #111;
-            border: none;
-            border-radius: 4px;
-            font-size: 1rem;
-            cursor: pointer;
-            font-weight: bold;
-            text-transform: uppercase;
-            transition: background 0.2s;
-            margin-top: 1rem;
-        }
-
-        button:hover {
-            opacity: 0.9;
-        }
-
-        .error {
-            color: #ffadaf;
-            background: rgba(247, 123, 15, 0.2);
-            padding: 0.75rem;
-            border-radius: 4px;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            font-size: 0.9rem;
-            border: 1px solid rgba(247, 123, 15, 0.4);
-        }
-
-        .note {
-            font-size: 0.8rem;
-            color: #666;
-            text-align: center;
-            margin-top: 1.5rem;
-        }
-    </style>
+    <link rel="stylesheet" href="assets/admin.css">
 </head>
 
-<body>
-    <div class="login-box">
-        <h1>Admin <span>Photobooth</span></h1>
-        <?php if (!empty($error)): ?>
-            <div class="error">
-                <?= $error // Allow HTML for the setup link ?>
-            </div>
-        <?php endif; ?>
-        <form method="post">
-            <div class="form-group">
-                <label>Username</label>
-                <input type="text" name="username" required autocomplete="username">
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" name="password" required autocomplete="current-password">
-            </div>
-            <button type="submit">Login</button>
-        </form>
-        <div class="note">Akses khusus manajemen. First time login: admin / admin123</div>
-    </div>
+<body class="admin-login-page">
+    <main class="auth-shell">
+        <section class="auth-card" aria-label="Form login admin">
+            <h1 class="auth-title">Admin <strong>Photobooth</strong></h1>
+
+            <?php if (!empty($error)): ?>
+                <div class="alert alert-error">
+                    <?= $error // Allow HTML for setup link ?>
+                </div>
+            <?php endif; ?>
+
+            <form method="post">
+                <div class="field">
+                    <label for="username">Username</label>
+                    <input id="username" type="text" name="username" required autocomplete="username">
+                </div>
+
+                <div class="field">
+                    <label for="password">Password</label>
+                    <input id="password" type="password" name="password" required autocomplete="current-password">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Login</button>
+            </form>
+
+            <p class="auth-note">Akses manajemen. First login: admin / admin123</p>
+        </section>
+    </main>
 </body>
 
 </html>

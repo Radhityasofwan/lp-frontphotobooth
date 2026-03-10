@@ -38,7 +38,7 @@ if ($action === 'save_settings') {
         if ($driver === 'sqlite') {
             $stmtUpsertText = $pdo->prepare("
                 INSERT INTO settings (setting_key, setting_value, setting_type, description)
-                VALUES (?, ?, 'text', ?)
+                VALUES (?, ?, ?, ?)
                 ON CONFLICT(setting_key) DO UPDATE SET
                     setting_value = excluded.setting_value,
                     setting_type = excluded.setting_type,
@@ -47,7 +47,7 @@ if ($action === 'save_settings') {
         } else {
             $stmtUpsertText = $pdo->prepare("
                 INSERT INTO settings (setting_key, setting_value, setting_type, description)
-                VALUES (?, ?, 'text', ?)
+                VALUES (?, ?, ?, ?)
                 ON DUPLICATE KEY UPDATE
                     setting_value = VALUES(setting_value),
                     setting_type = VALUES(setting_type),
@@ -57,7 +57,8 @@ if ($action === 'save_settings') {
 
         foreach ($_POST['settings_text'] as $key => $val) {
             $desc = $definitions[$key][2] ?? $key;
-            $stmtUpsertText->execute([$key, $val, $desc]);
+            $type = $definitions[$key][1] ?? 'text';
+            $stmtUpsertText->execute([$key, $val, $type, $desc]);
         }
     }
 
@@ -93,7 +94,7 @@ if ($action === 'save_settings') {
                         if ($driver === 'sqlite') {
                             $stmtUpsertImage = $pdo->prepare("
                                 INSERT INTO settings (setting_key, setting_value, setting_type, description)
-                                VALUES (?, ?, 'image', ?)
+                                VALUES (?, ?, ?, ?)
                                 ON CONFLICT(setting_key) DO UPDATE SET
                                     setting_value = excluded.setting_value,
                                     setting_type = excluded.setting_type,
@@ -102,14 +103,14 @@ if ($action === 'save_settings') {
                         } else {
                             $stmtUpsertImage = $pdo->prepare("
                                 INSERT INTO settings (setting_key, setting_value, setting_type, description)
-                                VALUES (?, ?, 'image', ?)
+                                VALUES (?, ?, ?, ?)
                                 ON DUPLICATE KEY UPDATE
                                     setting_value = VALUES(setting_value),
                                     setting_type = VALUES(setting_type),
                                     description = VALUES(description)
                             ");
                         }
-                        $stmtUpsertImage->execute([$settingKey, $publicPath, $desc]);
+                        $stmtUpsertImage->execute([$settingKey, $publicPath, 'image', $desc]);
                     }
                 }
             }
@@ -134,9 +135,32 @@ if ($action === 'save_blog_post') {
     $slugInput = trim((string) ($_POST['slug'] ?? ''));
     $excerpt = trim((string) ($_POST['excerpt'] ?? ''));
     $content = trim((string) ($_POST['content'] ?? ''));
-    $coverImage = trim((string) ($_POST['cover_image'] ?? ''));
+    $currentCoverImage = trim((string) ($_POST['current_cover_image'] ?? ''));
+    $coverImage = $currentCoverImage;
     $isPublished = isset($_POST['is_published']) ? 1 : 0;
     $publishedAt = trim((string) ($_POST['published_at'] ?? ''));
+
+    if (!empty($_FILES['cover_image_upload']) && ($_FILES['cover_image_upload']['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK) {
+        $coverFile = $_FILES['cover_image_upload'];
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($finfo, $coverFile['tmp_name']);
+        finfo_close($finfo);
+
+        if (strpos((string) $mime, 'image/') === 0) {
+            $uploadDir = __DIR__ . '/../storage/uploads/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+
+            $ext = strtolower(pathinfo($coverFile['name'], PATHINFO_EXTENSION) ?: 'jpg');
+            $filename = 'blog_cover_' . time() . '_' . mt_rand(1000, 9999) . '.' . $ext;
+            $target = $uploadDir . $filename;
+
+            if (move_uploaded_file($coverFile['tmp_name'], $target)) {
+                $coverImage = 'storage/uploads/' . $filename;
+            }
+        }
+    }
 
     if ($title === '' || $content === '') {
         $_SESSION['msg_err'] = 'Judul dan isi artikel wajib diisi.';
