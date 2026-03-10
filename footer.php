@@ -2,7 +2,7 @@
 // footer.php
 ?>
 
-<footer class="text-center p-4 bg-dark text-white-50">
+<footer class="text-center p-4 text-dark">
     <p class="mb-0"><?= h(get_setting('footer_copyright', '© ' . date('Y') . ' Front Photobooth. All Rights Reserved.')) ?></p>
 </footer>
 

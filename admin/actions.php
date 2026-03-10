@@ -15,31 +15,49 @@ if (empty($_SESSION['admin_id']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $action = $_POST['action'] ?? '';
 
-if ($action === 'update_status') {
-    $id = (int) $_POST['id'];
-    $status = $_POST['status'];
-
-    $valid_statuses = ['pending', 'contacted', 'paid', 'cancelled'];
-    if (in_array($status, $valid_statuses) && $pdo) {
-        $stmt = $pdo->prepare("UPDATE leads SET status = ? WHERE id = ?");
-        $stmt->execute([$status, $id]);
-
-        // Log event
-        $logMessage = "[" . date("Y-m-d H:i:s") . "] Admin " . $_SESSION['admin_id'] . " updated lead ($id) status to $status" . PHP_EOL;
-        error_log($logMessage, 3, __DIR__ . '/../storage/logs/events.log');
+if (!function_exists('slugify_text')) {
+    function slugify_text(string $text): string
+    {
+        $text = strtolower(trim($text));
+        $text = preg_replace('/[^a-z0-9]+/i', '-', $text) ?? '';
+        $text = trim($text, '-');
+        return $text !== '' ? $text : 'artikel';
     }
-
-    $ref = $_SERVER['HTTP_REFERER'] ?? 'index.php';
-    header("Location: $ref");
-    exit;
 }
 
 if ($action === 'save_settings') {
+    if ($pdo) {
+        seed_cms_settings($pdo);
+    }
+
     // 1. Save all text based fields
     if (!empty($_POST['settings_text']) && $pdo) {
-        $stmt = $pdo->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = ?");
+        $definitions = get_cms_setting_definitions();
+        $driver = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+
+        if ($driver === 'sqlite') {
+            $stmtUpsertText = $pdo->prepare("
+                INSERT INTO settings (setting_key, setting_value, setting_type, description)
+                VALUES (?, ?, 'text', ?)
+                ON CONFLICT(setting_key) DO UPDATE SET
+                    setting_value = excluded.setting_value,
+                    setting_type = excluded.setting_type,
+                    description = excluded.description
+            ");
+        } else {
+            $stmtUpsertText = $pdo->prepare("
+                INSERT INTO settings (setting_key, setting_value, setting_type, description)
+                VALUES (?, ?, 'text', ?)
+                ON DUPLICATE KEY UPDATE
+                    setting_value = VALUES(setting_value),
+                    setting_type = VALUES(setting_type),
+                    description = VALUES(description)
+            ");
+        }
+
         foreach ($_POST['settings_text'] as $key => $val) {
-            $stmt->execute([$val, $key]);
+            $desc = $definitions[$key][2] ?? $key;
+            $stmtUpsertText->execute([$key, $val, $desc]);
         }
     }
 
@@ -68,8 +86,30 @@ if ($action === 'save_settings') {
                     // Update the DB to point to the new image URL relative to root
                     $publicPath = 'storage/uploads/' . $newFilename;
                     if ($pdo) {
-                        $stmt = $pdo->prepare("UPDATE settings SET setting_value = ?, setting_type = 'image' WHERE setting_key = ?");
-                        $stmt->execute([$publicPath, $settingKey]);
+                        $driver = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+                        $definitions = get_cms_setting_definitions();
+                        $desc = $definitions[$settingKey][2] ?? $settingKey;
+
+                        if ($driver === 'sqlite') {
+                            $stmtUpsertImage = $pdo->prepare("
+                                INSERT INTO settings (setting_key, setting_value, setting_type, description)
+                                VALUES (?, ?, 'image', ?)
+                                ON CONFLICT(setting_key) DO UPDATE SET
+                                    setting_value = excluded.setting_value,
+                                    setting_type = excluded.setting_type,
+                                    description = excluded.description
+                            ");
+                        } else {
+                            $stmtUpsertImage = $pdo->prepare("
+                                INSERT INTO settings (setting_key, setting_value, setting_type, description)
+                                VALUES (?, ?, 'image', ?)
+                                ON DUPLICATE KEY UPDATE
+                                    setting_value = VALUES(setting_value),
+                                    setting_type = VALUES(setting_type),
+                                    description = VALUES(description)
+                            ");
+                        }
+                        $stmtUpsertImage->execute([$settingKey, $publicPath, $desc]);
                     }
                 }
             }
@@ -80,3 +120,83 @@ if ($action === 'save_settings') {
     header('Location: settings.php');
     exit;
 }
+
+if ($action === 'save_blog_post') {
+    ensure_blog_table_exists($pdo);
+    if (!$pdo) {
+        $_SESSION['msg_err'] = 'Database tidak tersedia.';
+        header('Location: blog.php');
+        exit;
+    }
+
+    $id = (int) ($_POST['id'] ?? 0);
+    $title = trim((string) ($_POST['title'] ?? ''));
+    $slugInput = trim((string) ($_POST['slug'] ?? ''));
+    $excerpt = trim((string) ($_POST['excerpt'] ?? ''));
+    $content = trim((string) ($_POST['content'] ?? ''));
+    $coverImage = trim((string) ($_POST['cover_image'] ?? ''));
+    $isPublished = isset($_POST['is_published']) ? 1 : 0;
+    $publishedAt = trim((string) ($_POST['published_at'] ?? ''));
+
+    if ($title === '' || $content === '') {
+        $_SESSION['msg_err'] = 'Judul dan isi artikel wajib diisi.';
+        header('Location: blog.php' . ($id > 0 ? '?edit=' . $id : ''));
+        exit;
+    }
+
+    $baseSlug = slugify_text($slugInput !== '' ? $slugInput : $title);
+    $slug = $baseSlug;
+    $suffix = 2;
+    while (true) {
+        $stmt = $pdo->prepare("SELECT id FROM blog_posts WHERE slug = ? AND id != ? LIMIT 1");
+        $stmt->execute([$slug, $id]);
+        if (!$stmt->fetch()) {
+            break;
+        }
+        $slug = $baseSlug . '-' . $suffix;
+        $suffix++;
+    }
+
+    if ($publishedAt === '') {
+        $publishedAt = $isPublished ? date('Y-m-d H:i:s') : null;
+    } else {
+        $publishedAt = date('Y-m-d H:i:s', strtotime($publishedAt));
+    }
+
+    if ($id > 0) {
+        $stmt = $pdo->prepare("
+            UPDATE blog_posts
+            SET title = ?, slug = ?, excerpt = ?, content = ?, cover_image = ?, is_published = ?, published_at = ?
+            WHERE id = ?
+        ");
+        $stmt->execute([$title, $slug, $excerpt, $content, $coverImage, $isPublished, $publishedAt, $id]);
+        $_SESSION['msg'] = 'Artikel berhasil diperbarui.';
+    } else {
+        $stmt = $pdo->prepare("
+            INSERT INTO blog_posts (title, slug, excerpt, content, cover_image, is_published, published_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ");
+        $stmt->execute([$title, $slug, $excerpt, $content, $coverImage, $isPublished, $publishedAt]);
+        $_SESSION['msg'] = 'Artikel berhasil dibuat.';
+    }
+
+    header('Location: blog.php');
+    exit;
+}
+
+if ($action === 'delete_blog_post') {
+    ensure_blog_table_exists($pdo);
+    if ($pdo) {
+        $id = (int) ($_POST['id'] ?? 0);
+        if ($id > 0) {
+            $stmt = $pdo->prepare("DELETE FROM blog_posts WHERE id = ?");
+            $stmt->execute([$id]);
+            $_SESSION['msg'] = 'Artikel berhasil dihapus.';
+        }
+    }
+    header('Location: blog.php');
+    exit;
+}
+
+header('Location: settings.php');
+exit;

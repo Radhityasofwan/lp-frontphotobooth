@@ -7,15 +7,20 @@ if (empty($_SESSION['admin_id'])) {
 }
 
 header('Content-Type: text/csv; charset=utf-8');
-header('Content-Disposition: attachment; filename=leads_export_' . date('Y_m_d_His') . '.csv');
+header('Content-Disposition: attachment; filename=analytics_export_' . date('Y_m_d_His') . '.csv');
 
 $output = fopen('php://output', 'w');
-fputcsv($output, ['ID', 'Date', 'Name', 'Phone', 'Address', 'Design', 'Size', 'Qty', 'Note', 'Status', 'UTM Source', 'UTM Medium', 'UTM Campaign', 'FBCLID', 'GCLID', 'Referrer']);
+fputcsv($output, ['ID', 'Created At', 'Session ID', 'IP Address', 'Event Type', 'Event Value', 'Page URL']);
 
-$stmt = $pdo->query("SELECT id, created_at, name, phone, address, design, size, quantity, note, status, utm_source, utm_medium, utm_campaign, fbclid, gclid, referrer FROM leads ORDER BY id ASC");
-
-while ($row = $stmt->fetch()) {
-    fputcsv($output, $row);
+if ($pdo) {
+    try {
+        $stmt = $pdo->query("SELECT id, created_at, session_id, ip_address, event_type, event_value, page_url FROM analytics ORDER BY id ASC");
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            fputcsv($output, $row);
+        }
+    } catch (Throwable $e) {
+    }
 }
+
 fclose($output);
 exit;

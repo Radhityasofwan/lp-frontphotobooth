@@ -1,19 +1,8 @@
--- Front Photobooth - Generic MySQL Schema
--- Target: MySQL import (local MySQL or production phpMyAdmin)
+-- Migration patch for existing MySQL production DB
 -- Date: 2026-03-10
-
-CREATE DATABASE IF NOT EXISTS frontphotobooth CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE frontphotobooth;
 
 SET NAMES utf8mb4;
 SET time_zone = '+00:00';
-
-CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS settings (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -52,6 +41,7 @@ CREATE TABLE IF NOT EXISTS blog_posts (
     INDEX idx_blog_posts_slug (slug)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Legacy cleanup
 DROP TABLE IF EXISTS leads;
 
 INSERT IGNORE INTO settings (setting_key, setting_value, setting_type, description) VALUES
@@ -59,9 +49,6 @@ INSERT IGNORE INTO settings (setting_key, setting_value, setting_type, descripti
 ('seo_desc', 'Photobooth modern untuk event Anda.', 'text', 'SEO description'),
 ('nav_brand_text', 'Front Photobooth', 'text', 'Brand text navbar'),
 ('nav_cta_text', 'Booking', 'text', 'Teks tombol navbar'),
-('nav_cta_link', 'https://wa.me/6281234567890', 'text', 'Link tombol navbar'),
-('footer_copyright', '© 2026 Front Photobooth. All Rights Reserved.', 'text', 'Footer copyright');
+('nav_cta_link', 'https://wa.me/6281234567890', 'text', 'Link tombol navbar');
 
--- Notes:
--- 1) Semua key CMS menu/section otomatis di-seed oleh config.php saat aplikasi berjalan.
--- 2) Admin auto-create user "admin" / "admin123" at first login if table users is empty.
+-- Remaining CMS keys auto-seed by application (config.php)

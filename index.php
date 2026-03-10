@@ -23,7 +23,7 @@ require_once __DIR__ . '/header.php';
         <h1 class="display-3 mb-4 text-white text-shadow-hero">
           <?= nl2br(h(get_setting('home_hero_title', "Bukan Sekadar Foto.\nIni Pengalaman Seru di Event Kamu."))) ?>
         </h1>
-        <p class="lead mb-5 text-white fw-medium text-shadow-sm" style="opacity: 0.95; max-width: 550px; margin-left: 0; margin-right: auto;">
+        <p class="lead mb-5 text-white fw-medium text-shadow-sm section-intro text-lg-start" style="opacity: 0.95;">
           <?= h(get_setting('home_hero_desc', 'Photobooth modern hasil instan + props premium, bikin semua tamu betah bergaya. Waktunya buat acaramu lebih hidup!')) ?>
         </p>
         <div class="d-flex justify-content-center justify-content-lg-start flex-wrap gap-3">
@@ -42,20 +42,9 @@ require_once __DIR__ . '/header.php';
         <div class="d-flex justify-content-center position-relative">
           <div class="photo-strip tilt-2 float-anim mx-auto" style="z-index: 20;">
             <div class="tape"></div>
-            <div class="d-flex align-items-center justify-content-center bg-dark rounded text-white-50 overflow-hidden" style="width: 190px; height: 140px;">
-              <img src="<?= asset(get_setting('home_hero_1', 'https://picsum.photos/seed/fp_home1/300/200')) ?>"
+            <div class="d-flex align-items-center justify-content-center bg-dark text-white-50 media-uniform" style="width: 220px;">
+              <img src="<?= asset(get_setting('home_hero_1', 'assets/img/placeholder-plain.svg')) ?>"
                 class="w-100 h-100 object-fit-cover" alt="Hero">
-            </div>
-            <div class="d-flex align-items-center justify-content-center bg-dark rounded text-white-50 overflow-hidden" style="width: 190px; height: 140px;">
-              <img src="<?= asset(get_setting('home_hero_2', 'https://picsum.photos/seed/fp_home2/300/200')) ?>"
-                class="w-100 h-100 object-fit-cover" alt="Hero">
-            </div>
-            <div class="d-flex align-items-center justify-content-center bg-dark rounded text-white-50 overflow-hidden" style="width: 190px; height: 140px;">
-              <img src="<?= asset(get_setting('home_hero_3', 'https://picsum.photos/seed/fp_home3/300/200')) ?>"
-                class="w-100 h-100 object-fit-cover" alt="Hero">
-            </div>
-            <div class="mt-2 text-center" style="font-weight: 800; font-size: 0.85rem; color: #111; letter-spacing: 2px;">
-              FRONT PHOTOBOOTH
             </div>
           </div>
         </div>
@@ -106,7 +95,7 @@ require_once __DIR__ . '/header.php';
         </div>
       </div>
       <div class="col-md-4 js-scroll" style="z-index: 10;">
-        <div class="card-playful text-center shadow-lg" style="transform: scale(1.08);">
+        <div class="card-playful text-center shadow-lg">
           <div class="icon-circle shadow-sm" style="background:var(--fp-gradient); color:#FFF;"><i
               class="ph-fill ph-sparkle ph-icon-xl"></i></div>
           <h3 class="mb-3"><?= h(get_setting('home_core_2_title', 'Experience')) ?></h3>
@@ -128,8 +117,6 @@ require_once __DIR__ . '/header.php';
     </div>
   </div>
 
-  <!-- Padding before wave -->
-  <div style="height: 150px;"></div>
 </section>
 
 <!-- 4. SIGNATURE EXPERIENCE & 5. SERVICE BREAKDOWN -->
@@ -144,7 +131,7 @@ require_once __DIR__ . '/header.php';
         <div class="polaroid tilt-3 shadow-lg d-none d-md-inline-block float-anim" style="position:absolute; right:-30px; top:-50px; z-index:15;">
           <div class="tape"></div>
           <div class="d-flex align-items-center justify-content-center bg-dark text-white rounded-2 overflow-hidden" style="width:220px; height:220px;">
-            <img src="<?= asset(get_setting('home_props', 'https://picsum.photos/seed/fp_home4/400/400')) ?>"
+            <img src="<?= asset(get_setting('home_props', 'assets/img/placeholder-plain.svg')) ?>"
               class="w-100 h-100 object-fit-cover" alt="Props">
           </div>
         </div>
@@ -247,7 +234,7 @@ require_once __DIR__ . '/header.php';
       </div>
 
       <div class="col-lg-4 js-scroll" style="z-index: 20;">
-        <div class="card-playful border border-warning-subtle shadow-lg px-4" style="transform: scale(1.08);">
+        <div class="card-playful border border-warning-subtle shadow-lg px-4">
           <div class="package-badge"><i class="ph-fill ph-star me-1"></i> <?= h(get_setting('home_pkg_2_badge', 'Most Popular')) ?></div>
           <div class="text-center mb-4 mt-2">
             <div class="icon-circle shadow" style="width:70px; height:70px; background:var(--fp-gradient); color:#FFF;"><i class="ph-fill ph-rocket-launch fs-2"></i>
@@ -319,13 +306,13 @@ require_once __DIR__ . '/header.php';
       <?= h(get_setting('home_scrap_desc', 'Nggak ada tamu yang kaku. Semua pasti keluar karakter aslinya!')) ?>
     </p>
 
-    <div class="row g-4 justify-content-center align-items-center js-scroll position-relative" style="min-height:350px;">
+    <div class="row g-4 justify-content-center align-items-center js-scroll position-relative">
       <!-- Simple Masonry Organic Illusion -->
       <div class="col-6 col-md-3">
         <div class="polaroid tilt-4 shadow float-anim">
           <div class="tape"></div>
-          <div class="d-flex align-items-center justify-content-center bg-dark text-white rounded-1 overflow-hidden" style="height:160px;">
-            <img src="<?= asset(get_setting('home_scrap_1', 'https://picsum.photos/seed/fp_home5/300/300')) ?>"
+          <div class="d-flex align-items-center justify-content-center bg-dark text-white media-uniform">
+            <img src="<?= asset(get_setting('home_scrap_1', 'assets/img/placeholder-plain.svg')) ?>"
               class="w-100 h-100 object-fit-cover" alt="Engagement">
           </div>
           <div class="polaroid-text"><?= h(get_setting('home_scrap_1_text', 'Engagement')) ?></div>
@@ -334,31 +321,27 @@ require_once __DIR__ . '/header.php';
       <div class="col-6 col-md-3">
         <div class="polaroid tilt-1 mt-md-4 shadow-lg float-anim-delay">
           <div class="tape"></div>
-          <div class="d-flex align-items-center justify-content-center bg-dark text-white rounded-1 overflow-hidden" style="height:210px;">
-            <img src="<?= asset(get_setting('home_scrap_2', 'https://picsum.photos/seed/fp_home6/300/400')) ?>"
+          <div class="d-flex align-items-center justify-content-center bg-dark text-white media-uniform">
+            <img src="<?= asset(get_setting('home_scrap_2', 'assets/img/placeholder-plain.svg')) ?>"
               class="w-100 h-100 object-fit-cover" alt="Gala Dinner">
           </div>
           <div class="polaroid-text"><?= h(get_setting('home_scrap_2_text', 'Gala Dinner')) ?></div>
         </div>
       </div>
       <div class="col-6 col-md-3">
-        <div class="photo-strip shadow-lg mx-auto tilt-3 float-anim" style="margin-top: -20px; z-index: 20;">
+        <div class="photo-strip shadow-lg mx-auto tilt-3 float-anim" style="z-index: 20;">
           <div class="tape"></div>
-          <div class="d-flex align-items-center justify-content-center bg-dark text-white-50 rounded overflow-hidden" style="width:130px; height:110px;">
-            <img src="<?= asset(get_setting('home_scrap_3', 'https://picsum.photos/seed/fp_home7/200/200')) ?>"
-              class="w-100 h-100 object-fit-cover" alt="Pic 1">
-          </div>
-          <div class="d-flex align-items-center justify-content-center bg-dark text-white-50 rounded overflow-hidden" style="width:130px; height:110px;">
-            <img src="<?= asset(get_setting('home_scrap_4', 'https://picsum.photos/seed/fp_home8/200/200')) ?>"
-              class="w-100 h-100 object-fit-cover" alt="Pic 2">
+          <div class="d-flex align-items-center justify-content-center bg-dark text-white-50 media-uniform">
+            <img src="<?= asset(get_setting('home_scrap_3', 'assets/img/placeholder-plain.svg')) ?>"
+              class="w-100 h-100 object-fit-cover" alt="Pic">
           </div>
         </div>
       </div>
       <div class="col-6 col-md-3">
         <div class="polaroid tilt-2 shadow mt-md-3 float-anim-delay">
           <div class="tape"></div>
-          <div class="d-flex align-items-center justify-content-center bg-dark text-white rounded-1 overflow-hidden" style="height:180px;">
-            <img src="<?= asset(get_setting('home_scrap_5', 'https://picsum.photos/seed/fp_home9/300/300')) ?>"
+          <div class="d-flex align-items-center justify-content-center bg-dark text-white media-uniform">
+            <img src="<?= asset(get_setting('home_scrap_5', 'assets/img/placeholder-plain.svg')) ?>"
               class="w-100 h-100 object-fit-cover" alt="Sweet 17th">
           </div>
           <div class="polaroid-text"><?= h(get_setting('home_scrap_5_text', 'Sweet 17th')) ?></div>
@@ -378,14 +361,12 @@ require_once __DIR__ . '/header.php';
     <div class="client-logos-grid js-scroll">
       <?php for ($i = 1; $i <= 8; $i++): ?>
         <?php 
-          $logo_url = get_setting('client_logo_' . $i);
+          $logo_url = get_setting('client_logo_' . $i, 'assets/img/placeholder-plain.svg');
           $logo_name = get_setting('client_name_' . $i, 'Client ' . $i);
         ?>
-        <?php if ($logo_url): ?>
-          <div class="client-logo-item" title="<?= h($logo_name) ?>">
-            <img src="<?= asset($logo_url) ?>" alt="<?= h($logo_name) ?>">
-          </div>
-        <?php endif; ?>
+        <div class="client-logo-item" title="<?= h($logo_name) ?>">
+          <img src="<?= asset($logo_url) ?>" alt="<?= h($logo_name) ?>">
+        </div>
       <?php endfor; ?>
     </div>
   </div>

@@ -1,14 +1,13 @@
 <?php
 /**
- * Jalankan file ini SEKALI SAJA dari browser untuk membuat database SQLite lokal.
+ * Setup database SQLite lokal.
  * Akses: http://localhost:8000/setup_local_db.php
- * Setelah berhasil, Anda bisa menghapus file ini.
  */
 
 require_once __DIR__ . '/config.php';
 
 if ($is_production) {
-    die("This script is for local development only and cannot be run on production.");
+    die('This script is for local development only.');
 }
 
 $db_path = __DIR__ . '/storage/local.sqlite';
@@ -16,152 +15,76 @@ $storage_dir = __DIR__ . '/storage';
 
 header('Content-Type: text/plain');
 
-// Handle reset request
 if (isset($_GET['reset']) && $_GET['reset'] === 'true') {
     if (file_exists($db_path)) {
         if (unlink($db_path)) {
-            echo "✓ Database file 'storage/local.sqlite' has been deleted for reset.\n\n";
+            echo "✓ Database file deleted for reset.\n\n";
         } else {
-            die("✗ FAILED to delete 'storage/local.sqlite'. Please check file permissions and delete it manually.");
+            die("✗ Failed to delete database file.\n");
         }
-    } else {
-        echo "✓ No existing database file found. Proceeding with fresh setup.\n\n";
     }
 }
 
 if (!is_dir($storage_dir)) {
-    if (mkdir($storage_dir, 0755, true)) {
-        echo "✓ Directory 'storage' created.\n";
-    } else {
-        die("✗ FAILED to create 'storage' directory. Please check permissions.\n");
+    if (!mkdir($storage_dir, 0755, true)) {
+        die("✗ Failed to create storage directory.\n");
     }
+    echo "✓ Directory 'storage' created.\n";
 }
 
-// Add a check to ensure the directory is writable
 if (!is_writable($storage_dir)) {
-    die("✗ The 'storage' directory exists but is not writable. Please run `chmod -R 775 storage` in your terminal.\n");
+    die("✗ 'storage' directory is not writable.\n");
 }
 
 if (!$pdo) {
-    die("✗ FAILED to initialize PDO connection. Check your config.php.\n");
+    die("✗ PDO not initialized. Check config.php.\n");
 }
 
-// Check if setup has already been run by looking for the 'users' table.
-// This is more reliable than checking for the file, which PDO creates automatically.
 try {
     $stmt = $pdo->query("SELECT name FROM sqlite_master WHERE type='table' AND name='users'");
-    if ($stmt->fetchColumn()) {
-        echo "Database appears to be already set up (table 'users' found).\n";
-        echo "No action taken.\n\n";
-        echo "If you want to reset the database, add `?reset=true` to the URL.\n";
+    if ($stmt->fetchColumn() && (!isset($_GET['reset']) || $_GET['reset'] !== 'true')) {
+        echo "Database already initialized.\n";
+        echo "Use ?reset=true for fresh setup.\n";
         exit;
     }
-} catch (PDOException $e) {
-    // This shouldn't happen on a clean setup, but we can proceed.
+} catch (Throwable $e) {
 }
 
-echo "PDO connection to SQLite successful. Creating tables...\n\n";
+echo "Creating SQLite tables...\n\n";
 
 try {
-    // Tabel `settings`
-    $pdo->exec("
-        CREATE TABLE IF NOT EXISTS `settings` (
-          `setting_key`   VARCHAR(255) NOT NULL PRIMARY KEY,
-          `setting_value` TEXT DEFAULT NULL,
-          `setting_type`  VARCHAR(50) DEFAULT 'text',
-          `description`   VARCHAR(255) DEFAULT NULL
-        );
-    ");
-    echo "✓ Table 'settings' created successfully.\n";
+    $pdo->exec("\n        CREATE TABLE IF NOT EXISTS settings (\n            setting_key TEXT PRIMARY KEY,\n            setting_value TEXT,\n            setting_type TEXT DEFAULT 'text' CHECK(setting_type IN ('text', 'image', 'html')),\n            description TEXT,\n            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP\n        )\n    ");
+    echo "✓ Table 'settings' created.\n";
 
-    // Tabel `users`
-    $pdo->exec("
-        CREATE TABLE IF NOT EXISTS `users` (
-            `id`            INTEGER PRIMARY KEY AUTOINCREMENT,
-            `username`      VARCHAR(50)  NOT NULL UNIQUE,
-            `password_hash` VARCHAR(255) NOT NULL,
-            `created_at`    DATETIME DEFAULT CURRENT_TIMESTAMP
-        );
-    ");
-    echo "✓ Table 'users' created successfully.\n";
+    $pdo->exec("\n        CREATE TABLE IF NOT EXISTS users (\n            id INTEGER PRIMARY KEY AUTOINCREMENT,\n            username TEXT NOT NULL UNIQUE,\n            password_hash TEXT NOT NULL,\n            created_at DATETIME DEFAULT CURRENT_TIMESTAMP\n        )\n    ");
+    echo "✓ Table 'users' created.\n";
 
-    // Tabel `leads` (for CRM) - SQLite version
-    $pdo->exec("
-        CREATE TABLE IF NOT EXISTS `leads` (
-            `id`            INTEGER PRIMARY KEY AUTOINCREMENT,
-            `name`          TEXT NOT NULL,
-            `phone`         TEXT NOT NULL,
-            `address`       TEXT NOT NULL,
-            `design`        TEXT NOT NULL,
-            `size`          TEXT NOT NULL,
-            `quantity`      INTEGER NOT NULL DEFAULT 1,
-            `total_price`   INTEGER NOT NULL DEFAULT 0,
-            `note`          TEXT,
-            `payment_proof` TEXT,
-            `order_token`   TEXT,
-            `status`        TEXT DEFAULT 'pending' CHECK(status IN ('pending','contacted','paid','cancelled')),
-            `utm_source`    TEXT,
-            `utm_medium`    TEXT,
-            `utm_campaign`  TEXT,
-            `utm_content`   TEXT,
-            `utm_term`      TEXT,
-            `fbclid`        TEXT,
-            `gclid`         TEXT,
-            `wbraid`        TEXT,
-            `gbraid`        TEXT,
-            `referrer`      TEXT,
-            `created_at`    DATETIME DEFAULT CURRENT_TIMESTAMP,
-            `updated_at`    DATETIME DEFAULT CURRENT_TIMESTAMP
-        );
-    ");
-    echo "✓ Table 'leads' created successfully.\n";
+    $pdo->exec("\n        CREATE TABLE IF NOT EXISTS analytics (\n            id INTEGER PRIMARY KEY AUTOINCREMENT,\n            session_id TEXT NOT NULL,\n            ip_address TEXT,\n            event_type TEXT NOT NULL,\n            event_value INTEGER DEFAULT 0,\n            page_url TEXT,\n            created_at DATETIME DEFAULT CURRENT_TIMESTAMP\n        )\n    ");
+    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_analytics_event_type ON analytics (event_type)');
+    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_analytics_session_id ON analytics (session_id)');
+    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_analytics_created_at ON analytics (created_at)');
+    echo "✓ Table 'analytics' created.\n";
 
-    // Tabel `analytics` (for tracking) - SQLite version
-    $pdo->exec("
-        CREATE TABLE IF NOT EXISTS `analytics` (
-            `id`          INTEGER PRIMARY KEY AUTOINCREMENT,
-            `session_id`  TEXT NOT NULL,
-            `ip_address`  TEXT,
-            `event_type`  TEXT NOT NULL,
-            `event_value` INTEGER,
-            `page_url`    TEXT,
-            `created_at`  DATETIME DEFAULT CURRENT_TIMESTAMP
-        );
-    ");
-    echo "✓ Table 'analytics' created successfully.\n";
+    $pdo->exec("\n        CREATE TABLE IF NOT EXISTS blog_posts (\n            id INTEGER PRIMARY KEY AUTOINCREMENT,\n            title TEXT NOT NULL,\n            slug TEXT NOT NULL UNIQUE,\n            excerpt TEXT,\n            content TEXT NOT NULL,\n            cover_image TEXT,\n            is_published INTEGER NOT NULL DEFAULT 0,\n            published_at DATETIME,\n            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,\n            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP\n        )\n    ");
+    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_blog_posts_published ON blog_posts (is_published, published_at)');
+    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_blog_posts_slug ON blog_posts (slug)');
+    echo "✓ Table 'blog_posts' created.\n";
 
-    // Insert initial settings for the new client section
-    $client_settings = [
-        ['home_clients_title', 'Telah Dipercaya Oleh', 'text', 'Judul Section Klien'],
-        ['home_clients_desc', 'Kami bangga telah menjadi bagian dari momen spesial berbagai brand ternama dan acara personal yang tak terlupakan.', 'text', 'Deskripsi Section Klien'],
-    ];
-    for ($i = 1; $i <= 8; $i++) {
-        $client_settings[] = ['client_logo_' . $i, 'https://placehold.co/150x60/EAEAEA/999999?text=Client+' . $i, 'image', 'Logo Klien ' . $i];
-        $client_settings[] = ['client_name_' . $i, 'Nama Klien ' . $i, 'text', 'Nama Klien ' . $i];
-    }
+    // Hapus arsitektur lama
+    $pdo->exec('DROP TABLE IF EXISTS leads');
+    echo "✓ Legacy table 'leads' removed (if existed).\n";
 
-    $stmt_settings = $pdo->prepare("INSERT OR IGNORE INTO settings (setting_key, setting_value, setting_type, description) VALUES (?, ?, ?, ?)");
-    foreach ($client_settings as $setting) {
-        try {
-            $stmt_settings->execute($setting);
-        } catch (PDOException $e) {
-            // Ignore if it fails, maybe the key exists from a previous partial run
-        }
-    }
-    echo "✓ Initial client settings populated.\n";
+    seed_cms_settings($pdo);
+    echo "✓ CMS default settings seeded.\n";
 
-    // Masukkan admin default
     $hash = password_hash('admin123', PASSWORD_BCRYPT);
-    $stmt = $pdo->prepare("INSERT INTO users (username, password_hash) VALUES (?, ?)");
+    $stmt = $pdo->prepare('INSERT OR IGNORE INTO users (username, password_hash) VALUES (?, ?)');
     $stmt->execute(['admin', $hash]);
-    echo "✓ Default admin user created (admin / admin123).\n";
+    echo "✓ Default admin ready (admin / admin123).\n";
 
-    echo "\n\n✅ SETUP COMPLETE! You can now access your local site.\n";
-    echo "Please consider deleting this file (setup_local_db.php) for security.\n";
-
-} catch (PDOException $e) {
-    echo "✗ An error occurred during table creation: " . $e->getMessage() . "\n";
-    // Hapus file db jika gagal agar bisa diulang
+    echo "\n✅ Setup complete.\n";
+} catch (Throwable $e) {
+    echo '✗ Setup error: ' . $e->getMessage() . "\n";
     if (file_exists($db_path)) {
         @unlink($db_path);
     }

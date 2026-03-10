@@ -6,30 +6,37 @@ if (empty($_SESSION['admin_id'])) {
     exit;
 }
 
-$status_filter = $_GET['status'] ?? '';
-$where = "1=1";
-$params = [];
-if ($status_filter) {
-    if ($status_filter === 'today') {
-        $where .= " AND DATE(created_at) = CURDATE()";
-    } else {
-        $where .= " AND status = ?";
-        $params[] = $status_filter;
-    }
-}
-
-$leads = [];
-$utms = [];
+$summary = [
+    'settings_total' => 0,
+    'blog_total' => 0,
+    'blog_published' => 0,
+    'analytics_total' => 0,
+    'analytics_today' => 0,
+];
+$topEvents = [];
 
 if ($pdo) {
     try {
-        $stmt = $pdo->prepare("SELECT * FROM leads WHERE $where ORDER BY id DESC");
-        $stmt->execute($params);
-        $leads = $stmt->fetchAll();
+        $summary['settings_total'] = (int) $pdo->query('SELECT COUNT(*) FROM settings')->fetchColumn();
+    } catch (Throwable $e) {
+    }
 
-        // UTM Stats
-        $utmStmt = $pdo->query("SELECT utm_source, utm_campaign, COUNT(*) as total FROM leads WHERE utm_source != '' GROUP BY utm_source, utm_campaign ORDER BY total DESC");
-        $utms = $utmStmt->fetchAll();
+    try {
+        $summary['blog_total'] = (int) $pdo->query('SELECT COUNT(*) FROM blog_posts')->fetchColumn();
+        $summary['blog_published'] = (int) $pdo->query('SELECT COUNT(*) FROM blog_posts WHERE is_published = 1')->fetchColumn();
+    } catch (Throwable $e) {
+        ensure_blog_table_exists($pdo);
+    }
+
+    try {
+        $driver = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $todayExpr = $driver === 'sqlite' ? "DATE(created_at) = DATE('now')" : 'DATE(created_at) = CURDATE()';
+
+        $summary['analytics_total'] = (int) $pdo->query('SELECT COUNT(*) FROM analytics')->fetchColumn();
+        $summary['analytics_today'] = (int) $pdo->query("SELECT COUNT(*) FROM analytics WHERE {$todayExpr}")->fetchColumn();
+
+        $stmt = $pdo->query('SELECT event_type, COUNT(*) AS total FROM analytics GROUP BY event_type ORDER BY total DESC LIMIT 10');
+        $topEvents = $stmt->fetchAll();
     } catch (Throwable $e) {
     }
 }
@@ -39,389 +46,200 @@ if ($pdo) {
 
 <head>
     <meta charset="UTF-8">
-    <!DOCTYPE html>
-    <html lang="id">
+    <title>Analytics Dashboard | Admin Front Photobooth</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: -apple-system, system-ui, sans-serif;
+            background: #f4f4f5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
 
-    <head>
-        <meta charset="UTF-8">
-        <title>Dashboard Leads | Front Photobooth</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <style>
-            body {
-                font-family: -apple-system, system-ui, sans-serif;
-                background: #f4f4f5;
-                margin: 0;
-                color: #333;
-            }
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
 
-            .admin-wrapper {
-                display: flex;
-                min-height: 100vh;
-            }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
 
-            .sidebar {
-                width: 250px;
-                background: #111;
-                color: #fff;
-                padding: 2rem 1rem;
-                display: flex;
-                flex-direction: column;
-                gap: 1rem;
-            }
+        h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
 
-            .sidebar .brand {
-                font-size: 1.5rem;
-                font-weight: bold;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-                margin-bottom: 2rem;
-                padding: 0 1rem;
-            }
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 10px;
+            flex-wrap: wrap;
+        }
 
-            .sidebar a {
-                color: #aaa;
-                text-decoration: none;
-                padding: 0.75rem 1rem;
-                border-radius: 6px;
-                transition: all 0.2s;
-                font-weight: 500;
-            }
+        .nav-tabs a {
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            color: #6b7280;
+            font-weight: 600;
+        }
 
-            .sidebar a:hover,
-            .sidebar a.active {
-                background: rgba(247, 123, 15, 0.1);
-                color: #F77B0F;
-            }
+        .nav-tabs a.active {
+            background: #111;
+            color: #fff;
+        }
 
-            .main-content {
-                flex: 1;
-                padding: 2rem;
-                overflow-y: auto;
-            }
+        .nav-tabs a:hover:not(.active) {
+            background: #e5e7eb;
+        }
 
-            .container {
-                max-width: 1400px;
-                margin: auto;
-            }
+        .btn {
+            padding: 8px 16px;
+            background: #111;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+        }
 
-            .layout-grid {
-                display: grid;
-                gap: 20px;
-            }
+        .cards {
+            display: grid;
+            gap: 14px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            margin-bottom: 22px;
+        }
 
-            @media(min-width: 900px) {
-                .layout-grid {
-                    grid-template-columns: 1fr 300px;
-                }
-            }
+        .card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 16px;
+        }
 
-            .box {
-                background: white;
-                padding: 20px;
-                border-radius: 8px;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-                border: 1px solid #e5e7eb;
-            }
+        .label {
+            color: #6b7280;
+            font-size: .82rem;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-bottom: 8px;
+        }
 
-            .header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 20px;
-            }
+        .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #111;
+            line-height: 1;
+        }
 
-            h1 {
-                margin: 0;
-                font-size: 1.5rem;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-            }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
 
-            h2 {
-                margin-top: 0;
-                font-size: 1.1rem;
-                border-bottom: 1px solid #eee;
-                padding-bottom: 10px;
-            }
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            text-align: left;
+        }
 
-            .filters {
-                margin-bottom: 15px;
-                display: flex;
-                gap: 8px;
-                flex-wrap: wrap;
-            }
+        th {
+            font-size: .78rem;
+            text-transform: uppercase;
+            color: #6b7280;
+            background: #f8fafc;
+        }
 
-            .btn {
-                padding: 6px 12px;
-                background: #f3f4f6;
-                text-decoration: none;
-                color: #374151;
-                border-radius: 4px;
-                border: 1px solid #d1d5db;
-                font-size: 0.85rem;
-                transition: background 0.1s;
-            }
+        td:last-child,
+        th:last-child {
+            text-align: right;
+        }
 
-            .btn.active {
-                background: #111;
-                color: #fff;
-                border-color: #111;
-            }
-
-            .btn:hover:not(.active) {
-                background: #e5e7eb;
-            }
-
-            .btn-primary {
-                background: linear-gradient(135deg, #F77B0F 0%, #FFAF32 100%);
-                color: #111;
-                border: none;
-                font-weight: bold;
-            }
-
-            .btn-primary:hover {
-                opacity: 0.9;
-            }
-
-            .btn-export {
-                background: #111;
-                color: white;
-                border: none;
-                margin-left: auto;
-                font-weight: 600;
-            }
-
-            .btn-export:hover {
-                background: #333;
-                color: white;
-            }
-
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                font-size: 0.9rem;
-            }
-
-            th,
-            td {
-                padding: 12px 10px;
-                border-bottom: 1px solid #f3f4f6;
-                text-align: left;
-                vertical-align: top;
-            }
-
-            th {
-                background: #f9fafb;
-                font-weight: 600;
-                color: #6b7280;
-                text-transform: uppercase;
-                font-size: 0.75rem;
-            }
-
-            tr:hover td {
-                background: #f9fafb;
-            }
-
-            .status-select {
-                padding: 4px;
-                border-radius: 4px;
-                border: 1px solid #d1d5db;
-                font-size: 0.85rem;
-                outline: none;
-                background: #fff;
-            }
-
-            .badge-status {
-                padding: 2px 6px;
-                border-radius: 4px;
-                font-size: 0.75rem;
-                font-weight: 600;
-                text-transform: uppercase;
-            }
-
-            .status-pending {
-                background: #fef3c7;
-                color: #92400e;
-            }
-
-            .status-contacted {
-                background: #dbeafe;
-                color: #1e40af;
-            }
-
-            .status-paid {
-                background: #d1fae5;
-                color: #065f46;
-            }
-
-            .status-cancelled {
-                background: #fee2e2;
-                color: #991b1b;
-            }
-
-            .text-sm {
-                font-size: 0.8rem;
-                color: #6b7280;
-            }
-
-            .mt-4 {
-                margin-top: 1rem;
-            }
-
-            .stats-table th,
-            .stats-table td {
-                padding: 8px;
-                border-bottom: 1px dashed #e5e7eb;
-            }
-        </style>
-    </head>
+        .empty {
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            color: #6b7280;
+        }
+    </style>
+</head>
 
 <body>
-    <div class="admin-wrapper">
-        <aside class="sidebar">
-            <div class="brand">Admin <span style="color:#F77B0F">Panel</span></div>
-            <nav class="nav-links">
-                <a href="index.php" class="active">Dashboard Leads</a>
-                <a href="settings.php">Website Content</a>
-            </nav>
-            <div style="margin-top:auto">
-                <a href="actions.php?action=logout" class="btn-primary"
-                    style="text-align:center; display:block; padding:0.5rem; border-radius:4px; text-decoration:none;">Logout</a>
+    <div class="container">
+        <div class="header">
+            <h1>Front Photobooth <span style="color:#f77b0f">CMS</span></h1>
+            <div>
+                <a href="../index.php" target="_blank" class="btn" style="background:#f3f4f6;color:#111;border:1px solid #d1d5db;">Lihat Website</a>
+                <a href="actions.php?action=logout" class="btn">Logout</a>
             </div>
-        </aside>
+        </div>
 
-        <main class="main-content">
-            <div class="container">
-                <div class="header">
-                    <h1>Data Leads <span style="color:#F77B0F">Photobooth</span></h1>
-                </div>
+        <div class="nav-tabs">
+            <a href="index.php" class="active">Analytics</a>
+            <a href="settings.php">Website Content</a>
+            <a href="blog.php">Blog</a>
+        </div>
 
-                <div class="layout-grid">
-                    <div class="box">
-                        <div class="filters">
-                            <span style="align-self:center; font-size:0.85rem; font-weight:bold;">Tampilan:</span>
-                            <a href="index.php" class="btn <?= $status_filter === '' ? 'active' : '' ?>">Semua</a>
-                            <a href="index.php?status=today"
-                                class="btn <?= $status_filter === 'today' ? 'active' : '' ?>">Hari Ini</a>
-                            <a href="index.php?status=pending"
-                                class="btn <?= $status_filter === 'pending' ? 'active' : '' ?>">Pending</a>
-                            <a href="index.php?status=contacted"
-                                class="btn <?= $status_filter === 'contacted' ? 'active' : '' ?>">Contacted</a>
-                            <a href="index.php?status=paid"
-                                class="btn <?= $status_filter === 'paid' ? 'active' : '' ?>">Paid</a>
-                            <a href="index.php?status=cancelled"
-                                class="btn <?= $status_filter === 'cancelled' ? 'active' : '' ?>">Cancelled</a>
-                            <a href="export.php" class="btn btn-export">↓ Export CSV</a>
-                        </div>
-
-                        <div style="overflow-x:auto;">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Tanggal</th>
-                                        <th>Pelanggan</th>
-                                        <th>Kontak</th>
-                                        <th>Pesanan</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($leads as $l): ?>
-                                        <tr>
-                                            <td class="text-sm">
-                                                <?= date('d M Y', strtotime($l['created_at'])) ?><br>
-                                                <span
-                                                    style="color:#aaa"><?= date('H:i', strtotime($l['created_at'])) ?></span>
-                                            </td>
-                                            <td>
-                                                <strong><?= htmlspecialchars($l['name']) ?></strong><br>
-                                                <div class="text-sm"
-                                                    style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"
-                                                    title="<?= htmlspecialchars($l['address']) ?>">
-                                                    <?= htmlspecialchars($l['address']) ?>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <a href="https://wa.me/<?= htmlspecialchars($l['phone']) ?>" target="_blank"
-                                                    style="color:#F77B0F; text-decoration:none; font-weight:600;">
-                                                    <?= htmlspecialchars($l['phone']) ?>
-                                                </a>
-                                            </td>
-                                            <td class="text-sm">
-                                                <strong><?= htmlspecialchars($l['design']) ?></strong><br>
-                                                Size: <?= htmlspecialchars($l['size']) ?> &bull; Qty: <?= $l['quantity'] ?>
-                                            </td>
-                                            <td>
-                                                <form action="actions.php" method="post" style="margin:0;">
-                                                    <input type="hidden" name="action" value="update_status">
-                                                    <input type="hidden" name="id" value="<?= $l['id'] ?>">
-                                                    <select name="status" class="status-select"
-                                                        onchange="this.form.submit()">
-                                                        <option value="pending" <?= $l['status'] == 'pending' ? 'selected' : '' ?>>
-                                                            Pending</option>
-                                                        <option value="contacted" <?= $l['status'] == 'contacted' ? 'selected' : '' ?>>Contacted</option>
-                                                        <option value="paid" <?= $l['status'] == 'paid' ? 'selected' : '' ?>>Paid
-                                                        </option>
-                                                        <option value="cancelled" <?= $l['status'] == 'cancelled' ? 'selected' : '' ?>>Cancelled</option>
-                                                    </select>
-                                                </form>
-                                                <?php if ($l['utm_source']): ?>
-                                                    <div style="margin-top:4px; font-size:0.7rem; color:#9ca3af;">src:
-                                                        <?= htmlspecialchars($l['utm_source']) ?></div>
-                                                <?php endif; ?>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                    <?php if (empty($leads)): ?>
-                                        <tr>
-                                            <td colspan="5" style="text-align:center; padding: 2rem; color:#9ca3af;">Tidak
-                                                ada data lead ditemukan.</td>
-                                        </tr>
-                                    <?php endif; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="box">
-                            <h2>UTM Performance</h2>
-                            <?php if (empty($utms)): ?>
-                                <p class="text-sm">Belum ada data UTM terlacak.</p>
-                            <?php else: ?>
-                                <table class="stats-table">
-                                    <tr>
-                                        <th style="background:none;">Source / Campaign</th>
-                                        <th style="background:none; text-align:right;">Leads</th>
-                                    </tr>
-                                    <?php foreach ($utms as $u): ?>
-                                        <tr>
-                                            <td class="text-sm">
-                                                <strong><?= htmlspecialchars($u['utm_source']) ?></strong><br>
-                                                <span style="color:#9ca3af"><?= htmlspecialchars($u['utm_campaign']) ?></span>
-                                            </td>
-                                            <td align="right"><strong><?= $u['total'] ?></strong></td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </table>
-                            <?php endif; ?>
-                        </div>
-
-                        <div class="box mt-4">
-                            <h2>Panduan</h2>
-                            <ul class="text-sm" style="padding-left:1rem; margin-bottom:0; color:#4b5563;">
-                                <li style="margin-bottom:8px">Lead otomatis berstatus <strong>Pending</strong>.</li>
-                                <li style="margin-bottom:8px">Jika sudah balas WA, ubah ke <strong>Contacted</strong>.
-                                </li>
-                                <li style="margin-bottom:8px">Setelah bukti transfer/DP diterima, ubah ke
-                                    <strong>Paid</strong>.</li>
-                                <li>Gunakan <strong>Export CSV</strong> untuk rekap Excel.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+        <div class="cards">
+            <div class="card">
+                <div class="label">Total Settings CMS</div>
+                <div class="value"><?= (int) $summary['settings_total'] ?></div>
             </div>
-        </main>
+            <div class="card">
+                <div class="label">Total Artikel Blog</div>
+                <div class="value"><?= (int) $summary['blog_total'] ?></div>
+            </div>
+            <div class="card">
+                <div class="label">Blog Published</div>
+                <div class="value"><?= (int) $summary['blog_published'] ?></div>
+            </div>
+            <div class="card">
+                <div class="label">Analytics Event Hari Ini</div>
+                <div class="value"><?= (int) $summary['analytics_today'] ?></div>
+            </div>
+            <div class="card">
+                <div class="label">Total Analytics Event</div>
+                <div class="value"><?= (int) $summary['analytics_total'] ?></div>
+            </div>
+        </div>
+
+        <h2 style="font-size:1.1rem; margin:0 0 10px 0;">Top Event Tracking</h2>
+        <?php if (empty($topEvents)): ?>
+            <div class="empty">Belum ada data analytics.</div>
+        <?php else: ?>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($topEvents as $event): ?>
+                        <tr>
+                            <td><code><?= h($event['event_type']) ?></code></td>
+                            <td><?= (int) $event['total'] ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
     </div>
 </body>
 

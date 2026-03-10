@@ -6,7 +6,7 @@ if (empty($_SESSION['admin_id'])) {
     exit;
 }
 
-// Fetch all settings grouped
+// Fetch all settings + merge with CMS definitions
 $settings_raw = [];
 if ($pdo) {
     try {
@@ -16,143 +16,19 @@ if ($pdo) {
     }
 }
 
-// Fallback for local testing without DB
-if (empty($settings_raw)) {
-    $mock_keys = [
-        'seo_title' => ['type' => 'text', 'desc' => 'Judul Website'],
-        'seo_desc' => ['type' => 'text', 'desc' => 'Deskripsi Website'],
+$definitions = get_cms_setting_definitions();
+$existing_map = [];
+foreach ($settings_raw as $row) {
+    $existing_map[$row['setting_key']] = true;
+}
 
-        'home_hero_badge' => ['type' => 'text', 'desc' => 'Text Badge di Hero'],
-        'home_hero_title' => ['type' => 'text', 'desc' => 'Judul Hero Utama'],
-        'home_hero_desc' => ['type' => 'text', 'desc' => 'Deskripsi Hero'],
-        'home_hero_cta_text' => ['type' => 'text', 'desc' => 'Teks Tombol CTA Hero'],
-        'home_hero_cta_link' => ['type' => 'text', 'desc' => 'Link Tombol CTA Hero'],
-        'home_hero_1' => ['type' => 'image', 'desc' => 'Hero Image 1 (Kiri Atas)'],
-        'home_hero_2' => ['type' => 'image', 'desc' => 'Hero Image 2 (Tengah)'],
-        'home_hero_3' => ['type' => 'image', 'desc' => 'Hero Image 3 (Kanan Bawah)'],
-
-        'home_prob_title' => ['type' => 'text', 'desc' => 'Judul Section Problem'],
-        'home_prob_quote' => ['type' => 'text', 'desc' => 'Quote Problem'],
-        'home_prob_sub' => ['type' => 'text', 'desc' => 'Subtext Problem'],
-
-        'home_core_title' => ['type' => 'text', 'desc' => 'Judul Core Idea'],
-        'home_core_1_title' => ['type' => 'text', 'desc' => 'Core 1 Judul'],
-        'home_core_1_desc' => ['type' => 'text', 'desc' => 'Core 1 Deskripsi'],
-        'home_core_2_title' => ['type' => 'text', 'desc' => 'Core 2 Judul'],
-        'home_core_2_desc' => ['type' => 'text', 'desc' => 'Core 2 Deskripsi'],
-        'home_core_3_title' => ['type' => 'text', 'desc' => 'Core 3 Judul'],
-        'home_core_3_desc' => ['type' => 'text', 'desc' => 'Core 3 Deskripsi'],
-
-        'home_props' => ['type' => 'image', 'desc' => 'Image Props / Signature'],
-        'home_sig_badge' => ['type' => 'text', 'desc' => 'Badge Signature'],
-        'home_sig_title' => ['type' => 'text', 'desc' => 'Judul Signature'],
-        'home_sig_list_1' => ['type' => 'text', 'desc' => 'Signature List 1'],
-        'home_sig_list_2' => ['type' => 'text', 'desc' => 'Signature List 2'],
-        'home_sig_list_3' => ['type' => 'text', 'desc' => 'Signature List 3'],
-        'home_sig_list_4' => ['type' => 'text', 'desc' => 'Signature List 4'],
-
-        'home_srv_title' => ['type' => 'text', 'desc' => 'Judul Service Breakdown'],
-        'home_srv_desc' => ['type' => 'text', 'desc' => 'Subtext Service Breakdown'],
-        'home_srv_badge_1' => ['type' => 'text', 'desc' => 'Service Badge 1'],
-        'home_srv_badge_2' => ['type' => 'text', 'desc' => 'Service Badge 2'],
-        'home_srv_badge_3' => ['type' => 'text', 'desc' => 'Service Badge 3'],
-        'home_srv_badge_4' => ['type' => 'text', 'desc' => 'Service Badge 4'],
-        'home_srv_badge_5' => ['type' => 'text', 'desc' => 'Service Badge 5'],
-        'home_srv_badge_6' => ['type' => 'text', 'desc' => 'Service Badge 6'],
-        'home_srv_quote' => ['type' => 'text', 'desc' => 'Quote Service Breakdown'],
-
-        'home_pkg_title' => ['type' => 'text', 'desc' => 'Judul Section Paket'],
-        'home_pkg_desc' => ['type' => 'text', 'desc' => 'Subtext Section Paket'],
-        'home_pkg_1_title' => ['type' => 'text', 'desc' => 'Paket 1 Judul'],
-        'home_pkg_1_desc' => ['type' => 'text', 'desc' => 'Paket 1 Deskripsi'],
-        'home_pkg_1_list_1' => ['type' => 'text', 'desc' => 'Paket 1 List 1'],
-        'home_pkg_1_list_2' => ['type' => 'text', 'desc' => 'Paket 1 List 2'],
-        'home_pkg_1_list_3' => ['type' => 'text', 'desc' => 'Paket 1 List 3'],
-        'home_pkg_1_list_4' => ['type' => 'text', 'desc' => 'Paket 1 List 4'],
-        'home_pkg_2_badge' => ['type' => 'text', 'desc' => 'Paket 2 Badge Label'],
-        'home_pkg_2_title' => ['type' => 'text', 'desc' => 'Paket 2 Judul'],
-        'home_pkg_2_desc' => ['type' => 'text', 'desc' => 'Paket 2 Deskripsi'],
-        'home_pkg_2_list_1' => ['type' => 'text', 'desc' => 'Paket 2 List 1'],
-        'home_pkg_2_list_2' => ['type' => 'text', 'desc' => 'Paket 2 List 2'],
-        'home_pkg_2_list_3' => ['type' => 'text', 'desc' => 'Paket 2 List 3'],
-        'home_pkg_2_list_4' => ['type' => 'text', 'desc' => 'Paket 2 List 4'],
-        'home_pkg_2_list_5' => ['type' => 'text', 'desc' => 'Paket 2 List 5'],
-        'home_pkg_3_title' => ['type' => 'text', 'desc' => 'Paket 3 Judul'],
-        'home_pkg_3_desc' => ['type' => 'text', 'desc' => 'Paket 3 Deskripsi'],
-        'home_pkg_3_list_1' => ['type' => 'text', 'desc' => 'Paket 3 List 1'],
-        'home_pkg_3_list_2' => ['type' => 'text', 'desc' => 'Paket 3 List 2'],
-        'home_pkg_3_list_3' => ['type' => 'text', 'desc' => 'Paket 3 List 3'],
-        'home_pkg_3_list_4' => ['type' => 'text', 'desc' => 'Paket 3 List 4'],
-        'home_pkg_cta_text' => ['type' => 'text', 'desc' => 'Teks Tombol CTA Paket'],
-        'home_pkg_cta_link' => ['type' => 'text', 'desc' => 'Link Tombol CTA Paket'],
-
-        'home_scrap_title' => ['type' => 'text', 'desc' => 'Judul Section Scrapbook'],
-        'home_scrap_desc' => ['type' => 'text', 'desc' => 'Subtext Section Scrapbook'],
-        'home_scrap_1' => ['type' => 'image', 'desc' => 'Scrapbook 1'],
-        'home_scrap_1_text' => ['type' => 'text', 'desc' => 'Teks Scrapbook 1'],
-        'home_scrap_2' => ['type' => 'image', 'desc' => 'Scrapbook 2'],
-        'home_scrap_2_text' => ['type' => 'text', 'desc' => 'Teks Scrapbook 2'],
-        'home_scrap_3' => ['type' => 'image', 'desc' => 'Scrapbook 3'],
-        'home_scrap_4' => ['type' => 'image', 'desc' => 'Scrapbook 4'],
-        'home_scrap_5' => ['type' => 'image', 'desc' => 'Scrapbook 5'],
-        'home_scrap_5_text' => ['type' => 'text', 'desc' => 'Teks Scrapbook 5'],
-
-        'home_trust_title' => ['type' => 'text', 'desc' => 'Judul Section Trust'],
-        'home_trust_1_title' => ['type' => 'text', 'desc' => 'Trust 1 Judul'],
-        'home_trust_1_desc' => ['type' => 'text', 'desc' => 'Trust 1 Deskripsi'],
-        'home_trust_2_title' => ['type' => 'text', 'desc' => 'Trust 2 Judul'],
-        'home_trust_2_desc' => ['type' => 'text', 'desc' => 'Trust 2 Deskripsi'],
-        'home_trust_3_title' => ['type' => 'text', 'desc' => 'Trust 3 Judul'],
-        'home_trust_3_desc' => ['type' => 'text', 'desc' => 'Trust 3 Deskripsi'],
-        'home_trust_4_title' => ['type' => 'text', 'desc' => 'Trust 4 Judul'],
-        'home_trust_4_desc' => ['type' => 'text', 'desc' => 'Trust 4 Deskripsi'],
-
-        'home_scarcity_badge' => ['type' => 'text', 'desc' => 'Badge Scarcity'],
-        'home_scarcity_title' => ['type' => 'text', 'desc' => 'Judul Scarcity'],
-        'home_scarcity_desc' => ['type' => 'text', 'desc' => 'Subtext Scarcity'],
-        'home_scarcity_cta_text' => ['type' => 'text', 'desc' => 'Teks Tombol CTA Scarcity'],
-        'home_scarcity_cta_link' => ['type' => 'text', 'desc' => 'Link Tombol CTA Scarcity'],
-
-        'home_close_title' => ['type' => 'text', 'desc' => 'Judul Final Close CTA'],
-        'home_close_desc' => ['type' => 'text', 'desc' => 'Subtext Final Close CTA'],
-        'home_close_cta1_text' => ['type' => 'text', 'desc' => 'Teks Tombol CTA Akhir 1'],
-        'home_close_cta1_link' => ['type' => 'text', 'desc' => 'Link Tombol CTA Akhir 1'],
-        'home_close_cta2_text' => ['type' => 'text', 'desc' => 'Teks Tombol CTA Akhir 2'],
-        'home_close_cta2_link' => ['type' => 'text', 'desc' => 'Link Tombol CTA Akhir 2'],
-
-        'home_clients_title' => ['type' => 'text', 'desc' => 'Judul Section Klien'],
-        'home_clients_desc' => ['type' => 'text', 'desc' => 'Deskripsi Section Klien'],
-        'client_logo_1' => ['type' => 'image', 'desc' => 'Logo Klien 1'],
-        'client_name_1' => ['type' => 'text', 'desc' => 'Nama Klien 1'],
-        'client_logo_2' => ['type' => 'image', 'desc' => 'Logo Klien 2'],
-        'client_name_2' => ['type' => 'text', 'desc' => 'Nama Klien 2'],
-        'client_logo_3' => ['type' => 'image', 'desc' => 'Logo Klien 3'],
-        'client_name_3' => ['type' => 'text', 'desc' => 'Nama Klien 3'],
-        'client_logo_4' => ['type' => 'image', 'desc' => 'Logo Klien 4'],
-        'client_name_4' => ['type' => 'text', 'desc' => 'Nama Klien 4'],
-        'client_logo_5' => ['type' => 'image', 'desc' => 'Logo Klien 5'],
-        'client_name_5' => ['type' => 'text', 'desc' => 'Nama Klien 5'],
-        'client_logo_6' => ['type' => 'image', 'desc' => 'Logo Klien 6'],
-        'client_name_6' => ['type' => 'text', 'desc' => 'Nama Klien 6'],
-        'client_logo_7' => ['type' => 'image', 'desc' => 'Logo Klien 7'],
-        'client_name_7' => ['type' => 'text', 'desc' => 'Nama Klien 7'],
-        'client_logo_8' => ['type' => 'image', 'desc' => 'Logo Klien 8'],
-        'client_name_8' => ['type' => 'text', 'desc' => 'Nama Klien 8'],
-
-        'footer_title' => ['type' => 'text', 'desc' => 'Judul Footer Brands'],
-        'footer_copyright' => ['type' => 'text', 'desc' => 'Teks Hak Cipta Footer'],
-
-        'gallery_1' => ['type' => 'image', 'desc' => 'Gallery Image 1'],
-        'gallery_2' => ['type' => 'image', 'desc' => 'Gallery Image 2'],
-        'template_1' => ['type' => 'image', 'desc' => 'Template Preview 1'],
-        'insp_1' => ['type' => 'image', 'desc' => 'Inspirasi Event 1']
-    ];
-    foreach ($mock_keys as $k => $v) {
+foreach ($definitions as $key => $meta) {
+    if (!isset($existing_map[$key])) {
         $settings_raw[] = [
-            'setting_key' => $k,
-            'setting_value' => '',
-            'setting_type' => $v['type'],
-            'description' => $v['desc']
+            'setting_key' => $key,
+            'setting_value' => $meta[0],
+            'setting_type' => $meta[1],
+            'description' => $meta[2]
         ];
     }
 }
@@ -161,10 +37,13 @@ $settings = [];
 foreach ($settings_raw as $s) {
     $settings[$s['setting_key']] = $s;
 }
+ksort($settings);
 
 // Helper to determine group
 function getGroup($key)
 {
+    if (strpos($key, 'nav_') === 0)
+        return 'Navigation';
     if (strpos($key, 'home_hero') === 0)
         return 'Home - Hero';
     if (strpos($key, 'home_prob') === 0)
@@ -191,10 +70,14 @@ function getGroup($key)
         return 'Footer';
     if (strpos($key, 'gallery_') === 0)
         return 'Gallery Page';
-    if (strpos($key, 'template_') === 0)
+    if (strpos($key, 'price_') === 0)
+        return 'Pricelist Page';
+    if (strpos($key, 'templates_') === 0)
         return 'Template Page';
     if (strpos($key, 'insp_') === 0)
         return 'Inspirasi Page';
+    if (strpos($key, 'blog_') === 0)
+        return 'Blog Page';
     return 'General';
 }
 
@@ -374,8 +257,9 @@ foreach ($settings as $key => $s) {
         </div>
 
         <div class="nav-tabs">
-            <a href="index.php">Leads & CRM</a>
             <a href="settings.php" class="active">Website Content</a>
+            <a href="blog.php">Blog</a>
+            <a href="index.php">Analytics</a>
         </div>
 
         <?php if (isset($_SESSION['msg'])): ?>
@@ -388,7 +272,7 @@ foreach ($settings as $key => $s) {
         <form action="actions.php" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="action" value="save_settings">
 
-            <?php foreach (['General', 'Home - Hero', 'Home - Problem', 'Home - Core Ideas', 'Home - Signature Exp', 'Home - Services', 'Home - Package', 'Home - Scrapbook', 'Home - Our Clients', 'Home - Trust', 'Home - Scarcity', 'Home - Close CTA', 'Footer', 'Gallery Page', 'Template Page', 'Inspirasi Page'] as $groupName): ?>
+            <?php foreach (['General', 'Navigation', 'Home - Hero', 'Home - Problem', 'Home - Core Ideas', 'Home - Signature Exp', 'Home - Services', 'Home - Package', 'Home - Scrapbook', 'Home - Our Clients', 'Home - Trust', 'Home - Scarcity', 'Home - Close CTA', 'Pricelist Page', 'Gallery Page', 'Template Page', 'Inspirasi Page', 'Blog Page', 'Footer'] as $groupName): ?>
                 <?php if (empty($grouped_settings[$groupName]))
                     continue; ?>
 
@@ -424,8 +308,9 @@ foreach ($settings as $key => $s) {
                                         value="<?= htmlspecialchars($s['setting_value']) ?>">
                                 </div>
                             <?php else: ?>
-                                <input type="text" name="settings_text[<?= $s['setting_key'] ?>]"
-                                    value="<?= htmlspecialchars($s['setting_value']) ?>" class="form-control">
+                                <?php $rows = ($s['setting_type'] === 'html') ? 5 : 2; ?>
+                                <textarea name="settings_text[<?= $s['setting_key'] ?>]"
+                                    class="form-control" rows="<?= $rows ?>"><?= htmlspecialchars($s['setting_value']) ?></textarea>
                             <?php endif; ?>
                         </div>
                     <?php endforeach; ?>

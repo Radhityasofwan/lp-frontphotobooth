@@ -1,9 +1,6 @@
--- Front Photobooth - Generic MySQL Schema
--- Target: MySQL import (local MySQL or production phpMyAdmin)
+-- Front Photobooth - Production Schema (MySQL)
+-- Target: phpMyAdmin import (MySQL 8+)
 -- Date: 2026-03-10
-
-CREATE DATABASE IF NOT EXISTS frontphotobooth CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE frontphotobooth;
 
 SET NAMES utf8mb4;
 SET time_zone = '+00:00';
@@ -52,8 +49,10 @@ CREATE TABLE IF NOT EXISTS blog_posts (
     INDEX idx_blog_posts_slug (slug)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Cleanup arsitektur lama
 DROP TABLE IF EXISTS leads;
 
+-- Minimal defaults (full CMS keys akan auto-seed oleh aplikasi)
 INSERT IGNORE INTO settings (setting_key, setting_value, setting_type, description) VALUES
 ('seo_title', 'Front Photobooth - Premium Photobooth Experience', 'text', 'SEO title'),
 ('seo_desc', 'Photobooth modern untuk event Anda.', 'text', 'SEO description'),
@@ -62,6 +61,6 @@ INSERT IGNORE INTO settings (setting_key, setting_value, setting_type, descripti
 ('nav_cta_link', 'https://wa.me/6281234567890', 'text', 'Link tombol navbar'),
 ('footer_copyright', '© 2026 Front Photobooth. All Rights Reserved.', 'text', 'Footer copyright');
 
--- Notes:
--- 1) Semua key CMS menu/section otomatis di-seed oleh config.php saat aplikasi berjalan.
--- 2) Admin auto-create user "admin" / "admin123" at first login if table users is empty.
+-- Catatan:
+-- 1) Semua key CMS menu/section otomatis di-seed oleh config.php saat aplikasi dijalankan.
+-- 2) Admin default user (admin / admin123) otomatis dibuat oleh admin/login.php jika tabel users kosong.
