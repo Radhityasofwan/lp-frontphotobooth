@@ -100,7 +100,7 @@ foreach ($settings as $key => $s) {
     <meta charset="UTF-8">
     <title>Manage Content | Admin Front Photobooth</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="<?= asset('admin/assets/admin.css') ?>">
+    <?php require __DIR__ . '/partials/head-assets.php'; ?>
 </head>
 
 <body>
@@ -175,6 +175,7 @@ foreach ($settings as $key => $s) {
             </form>
         </div>
     </main>
+    <?php require __DIR__ . '/partials/footer-scripts.php'; ?>
 </body>
 
 </html>

@@ -55,7 +55,7 @@ if ($pdo) {
     <meta charset="UTF-8">
     <title>Analytics Dashboard | Admin Front Photobooth</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="<?= asset('admin/assets/admin.css') ?>">
+    <?php require __DIR__ . '/partials/head-assets.php'; ?>
 </head>
 
 <body>
@@ -130,6 +130,7 @@ if ($pdo) {
             </section>
         </div>
     </main>
+    <?php require __DIR__ . '/partials/footer-scripts.php'; ?>
 </body>
 
 </html>

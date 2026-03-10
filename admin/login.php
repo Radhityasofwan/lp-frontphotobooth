@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <title>Login Admin | Front Photobooth</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="<?= asset('admin/assets/admin.css') ?>">
+    <?php require __DIR__ . '/partials/head-assets.php'; ?>
 </head>
 
 <body class="admin-login-page">
@@ -83,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <p class="auth-note">Akses manajemen. First login: admin / admin123</p>
         </section>
     </main>
+    <?php require __DIR__ . '/partials/footer-scripts.php'; ?>
 </body>
 
 </html>
