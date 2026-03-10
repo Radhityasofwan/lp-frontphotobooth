@@ -33,7 +33,7 @@ $navCtaText = get_setting('nav_cta_text', 'Booking');
 $navCtaLink = get_setting('nav_cta_link', get_setting('home_hero_cta_link', 'https://wa.me/' . WA_NUMBER));
 ?>
 
-<nav id="mainNav" class="navbar navbar-expand-lg navbar-playful fixed-top py-3 bg-transparent">
+<nav id="mainNav" class="navbar navbar-expand-lg navbar-playful fixed-top">
     <div class="container">
         <a class="navbar-brand fw-bold" href="<?= BASE_URL ?>">
             <img src="<?= asset($navLogo) ?>" alt="Logo" height="30">

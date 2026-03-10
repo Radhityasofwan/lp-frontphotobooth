@@ -98,7 +98,7 @@ foreach ($settings as $key => $s) {
     <meta charset="UTF-8">
     <title>Manage Content | Admin Front Photobooth</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="assets/admin.css">
+    <link rel="stylesheet" href="<?= asset('admin/assets/admin.css') ?>">
 </head>
 
 <body>
@@ -145,8 +145,7 @@ foreach ($settings as $key => $s) {
                                 <?php if ($s['setting_type'] === 'image'): ?>
                                     <div class="upload-group">
                                         <?php if ($s['setting_value']): ?>
-                                            <img src="<?= h(strpos($s['setting_value'], 'http') === 0 ? $s['setting_value'] : '../' . $s['setting_value']) ?>"
-                                                class="img-preview" alt="Preview">
+                                            <img src="<?= h(asset($s['setting_value'])) ?>" class="img-preview" alt="Preview">
                                         <?php else: ?>
                                             <div class="img-preview img-placeholder">Upload gambar dari device Anda.</div>
                                         <?php endif; ?>

@@ -215,28 +215,21 @@ hr {
 /* Navbar */
 .navbar-playful {
     background: transparent;
-    border-bottom: none;
-    padding: 0; /* Initial padding is handled by py-3 class */
-    transition: all 0.4s ease;
+    border-bottom: 1px solid transparent;
+    padding: 0.9rem 0;
+    transition: background-color 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease, padding 0.28s ease;
     width: 100%;
     top: 0;
+    z-index: 1030;
 }
 
-.floating-nav {
-    position: fixed;
-    top: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 96%;
-    max-width: 1140px;
-    background: rgba(255, 255, 255, 0.8) !important;
+.navbar-playful.is-scrolled {
+    background: rgba(255, 255, 255, 0.86) !important;
     border: 1px solid rgba(0, 0, 0, 0.04);
-    border-radius: 50px;
-    padding: 0.5rem 1rem !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
-    z-index: 1030;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 0.62rem 0;
 }
 
 .navbar-playful .nav-link {
@@ -253,6 +246,23 @@ hr {
 .navbar-playful .nav-link.active {
     color: var(--fp-primary);
     background: var(--fp-bg-alt);
+}
+
+@media (max-width: 991.98px) {
+    .navbar-playful {
+        padding: 0.72rem 0;
+    }
+
+    .navbar-playful .navbar-collapse {
+        margin-top: 0.7rem;
+        background: rgba(255, 255, 255, 0.94);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 16px;
+        padding: 0.75rem;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
 }
 
 .btn-outline-oval {

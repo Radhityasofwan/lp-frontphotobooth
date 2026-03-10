@@ -1,8 +1,45 @@
 <?php
 // config.php
 
-// 1. Environment Detection
-$is_production = ($_SERVER['HTTP_HOST'] ?? '') === 'sewa.frontphotobooth.com';
+if (!function_exists('fp_str_ends_with')) {
+    function fp_str_ends_with(string $haystack, string $needle): bool
+    {
+        if ($needle === '') {
+            return true;
+        }
+
+        $needleLength = strlen($needle);
+        if ($needleLength > strlen($haystack)) {
+            return false;
+        }
+
+        return substr($haystack, -$needleLength) === $needle;
+    }
+}
+
+// 1. Environment Detection (Hostinger/Shared Hosting Friendly)
+$rawHost = strtolower((string) ($_SERVER['HTTP_HOST'] ?? 'localhost'));
+$current_host = preg_replace('/:\d+$/', '', $rawHost);
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$script_name = $_SERVER['SCRIPT_NAME'] ?? '';
+$base_path = dirname($script_name);
+$base_path = ($base_path === '/' || $base_path === '\\') ? '' : $base_path;
+
+$is_private_ip_host = (bool) preg_match('/^(127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[0-1])\.)/', $current_host);
+$is_local_host = in_array($current_host, ['localhost', '127.0.0.1'], true)
+    || fp_str_ends_with($current_host, '.local')
+    || fp_str_ends_with($current_host, '.test')
+    || $is_private_ip_host;
+
+$app_env = strtolower((string) (getenv('APP_ENV') ?: ''));
+$production_hosts = [
+    'sewa.frontphotobooth.com',
+    'www.sewa.frontphotobooth.com',
+];
+
+$is_production = $app_env === 'production'
+    || in_array($current_host, $production_hosts, true)
+    || (!$is_local_host && $current_host !== '');
 
 if ($is_production) {
     // --- PRODUKSI ---
@@ -13,7 +50,12 @@ if ($is_production) {
     define('DB_NAME', 'u830768701_front');
     define('DB_USER', 'u830768701_landingpage');
     define('DB_PASS', 'Merdeka313');
-    define('BASE_URL', 'https://sewa.frontphotobooth.com');
+    $baseUrlFromEnv = trim((string) getenv('APP_BASE_URL'));
+    if ($baseUrlFromEnv !== '') {
+        define('BASE_URL', rtrim($baseUrlFromEnv, '/'));
+    } else {
+        define('BASE_URL', $protocol . '://' . $current_host . $base_path);
+    }
 } else {
     // --- LOKAL ---
     ini_set('display_errors', 1);
@@ -24,13 +66,7 @@ if ($is_production) {
     define('DB_USER', null);
     define('DB_PASS', null);
 
-    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-    $script_name = $_SERVER['SCRIPT_NAME'] ?? '';
-
-    $base_path = dirname($script_name);
-    $base_path = ($base_path === '/' || $base_path === '\\') ? '' : $base_path;
-    define('BASE_URL', $protocol . '://' . $host . $base_path);
+    define('BASE_URL', $protocol . '://' . $current_host . $base_path);
 }
 
 // 2. Konstanta situs
@@ -352,13 +388,33 @@ function h($string)
     return htmlspecialchars($string ?? '', ENT_QUOTES, 'UTF-8');
 }
 
-function asset($path)
+function asset($path, bool $versioned = true)
 {
     if (strpos((string) $path, 'http') === 0) {
         return $path;
     }
+
     $path = ltrim((string) $path, '/');
-    return BASE_URL . '/' . $path;
+    $url = BASE_URL . '/' . $path;
+
+    if (!$versioned || strpos($path, '..') !== false) {
+        return $url;
+    }
+
+    $localPath = __DIR__ . '/' . $path;
+    $baseVersion = (string) @filemtime(__DIR__ . '/config.php');
+    $deployVersionFile = __DIR__ . '/storage/deploy.version';
+    if (is_file($deployVersionFile)) {
+        $fileDeployVersion = trim((string) @file_get_contents($deployVersionFile));
+        if ($fileDeployVersion !== '') {
+            $baseVersion = $fileDeployVersion;
+        }
+    }
+
+    $fileVersion = is_file($localPath) ? (string) @filemtime($localPath) : $baseVersion;
+    $version = rawurlencode($baseVersion . '-' . $fileVersion);
+    $separator = strpos($url, '?') !== false ? '&' : '?';
+    return $url . $separator . 'v=' . $version;
 }
 
 function log_event(string $message): void

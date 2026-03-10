@@ -48,7 +48,7 @@ if ($pdo) {
     <meta charset="UTF-8">
     <title>Analytics Dashboard | Admin Front Photobooth</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="assets/admin.css">
+    <link rel="stylesheet" href="<?= asset('admin/assets/admin.css') ?>">
 </head>
 
 <body>

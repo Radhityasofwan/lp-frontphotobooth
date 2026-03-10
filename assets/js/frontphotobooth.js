@@ -34,24 +34,29 @@ document.addEventListener('DOMContentLoaded', () => {
     // ---- 2. Navbar Scroll Effect ----
     const mainNav = document.getElementById('mainNav');
     if (mainNav) {
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                mainNav.classList.add('floating-nav', 'shadow-sm');
-                mainNav.classList.remove('py-3', 'bg-transparent');
-            } else {
-                mainNav.classList.remove('floating-nav', 'shadow-sm');
-                mainNav.classList.add('py-3', 'bg-transparent');
+        const threshold = 24;
+        let isScrolled = window.scrollY > threshold;
+        let ticking = false;
+
+        const applyNavbarState = () => {
+            mainNav.classList.toggle('is-scrolled', isScrolled);
+            ticking = false;
+        };
+
+        const onScrollNav = () => {
+            const nextState = window.scrollY > threshold;
+            if (nextState === isScrolled) {
+                return;
             }
-        }, {
-            passive: true
-        });
-        // Initial state
-        if (window.scrollY > 50) {
-            mainNav.classList.add('floating-nav', 'shadow-sm');
-            mainNav.classList.remove('py-3', 'bg-transparent');
-        } else {
-            mainNav.classList.add('py-3', 'bg-transparent');
-        }
+            isScrolled = nextState;
+            if (!ticking) {
+                ticking = true;
+                window.requestAnimationFrame(applyNavbarState);
+            }
+        };
+
+        applyNavbarState();
+        window.addEventListener('scroll', onScrollNav, { passive: true });
     }
 
 

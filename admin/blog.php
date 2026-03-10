@@ -37,7 +37,7 @@ if ($pdo) {
     <meta charset="UTF-8">
     <title>Manage Blog | Admin Front Photobooth</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="assets/admin.css">
+    <link rel="stylesheet" href="<?= asset('admin/assets/admin.css') ?>">
 </head>
 
 <body>
@@ -91,9 +91,7 @@ if ($pdo) {
                             <input id="cover_image_upload" type="file" name="cover_image_upload" accept="image/*">
                             <?php if (!empty($edit['cover_image'])): ?>
                                 <div class="mt-10">
-                                    <img class="img-preview"
-                                        src="<?= h(strpos($edit['cover_image'], 'http') === 0 ? $edit['cover_image'] : '../' . $edit['cover_image']) ?>"
-                                        alt="Cover preview">
+                                    <img class="img-preview" src="<?= h(asset($edit['cover_image'])) ?>" alt="Cover preview">
                                 </div>
                             <?php endif; ?>
                         </div>
