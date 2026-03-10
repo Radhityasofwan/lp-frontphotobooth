@@ -10,8 +10,8 @@ if ($is_production) {
     error_reporting(0);
 
     define('DB_HOST', 'localhost');
-    define('DB_NAME', 'u830768701_Photobooth');
-    define('DB_USER', 'u830768701_Front');
+    define('DB_NAME', 'u830768701_front');
+    define('DB_USER', 'u830768701_landingpage');
     define('DB_PASS', 'Merdeka313');
     define('BASE_URL', 'https://sewa.frontphotobooth.com');
 } else {
